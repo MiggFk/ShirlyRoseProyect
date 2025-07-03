@@ -1,3 +1,4 @@
+
 # 💇‍♀️ Shirly Rose - Sistema de Agendamiento y Facturación
 
 Proyecto académico SENA para automatizar la gestión de citas, clientes, productos y facturas de un local de peluquería y estética.
@@ -17,21 +18,22 @@ Proyecto académico SENA para automatizar la gestión de citas, clientes, produc
 
 ## 📁 Estructura del Proyecto
 
+```
 ShirlyRose/
 ├── backend/
-│ ├── controllers/
-│ ├── routes/
-│ ├── models/
-│ ├── middleware/
-│ ├── config/
-│ ├── index.js
-│ └── .env
+│   ├── controllers/
+│   ├── routes/
+│   ├── models/
+│   ├── middleware/
+│   ├── config/
+│   ├── index.js
+│   └── .env
 ├── frontend/
-│ ├── src/
-│ ├── public/
-│ └── package.json
+│   ├── src/
+│   ├── public/
+│   └── package.json
 └── README.md
-
+```
 
 ---
 
@@ -45,7 +47,7 @@ ShirlyRose/
 - Ruta `/api/users/profile`
 
 ### ✅ Usuarios y Clientes
-- Modelo `User`: nombre, email, password, rol
+- Modelo `User`: nombre, email, password, role
 - Modelo `Client`: teléfono, usuarioId
 - Roles disponibles: `admin`, `empleado`, `cliente`
 
@@ -86,41 +88,54 @@ ShirlyRose/
 1. Clona el proyecto:
    ```bash
    git clone https://github.com/MiggFk/ShirlyRoseProyect.git
+   ```
 
-2. instala dependencias: 
+2. Instala dependencias:
+   ```bash
    cd backend
    npm install
+
    cd ../frontend
    npm install
+   ```
 
-3. Crea el archivo .env en backend/:
+3. Crea un archivo `.env` en `backend/`:
+   ```env
    MONGO_URI=tu_uri_de_mongodb
    JWT_SECRET=tu_secreto
+   ```
 
-4. inicia el backend: 
+4. Inicia el backend:
+   ```bash
    npm run dev
+   ```
 
-5. inicia el backend: 
+5. Inicia el frontend:
+   ```bash
    npm start
+   ```
 
- ## ✅ Estado actual del backend
- ✅ Usuarios
+---
 
- ✅ Autenticación con roles
+## ✅ Estado actual del backend
 
- ✅ CRUD de citas
+- [x] Usuarios
+- [x] Autenticación con roles
+- [x] CRUD de citas
+- [x] CRUD de productos
+- [x] Facturación con control de stock
+- [x] Seguridad con JWT
+- [x] Rutas protegidas por rol
 
- ✅ CRUD de productos
+---
 
- ✅ Facturación con control de stock
+## 👥 Equipo de Trabajo
 
- ✅ Seguridad con JWT
+- **Miguel Padilla. (Scrum Master - Dev)**  
+  [GitHub - MiggFk](https://github.com/MiggFk)
 
- ✅ Rutas protegidas por rol
-
- ## Autores
- Miguel Padilla
- Bryan giraldo
+- **Bryan Giraldo. (Product Owner - Dev)**  
+  [GitHub - Bryan Camilo](https://github.com/camilO-ccp)
 
 
-
+---
