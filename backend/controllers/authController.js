@@ -45,7 +45,8 @@ const loginUser = async (req, res) => {
 
 const registerUser = async (req, res) => {
   try {
-    const { name, email, password, role } = req.body;
+    const { name, email, password } = req.body;
+    const role = "cliente";
 
     // Verificar si el usuario ya existe
   const existingUser = await User.findOne({ email });
@@ -65,6 +66,12 @@ const registerUser = async (req, res) => {
     });
 
     await newUser.save();
+
+    // Crear documento en clients también
+    await Client.create({
+      userId: newUser._id,
+      telefono: null // o algún valor por defecto
+});
 
     res.status(201).json({
       message: "Usuario creado exitosamente",

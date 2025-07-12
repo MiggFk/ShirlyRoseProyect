@@ -48,7 +48,7 @@ const getAppointments = async (req, res) => {
     }
 
     const appointments = await Appointment.find(filter)
-      .populate("clientId", "telefono")
+      .populate("clientId", "name")
       .populate("employeeId", "name email role")
       .populate("serviceId", "name price");
 
