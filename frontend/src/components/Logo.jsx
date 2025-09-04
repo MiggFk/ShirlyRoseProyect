@@ -1,6 +1,6 @@
-import LogoImg from "../assets/logos/Logo-ShirlyRose.jpg";
+import LogoImg from "../assets/logos/Logo-ShirlyRose.png";
 
-export default function Logo({ size = "h-16 w-16", rounded = true }) {
+export default function Logo({ size = "h-17 w-16", rounded = true }) {
   return (
     <div className="flex justify-center mb-6">
       <img
