@@ -1,20 +1,16 @@
 import { Link } from "react-router-dom";
-import LogoShirly from "../../assets/icons/logoSR.png";
+import LogoShirly from "../../components/LogoShirly";
 
 export default function Home() {
   return (
-    <div className="min-h-screen flex flex-col bg-rose-100">
+     <div className="min-h-screen flex flex-col bg-rose-100">
       {/* Header */}
       <header className="flex justify-between items-center px-6 py-4 shadow-md bg-white">
         {/* Logo + nombre */}
         <div className="flex items-center gap-2">
-          <img
-            src={LogoShirly}
-            alt="Logo Shirly Rose"
-            className="h-10 w-10 object-contain"
-          />
+          <LogoShirly />
           <h1 className="text-xl font-bold text-rose-500">Shirly Rose</h1>
-        </div>
+    </div>
 
         {/* Navegación */}
         <nav className="hidden md:flex gap-6">

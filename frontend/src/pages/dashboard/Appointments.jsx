@@ -15,7 +15,7 @@ export default function Appointments() {
           },
         });
 
-        setAppointments(response.data);
+        setAppointments(response.data.data);
       } catch (error) {
         console.error("Error al cargar citas:", error);
       }

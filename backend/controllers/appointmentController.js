@@ -4,34 +4,46 @@ const createAppointment = async (req, res) => {
   try {
     const { clientId, employeeId, serviceId, dateTime } = req.body;
 
-    // Validar que no sea una fecha pasada
+    // Determinar quién es el cliente de la cita
+    let finalClientId = clientId;
+
+    // Si el usuario autenticado es cliente → siempre usa su propio ID
+    if (req.user.role === "client") {
+      finalClientId = req.user.id;
+    }
+
+    // Validar fecha en el futuro
     if (new Date(dateTime) < new Date()) {
-      return res.status(400).json({ message: "No se puede agendar una cita en el pasado." });
+      return res
+        .status(400)
+        .json({ message: "No se puede agendar una cita en el pasado." });
     }
 
     // Validar si ya existe una cita con ese empleado en la misma fecha y hora
     const existingAppointment = await Appointment.findOne({
       employeeId,
-      dateTime
+      dateTime,
     });
 
     if (existingAppointment) {
-      return res.status(400).json({ message: "El empleado ya tiene una cita en ese horario." });
+      return res
+        .status(400)
+        .json({ message: "El empleado ya tiene una cita en ese horario." });
     }
 
     // Crear la cita
     const newAppointment = new Appointment({
-      clientId,
+      clientId: finalClientId,
       employeeId,
       serviceId,
-      dateTime
+      dateTime,
     });
 
     await newAppointment.save();
 
     res.status(201).json({
       message: "Cita creada correctamente",
-      appointment: newAppointment
+      appointment: newAppointment,
     });
   } catch (error) {
     res.status(500).json({ message: "Error al crear la cita", error });

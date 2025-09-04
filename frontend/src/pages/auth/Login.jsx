@@ -2,6 +2,7 @@ import { Formik, Form, Field, ErrorMessage } from "formik";
 import * as Yup from "yup";
 import axios from "axios";
 import { useNavigate } from "react-router-dom";
+import LogoShirly from "../../components/LogoShirly";
 
 export default function Login() {
   const navigate = useNavigate(); // ← para redireccionar después
@@ -11,6 +12,7 @@ export default function Login() {
         <h2 className="text-2xl font-bold text-center mb-6 text-purple-700">
           Iniciar Sesión
         </h2>
+        <LogoShirly size="h-20 w-20" />
 
         <Formik
           initialValues={{ email: "", password: "" }}

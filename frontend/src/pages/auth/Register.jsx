@@ -2,16 +2,18 @@ import { Formik, Form, Field, ErrorMessage } from "formik";
 import * as Yup from "yup";
 import axios from "axios";
 import { useNavigate } from "react-router-dom";
+import LogoShirly from "../../components/LogoShirly";
 
 export default function Register() {
   const navigate = useNavigate();
 
   return (
-    <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-purple-200 via-pink-100 to-yellow-50">
-      <div className="bg-white p-8 rounded-2xl shadow-md w-full max-w-sm">
-        <h2 className="text-2xl font-bold text-center mb-6 text-purple-700">
-          Crear Cuenta
+    <div className="min-h-screen flex items-center justify-center bg-rose-100">
+      <div className="bg-white/90 backdrop-blur-sm p-8 rounded-2xl shadow-xl w-full max-w-md">
+        <h2 className="text-3xl font-bold text-center text-rose-600 mb-6 drop-shadow-sm">
+          Crear cuenta
         </h2>
+        <LogoShirly size="h-20 w-20" />
 
         <Formik
           initialValues={{
