@@ -91,6 +91,17 @@ export default function Login() {
               >
                 Ingresar
               </button>
+              <div className="text-center mt-4">
+                <p className="text-sm text-gray-600">
+                  ¿No tienes cuenta?{" "}
+                  <a
+                    href="/register"
+                    className="text-purple-600 hover:underline font-medium"
+                  >
+                    Regístrate aquí
+                  </a>
+                </p>
+              </div>
             </Form>
           )}
         </Formik>

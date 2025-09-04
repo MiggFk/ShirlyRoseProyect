@@ -1,5 +1,6 @@
 import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
-import Login from "./pages/Login";
+import Login from "./pages/auth/Login";
+import Register from "./pages/auth/Register";
 import Profile from "./pages/Profile";
 import DashboardLayout from "./pages/dashboard/DashboardLayout";
 import Home from "./pages/dashboard/Home";
@@ -8,12 +9,15 @@ import Products from "./pages/dashboard/Products";
 import Users from "./pages/dashboard/Users";
 import PrivateRoute from "./components/PrivateRoute";
 import RoleRoute from "./components/RoleRoute";
+import IndexHome from "./pages/home/IndexHome";
 
 function App() {
   return (
     <Router>
       <Routes>
-        <Route path="/" element={<Login />} />
+        <Route path="/" element={<IndexHome />} />
+        <Route path="/login" element={<Login />} />
+        <Route path="/register" element={<Register />} />
 
         <Route
           path="/profile"
