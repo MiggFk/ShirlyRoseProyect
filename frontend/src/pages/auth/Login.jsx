@@ -38,7 +38,7 @@ export default function Login() {
           if (data.user.role === "admin" || data.user.role === "empleado") {
             navigate("/dashboard");
           } else {
-            navigate("/profile");
+            navigate("/");
           }
         } catch (err) {
           if (err.response && err.response.status === 401) {

@@ -1,6 +1,7 @@
 const User = require("../models/User");
 const bcrypt = require("bcrypt");
 const jwt = require("jsonwebtoken");
+const Client = require("../models/Client");
 
 const loginUser = async (req, res) => {
   try {
@@ -45,8 +46,7 @@ const loginUser = async (req, res) => {
 
 const registerUser = async (req, res) => {
   try {
-    const { name, email, password } = req.body;
-    const role = "cliente";
+    const { name, email, password, role } = req.body;
 
     // Verificar si el usuario ya existe
   const existingUser = await User.findOne({ email });
@@ -58,20 +58,26 @@ const registerUser = async (req, res) => {
   const salt = await bcrypt.genSalt(10);
   const hashedPassword = await bcrypt.hash(password, salt);
 
+  // Rol por defecto "cliente", pero permite admin/empleado si viene en el body
+    const allowedRoles = ["admin", "empleado", "cliente"];
+    const finalRole = allowedRoles.includes(role) ? role : "cliente";
+
     const newUser = new User({
       name,
       email,
       password: hashedPassword,
-      role
+      role: finalRole,
     });
 
     await newUser.save();
 
-    // Crear documento en clients también
-    await Client.create({
-      userId: newUser._id,
-      telefono: null // o algún valor por defecto
-});
+    // Si el rol es cliente, también crear en "clients"
+    if (finalRole === "cliente") {
+      await Client.create({
+        usuarioId: newUser._id,
+        telefono: null,
+      });
+    }
 
     res.status(201).json({
       message: "Usuario creado exitosamente",
