@@ -1,4 +1,5 @@
 const User = require("../models/User");
+const Client = require("../models/Client"); // 🔥 IMPORTANTE: faltaba esto
 const bcrypt = require("bcrypt");
 const jwt = require("jsonwebtoken");
 
@@ -49,14 +50,14 @@ const registerUser = async (req, res) => {
     const role = "cliente";
 
     // Verificar si el usuario ya existe
-  const existingUser = await User.findOne({ email });
-  if (existingUser) {
-  return res.status(400).json({ message: "El correo ya está registrado" });
- }
+    const existingUser = await User.findOne({ email });
+    if (existingUser) {
+      return res.status(400).json({ message: "El correo ya está registrado" });
+    }
 
-// Encriptar la contraseña antes de guardarla
-  const salt = await bcrypt.genSalt(10);
-  const hashedPassword = await bcrypt.hash(password, salt);
+    // Encriptar la contraseña antes de guardarla
+    const salt = await bcrypt.genSalt(10);
+    const hashedPassword = await bcrypt.hash(password, salt);
 
     const newUser = new User({
       name,
@@ -70,8 +71,8 @@ const registerUser = async (req, res) => {
     // Crear documento en clients también
     await Client.create({
       userId: newUser._id,
-      telefono: null // o algún valor por defecto
-});
+      telefono: null // valor por defecto
+    });
 
     res.status(201).json({
       message: "Usuario creado exitosamente",
@@ -83,7 +84,8 @@ const registerUser = async (req, res) => {
       }
     });
   } catch (error) {
-    res.status(500).json({ message: "Error al registrar usuario", error });
+    console.error("Error en registerUser:", error); // 🔥 log útil para debug
+    res.status(500).json({ message: "Error al registrar usuario", error: error.message });
   }
 };
 
