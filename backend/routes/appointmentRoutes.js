@@ -9,7 +9,7 @@ const { createAppointment, getAppointments, updateAppointmentStatus } = require(
 router.post("/", auth, authorizeRoles("cliente", "admin"), createAppointment);
 
 // GET: Listar citas (ahora también debería tener un control de roles)
-router.get("/", auth, authorizeRoles("client", "admin"), getAppointments); // <-- Ejemplo para getAppointments
+router.get("/", auth, authorizeRoles("cliente", "admin"), getAppointments); // <-- Ejemplo para getAppointments
 
 // PUT: Actualizar el estado de una cita (quizá solo para admins o empleados)
 router.put("/:id", auth, authorizeRoles("admin", "empleado"), updateAppointmentStatus);
