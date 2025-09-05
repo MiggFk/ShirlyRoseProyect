@@ -2,6 +2,7 @@ import { useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import axios from "axios";
 import Logo from "../components/Logo";
+import { FiHome } from "react-icons/fi"; // ✅ Importar icono de Home
 
 export default function Register() {
   const [name, setName] = useState("");
@@ -30,13 +31,23 @@ export default function Register() {
   };
 
   return (
-    <div className="min-h-screen flex items-center justify-center bg-rose-100">
+    <div className="relative min-h-screen flex items-center justify-center bg-rose-100">
+      {/* ✅ Icono Home en la esquina */}
+      <Link
+  to="/"
+  title="Volver al inicio"
+  className="absolute top-4 left-4 text-rose-600 hover:text-rose-800 transition"
+>
+  <FiHome size={28} />
+</Link>
+
+
       <div className="bg-white/90 backdrop-blur-sm p-8 rounded-2xl shadow-xl w-full max-w-md">
         <h2 className="text-3xl font-bold text-center text-rose-600 mb-6 drop-shadow-sm">
           Crear cuenta
         </h2>
 
-        <Logo />
+        <Logo size="h-20 w-20" />
 
         {error && (
           <p className="bg-rose-200 text-rose-700 p-3 rounded-lg mb-4 text-center text-sm font-medium">

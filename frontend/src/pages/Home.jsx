@@ -7,8 +7,8 @@ import Nails2 from "../assets/images/services/uñas-2.jpg";
 import Nails3 from "../assets/images/services/uñas-3.jpg";
 
 // Importar imágenes de productos
-import Aceites from "../assets/images/products/aceites.jpg";
-import Cremas from "../assets/images/products/cremas.jpg";
+import Aceites from "../assets/images/products/aceite.jpg";
+import Cremas from "../assets/images/products/exfoliante.jpg";
 import Shampoo from "../assets/images/products/shampoo.jpg";
 
 export default function Home() {
@@ -21,7 +21,7 @@ export default function Home() {
           <img
             src={Logo}
             alt="Logo Shirly Rose"
-            className="h-10 w-10 object-contain"
+            className="h-12 w-12 object-contain"
           />
           <h1 className="text-xl font-bold text-rose-500">Shirly Rose</h1>
         </div>
@@ -67,8 +67,8 @@ export default function Home() {
 
       {/* Hero principal */}
       <section className="flex flex-col items-center text-center py-16 px-6">
-        <h2 className="text-4xl md:text-5xl font-extrabold text-rose-500 mb-4 italic">
-          SHIRLY ROSE
+        <h2 className="text-4xl md:text-7xl font-extrabold text-rose-500 mb-4 italic" style={{ fontFamily: "'Great Vibes', cursive" }}>
+          Shirly Rose
         </h2>
         <p className="text-lg text-gray-700 max-w-2xl mb-8">
           Relájate, cuida tu piel y luce espectacular con nuestros servicios de
