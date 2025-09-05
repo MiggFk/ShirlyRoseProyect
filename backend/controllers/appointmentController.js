@@ -12,6 +12,19 @@ const createAppointment = async (req, res) => {
       finalClientId = req.user.id;
     }
 
+    // Lógica para limitar una cita por cliente
+    const existingPendingAppointment = await Appointment.findOne({
+      clientId: finalClientId,
+      status: "pending",
+    });
+
+    if (existingPendingAppointment) {
+      return res.status(400).json({
+        message: "Ya tienes una cita pendiente. Cancela la anterior para agendar una nueva.",
+      });
+    }
+
+
     // Validar fecha en el futuro
     if (new Date(dateTime) < new Date()) {
       return res
@@ -46,7 +59,7 @@ const createAppointment = async (req, res) => {
       appointment: newAppointment,
     });
   } catch (error) {
-    res.status(500).json({ message: "Error al crear la cita", error });
+    res.status(500).json({ message: "Error al crear la cita", error: error.message });
   }
 };
 
@@ -89,7 +102,7 @@ const getAppointments = async (req, res) => {
       limit,
     });
   } catch (error) {
-    res.status(500).json({ message: "Error al obtener citas", error });
+    res.status(500).json({ message: "Error al obtener citas", error: error.message });
   }
 };
 
@@ -125,7 +138,7 @@ const updateAppointmentStatus = async (req, res) => {
       appointment,
     });
   } catch (error) {
-    res.status(500).json({ message: "Error al actualizar cita", error });
+    res.status(500).json({ message: "Error al actualizar cita", error: error.message });
   }
 };
 
