@@ -1,30 +1,48 @@
 import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
-import Home from "./pages/Home";
-import Login from "./pages/Login";
-import Register from "./pages/Register";
-import Services from "./pages/Services";
-import Products from "./pages/Products";
-import About from "./pages/About";
-import Dashboard from "./pages/dashboard";
+import Login from "./pages/auth/Login";
+import Register from "./pages/auth/Register";
+import Profile from "./pages/user/Profile";
+import DashboardLayout from "./pages/dashboard/DashboardLayout";
+import Home from "./pages/dashboard/Home";
+import Appointments from "./pages/dashboard/Appointments";
+import Products from "./pages/dashboard/Products";
+import Users from "./pages/dashboard/Users";
+import PrivateRoute from "./components/PrivateRoute";
+import RoleRoute from "./components/RoleRoute";
+import IndexHome from "./pages/home/IndexHome";
 
 function App() {
   return (
     <Router>
       <Routes>
-        {/* Página principal pública */}
-        <Route path="/" element={<Home />} />
-
-        {/* Autenticación */}
+        <Route path="/" element={<IndexHome />} />
         <Route path="/login" element={<Login />} />
         <Route path="/register" element={<Register />} />
 
-        {/* Páginas públicas adicionales */}
-        <Route path="/services" element={<Services />} />
-        <Route path="/products" element={<Products />} />
-        <Route path="/about" element={<About />} />
+        <Route
+          path="/profile"
+          element={
+            <PrivateRoute>
+              <Profile />
+            </PrivateRoute>
+          }
+        />
 
-        {/* Dashboard privado */}
-        <Route path="/dashboard/*" element={<Dashboard />} />
+        <Route
+          path="/dashboard"
+          element={
+            <PrivateRoute>
+              <RoleRoute allowedRoles={["admin", "empleado"]}>
+              <DashboardLayout />
+              </RoleRoute>
+            </PrivateRoute>
+          }
+        >
+          <Route index element={<Home />} />
+          <Route path="appointments" element={<Appointments />} />
+          <Route path="products" element={<Products />} />
+          <Route path="users" element={<Users />} />
+        </Route>
       </Routes>
     </Router>
   );

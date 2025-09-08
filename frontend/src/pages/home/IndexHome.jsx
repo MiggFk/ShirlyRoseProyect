@@ -1,16 +1,34 @@
 import { Link } from "react-router-dom";
-import LogoShirly from "../../components/LogoShirly";
+import Logo from "../../assets/icons/logoSR.png";
+
+// Importar imágenes de servicios
+import Nails1 from "../../assets/images/services/uñas-1.jpg";
+import Nails2 from "../../assets/images/services/uñas-2.jpg";
+import Nails3 from "../../assets/images/services/uñas-3.jpg";
+import Nails4 from "../../assets/images/services/uñas-4.jpg";
+import Nails5 from "../../assets/images/services/uñas-5.jpg";
+import Nails6 from "../../assets/images/services/uñas-6.jpg";
+import Nails7 from "../../assets/images/services/uñas-7.jpg";
+
+// Importar imágenes de productos
+import Aceites from "../../assets/images/products/aceite.jpg";
+import Cremas from "../../assets/images/products/exfoliante.jpg";
+import Shampoo from "../../assets/images/products/shampoo.jpg";
 
 export default function Home() {
   return (
-     <div className="min-h-screen flex flex-col bg-rose-100">
+    <div className="min-h-screen flex flex-col bg-rose-100">
       {/* Header */}
       <header className="flex justify-between items-center px-6 py-4 shadow-md bg-white">
         {/* Logo + nombre */}
         <div className="flex items-center gap-2">
-          <LogoShirly />
-          <h1 className="text-xl font-bold text-rose-500">Shirly Rose</h1>
-    </div>
+          <img
+            src={Logo}
+            alt="Logo Shirly Rose"
+            className="h-12 w-12 object-contain"
+          />
+          <h1 className="text-xl font-bold text-rose-500">SHIRLY ROSE</h1>
+        </div>
 
         {/* Navegación */}
         <nav className="hidden md:flex gap-6">
@@ -53,8 +71,8 @@ export default function Home() {
 
       {/* Hero principal */}
       <section className="flex flex-col items-center text-center py-16 px-6">
-        <h2 className="text-4xl md:text-5xl font-extrabold text-rose-500 mb-4">
-          SHIRLY ROSE
+        <h2 className="text-4xl md:text-7xl font-extrabold text-rose-500 mb-4 italic" style={{ fontFamily: "'Great Vibes', cursive" }}>
+          Shirly Rose
         </h2>
         <p className="text-lg text-gray-700 max-w-2xl mb-8">
           Relájate, cuida tu piel y luce espectacular con nuestros servicios de
@@ -71,32 +89,59 @@ export default function Home() {
       {/* Sección de Servicios */}
       <section className="py-12 px-6 bg-white">
         <h3 className="text-2xl font-bold text-rose-500 text-center mb-8">
-          Nuestros Servicios
+          Servicios Destacados
         </h3>
         <div className="grid grid-cols-1 md:grid-cols-3 gap-6 max-w-6xl mx-auto">
-          <div className="bg-white rounded-xl shadow p-6 hover:shadow-lg transition">
-            <h4 className="text-xl font-semibold text-rose-400 mb-2">
-              Masajes Relajantes
-            </h4>
-            <p className="text-gray-600">
-              Reduce el estrés y mejora tu bienestar físico y mental.
-            </p>
+          <div className="bg-white rounded-xl shadow hover:shadow-lg transition overflow-hidden">
+            <img src={Nails1} alt="Uñas 1" className="h-40 w-full object-cover" />
+            <div className="p-6 flex flex-col gap-3">
+              <h4 className="text-xl font-semibold text-rose-400">
+                Diseño de Uñas
+              </h4>
+              <p className="text-gray-600">
+                Manicure profesional con estilos únicos.
+              </p>
+              <Link
+                to="/services"
+                className="text-sm text-rose-500 font-medium hover:underline self-start"
+              >
+                Ver más →
+              </Link>
+            </div>
           </div>
-          <div className="bg-white rounded-xl shadow p-6 hover:shadow-lg transition">
-            <h4 className="text-xl font-semibold text-rose-400 mb-2">
-              Tratamientos Faciales
-            </h4>
-            <p className="text-gray-600">
-                Cuida tu piel con nuestros tratamientos personalizados.
-            </p>
+          <div className="bg-white rounded-xl shadow hover:shadow-lg transition overflow-hidden">
+            <img src={Nails2} alt="Uñas 2" className="h-40 w-full object-cover" />
+            <div className="p-6 flex flex-col gap-3">
+              <h4 className="text-xl font-semibold text-rose-400">
+                Pedicure Spa
+              </h4>
+              <p className="text-gray-600">
+                Relaja tus pies y luce impecable.
+              </p>
+              <Link
+                to="/services"
+                className="text-sm text-rose-500 font-medium hover:underline self-start"
+              >
+                Ver más →
+              </Link>
+            </div>
           </div>
-          <div className="bg-white rounded-xl shadow p-6 hover:shadow-lg transition">
-            <h4 className="text-xl font-semibold text-rose-400 mb-2">
-              Manicure & Pedicure
-            </h4>
-            <p className="text-gray-600">
-              Resalta tu estilo con un cuidado profesional de manos y pies.
-            </p>
+          <div className="bg-white rounded-xl shadow hover:shadow-lg transition overflow-hidden">
+            <img src={Nails3} alt="Uñas 3" className="h-40 w-full object-cover" />
+            <div className="p-6 flex flex-col gap-3">
+              <h4 className="text-xl font-semibold text-rose-400">
+                Uñas Acrílicas
+              </h4>
+              <p className="text-gray-600">
+                Estilos modernos y de larga duración.
+              </p>
+              <Link
+                to="/services"
+                className="text-sm text-rose-500 font-medium hover:underline self-start"
+              >
+                Ver más →
+              </Link>
+            </div>
           </div>
         </div>
       </section>
@@ -107,23 +152,50 @@ export default function Home() {
           Productos Destacados
         </h3>
         <div className="grid grid-cols-1 md:grid-cols-3 gap-6 max-w-6xl mx-auto">
-          <div className="bg-white rounded-xl shadow p-6 hover:shadow-lg transition">
-            <h4 className="text-lg font-semibold text-gray-800">
-              Crema Hidratante
-            </h4>
-            <p className="text-gray-600">Nutrición intensa para tu piel.</p>
+          <div className="bg-white rounded-xl shadow hover:shadow-lg transition overflow-hidden">
+            <img src={Cremas} alt="Cremas" className="h-40 w-full object-cover" />
+            <div className="p-6 flex flex-col gap-3">
+              <h4 className="text-lg font-semibold text-gray-800">
+                Exfoliante
+              </h4>
+              <p className="text-gray-600">Nutrición intensa para tu piel.</p>
+              <Link
+                to="/products"
+                className="text-sm text-rose-500 font-medium hover:underline self-start"
+              >
+                Ver más →
+              </Link>
+            </div>
           </div>
-          <div className="bg-white rounded-xl shadow p-6 hover:shadow-lg transition">
-            <h4 className="text-lg font-semibold text-gray-800">
-              Aceite Esencial
-            </h4>
-            <p className="text-gray-600">Relajación natural y aromaterapia.</p>
+          <div className="bg-white rounded-xl shadow hover:shadow-lg transition overflow-hidden">
+            <img src={Aceites} alt="Aceites" className="h-40 w-full object-cover" />
+            <div className="p-6 flex flex-col gap-3">
+              <h4 className="text-lg font-semibold text-gray-800">
+                Aceites Naturales
+              </h4>
+              <p className="text-gray-600">Aromaterapia y cuidado natural.</p>
+              <Link
+                to="/products"
+                className="text-sm text-rose-500 font-medium hover:underline self-start"
+              >
+                Ver más →
+              </Link>
+            </div>
           </div>
-          <div className="bg-white rounded-xl shadow p-6 hover:shadow-lg transition">
-            <h4 className="text-lg font-semibold text-gray-800">
-              Mascarilla Facial
-            </h4>
-            <p className="text-gray-600">Refresca y revitaliza tu piel.</p>
+          <div className="bg-white rounded-xl shadow hover:shadow-lg transition overflow-hidden">
+            <img src={Shampoo} alt="Shampoo" className="h-40 w-full object-cover" />
+            <div className="p-6 flex flex-col gap-3">
+              <h4 className="text-lg font-semibold text-gray-800">
+                Shampoo Orgánico
+              </h4>
+              <p className="text-gray-600">Frescura y brillo para tu cabello.</p>
+              <Link
+                to="/products"
+                className="text-sm text-rose-500 font-medium hover:underline self-start"
+              >
+                Ver más →
+              </Link>
+            </div>
           </div>
         </div>
       </section>
@@ -131,7 +203,7 @@ export default function Home() {
       {/* Footer */}
       <footer className="text-center py-6 bg-rose-200 mt-auto">
         <p className="text-sm text-gray-700">
-          © {new Date().getFullYear()} Shirly Rose · Estética & Spa
+          © {new Date().getFullYear()} 셜리 로즈 · Estética & Spa
         </p>
       </footer>
     </div>

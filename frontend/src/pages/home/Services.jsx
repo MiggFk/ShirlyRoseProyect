@@ -1,12 +1,12 @@
 import { useState } from "react";
 import { Link } from "react-router-dom";
 import { FiMenu, FiX } from "react-icons/fi"; // iconos menú y cerrar
-import uñas4 from "../assets/images/services/uñas-4.jpg";
-import uñas5 from "../assets/images/services/uñas-5.jpg";
-import uñas6 from "../assets/images/services/uñas-6.jpg";
-import labios from "../assets/images/services/labios.jpg";
-import uñas7 from "../assets/images/services/uñas-7.jpg";
-import Pestañas from "../assets/images/services/Pestañas.jpg";
+import uñas4 from "../../assets/images/services/uñas-4.jpg";
+import uñas5 from "../../assets/images/services/uñas-5.jpg";
+import uñas6 from "../../assets/images/services/uñas-6.jpg";
+import labios from "../../assets/images/services/labios.jpg";
+import uñas7 from "../../assets/images/services/uñas-7.jpg";
+import Pestañas from "../../assets/images/services/Pestañas.jpg";
 
 export default function Services() {
   const [menuOpen, setMenuOpen] = useState(false);

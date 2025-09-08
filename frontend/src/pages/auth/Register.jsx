@@ -53,7 +53,7 @@ export default function Register() {
               localStorage.setItem("user", JSON.stringify(data.user));
 
               // 3. Redirigir después de registro
-              navigate("/profile");
+              navigate("/login");
             } catch (err) {
               if (err.response?.status === 400) {
                 setFieldError("email", "Este correo ya está registrado");
