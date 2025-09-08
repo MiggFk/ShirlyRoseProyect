@@ -33,11 +33,11 @@ export default function Services() {
         }`}
       >
         <Link
-          to="/"
+          to=""
           className="text-rose-600 font-medium hover:text-rose-800"
           onClick={() => setMenuOpen(false)}
         >
-          Inicio
+          ----
         </Link>
         <Link
           to="/"
@@ -67,7 +67,7 @@ export default function Services() {
           onClick={() => setMenuOpen(false)}
         >
           셜리 로즈
-          </Link>
+          </Link>  
       </div>
 
       {/* Contenido */}
@@ -81,7 +81,7 @@ export default function Services() {
           <div className="bg-white rounded-2xl shadow-lg overflow-hidden">
             <img src={uñas4} alt="Servicio 1" className="h-48 w-full object-cover" />
             <div className="p-6">
-              <h3 className="text-xl font-bold text-rose-500 mb-2">Uñas Acrílicas</h3>
+              <h3 className="text-xl font-bold text-rose-500 mb-2">Press On</h3>
               <p className="text-gray-600 mb-2">Diseño minimalista a tu elección.</p>
               <p className="text-sm text-gray-500">Duración: 40 min</p>
               <p className="text-sm text-gray-500 mb-4">Precio: $60.000</p>
@@ -95,7 +95,7 @@ export default function Services() {
           <div className="bg-white rounded-2xl shadow-lg overflow-hidden">
             <img src={uñas5} alt="Servicio 2" className="h-48 w-full object-cover" />
             <div className="p-6">
-              <h3 className="text-xl font-bold text-rose-500 mb-2">Manicure & Pedicure</h3>
+              <h3 className="text-xl font-bold text-rose-500 mb-2">Press On</h3>
               <p className="text-gray-600 mb-2">
                 Cuidado profesional para manos y pies con un diseño original.
               </p>
@@ -111,9 +111,9 @@ export default function Services() {
           <div className="bg-white rounded-2xl shadow-lg overflow-hidden">
             <img src={uñas6} alt="Servicio 3" className="h-48 w-full object-cover" />
             <div className="p-6">
-              <h3 className="text-xl font-bold text-rose-500 mb-2">Manicure & Pedicure</h3>
+              <h3 className="text-xl font-bold text-rose-500 mb-2">Recubrimiento Poligel</h3>
               <p className="text-gray-600 mb-2">Cuidado para tus manos con un estilo clásico.</p>
-              <p className="text-sm text-gray-500">Duración: 25 min</p>
+              <p className="text-sm text-gray-500">Duración: 3 Horas</p>
               <p className="text-sm text-gray-500 mb-4">Precio: $30.000</p>
               <button className="w-full bg-rose-400 hover:bg-rose-500 text-white py-2 rounded-lg font-medium transition">
                 Reservar
@@ -125,8 +125,8 @@ export default function Services() {
           <div className="bg-white rounded-2xl shadow-lg overflow-hidden">
             <img src={labios} alt="Servicio 4" className="h-48 w-full object-cover" />
             <div className="p-6">
-              <h3 className="text-xl font-bold text-rose-500 mb-2">Tratamiento de labios</h3>
-              <p className="text-gray-600 mb-2">Libérate del estrés con masajes exclusivos.</p>
+              <h3 className="text-xl font-bold text-rose-500 mb-2">Hidralips</h3>
+              <p className="text-gray-600 mb-2">tratamiento para hidratar, rejuvenecer y mejorar la apariencia de los labios</p>
               <p className="text-sm text-gray-500">Duración: 45 min</p>
               <p className="text-sm text-gray-500 mb-4">Precio: $75.000</p>
               <button className="w-full bg-rose-400 hover:bg-rose-500 text-white py-2 rounded-lg font-medium transition">
@@ -139,7 +139,7 @@ export default function Services() {
           <div className="bg-white rounded-2xl shadow-lg overflow-hidden">
             <img src={uñas7} alt="Servicio 5" className="h-48 w-full object-cover" />
             <div className="p-6">
-              <h3 className="text-xl font-bold text-rose-500 mb-2">Uñas Semipermanentes</h3>
+              <h3 className="text-xl font-bold text-rose-500 mb-2">Uñas Acrilicas</h3>
               <p className="text-gray-600 mb-2">Uñas semi con el diseño que gustes.</p>
               <p className="text-sm text-gray-500">Duración: 40 min</p>
               <p className="text-sm text-gray-500 mb-4">Precio: $45.000</p>
@@ -249,6 +249,13 @@ export default function Services() {
 
         </div>
       </main>
+
+      {/* Footer */}
+      <footer className="text-center py-6 bg-rose-200">
+        <p className="text-sm text-gray-700">
+          © {new Date().getFullYear()} Shirly Rose · Estética & Spa
+        </p>
+      </footer>
     </div>
   );
 }
