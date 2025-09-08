@@ -1,5 +1,6 @@
+import { useState } from "react";
 import { Link } from "react-router-dom";
-import { FiHome } from "react-icons/fi";
+import { FiMenu, FiX } from "react-icons/fi"; // iconos menú y cerrar
 import uñas4 from "../assets/images/services/uñas-4.jpg";
 import uñas5 from "../assets/images/services/uñas-5.jpg";
 import uñas6 from "../assets/images/services/uñas-6.jpg";
@@ -8,29 +9,66 @@ import uñas7 from "../assets/images/services/uñas-7.jpg";
 import Pestañas from "../assets/images/services/Pestañas.jpg";
 
 export default function Services() {
+  const [menuOpen, setMenuOpen] = useState(false);
+
   return (
     <div className="min-h-screen bg-rose-100">
       {/* Header fijo */}
       <header className="fixed top-0 left-0 w-full bg-white shadow-md z-50 flex justify-between items-center px-6 py-3">
-        {/* Icono Home */}
-        <Link
-          to="/"
-          title="Volver al inicio"
+        {/* Botón menú hamburguesa */}
+        <button
+          onClick={() => setMenuOpen(!menuOpen)}
           className="text-rose-600 hover:text-rose-800 transition"
         >
-          <FiHome size={28} />
+          {menuOpen ? <FiX size={28} /> : <FiMenu size={28} />}
+        </button>
+        <h1 className="text-4xl md:text-3xl font-extrabold text-rose-500 italic" style={{ fontFamily: "'Great Vibes', cursive" }}>Shirly Rose</h1>
+        <h1 className="text-lg font-bold text-rose-600">Servicios</h1>
+      </header>
+
+      {/* Menú lateral */}
+      <div
+        className={`fixed top-0 left-0 h-full w-64 bg-white shadow-lg z-40 p-6 flex flex-col gap-6 transform transition-transform duration-300 ${
+          menuOpen ? "translate-x-0" : "-translate-x-full"
+        }`}
+      >
+        <Link
+          to="/"
+          className="text-rose-600 font-medium hover:text-rose-800"
+          onClick={() => setMenuOpen(false)}
+        >
+          Inicio
+        </Link>
+        <Link
+          to="/"
+          className="text-rose-600 font-medium hover:text-rose-800"
+          onClick={() => setMenuOpen(false)}
+        >
+          Inicio
+        </Link>
+        <Link
+          to="/Products"
+          className="text-rose-600 font-medium hover:text-rose-800"
+          onClick={() => setMenuOpen(false)}
+        >
+          Productos
+        </Link>
+        <Link
+          to="/About"
+          className="text-rose-600 font-medium hover:text-rose-800"
+          onClick={() => setMenuOpen(false)}
+        >
+          Nosotros
         </Link>
 
-        {/* Navegación */}
-        <nav className="flex gap-6">
-          <a href="#cejas" className="text-gray-700 hover:text-rose-500 font-medium">
-            Cejas
-          </a>
-          <a href="#uñas" className="text-gray-700 hover:text-rose-500 font-medium">
-            Uñas
-          </a>
-        </nav>
-      </header>
+        <Link
+          to="/"
+          className="text-rose-600 font-medium hover:text-rose-800"
+          onClick={() => setMenuOpen(false)}
+        >
+          셜리 로즈
+          </Link>
+      </div>
 
       {/* Contenido */}
       <main className="pt-20 px-6 pb-12">
@@ -43,8 +81,8 @@ export default function Services() {
           <div className="bg-white rounded-2xl shadow-lg overflow-hidden">
             <img src={uñas4} alt="Servicio 1" className="h-48 w-full object-cover" />
             <div className="p-6">
-              <h3 className="text-xl font-bold text-rose-500 mb-2">Uñas Acrilicas</h3>
-              <p className="text-gray-600 mb-2">Diseño minimalista a tu eleccion.</p>
+              <h3 className="text-xl font-bold text-rose-500 mb-2">Uñas Acrílicas</h3>
+              <p className="text-gray-600 mb-2">Diseño minimalista a tu elección.</p>
               <p className="text-sm text-gray-500">Duración: 40 min</p>
               <p className="text-sm text-gray-500 mb-4">Precio: $60.000</p>
               <button className="w-full bg-rose-400 hover:bg-rose-500 text-white py-2 rounded-lg font-medium transition">
@@ -54,11 +92,13 @@ export default function Services() {
           </div>
 
           {/* Carta 2 */}
-          <div className="bg-white rounded-2xl shadow-lg overflow-hidden" id="uñas">
+          <div className="bg-white rounded-2xl shadow-lg overflow-hidden">
             <img src={uñas5} alt="Servicio 2" className="h-48 w-full object-cover" />
             <div className="p-6">
               <h3 className="text-xl font-bold text-rose-500 mb-2">Manicure & Pedicure</h3>
-              <p className="text-gray-600 mb-2">Cuidado profesional para manos y pies con un diseño original.</p>
+              <p className="text-gray-600 mb-2">
+                Cuidado profesional para manos y pies con un diseño original.
+              </p>
               <p className="text-sm text-gray-500">Duración: 30 min</p>
               <p className="text-sm text-gray-500 mb-4">Precio: $40.000</p>
               <button className="w-full bg-rose-400 hover:bg-rose-500 text-white py-2 rounded-lg font-medium transition">
@@ -68,11 +108,11 @@ export default function Services() {
           </div>
 
           {/* Carta 3 */}
-          <div className="bg-white rounded-2xl shadow-lg overflow-hidden" id="cejas">
+          <div className="bg-white rounded-2xl shadow-lg overflow-hidden">
             <img src={uñas6} alt="Servicio 3" className="h-48 w-full object-cover" />
             <div className="p-6">
               <h3 className="text-xl font-bold text-rose-500 mb-2">Manicure & Pedicure</h3>
-              <p className="text-gray-600 mb-2">Cuidado para tus manos con un estilo clasico</p>
+              <p className="text-gray-600 mb-2">Cuidado para tus manos con un estilo clásico.</p>
               <p className="text-sm text-gray-500">Duración: 25 min</p>
               <p className="text-sm text-gray-500 mb-4">Precio: $30.000</p>
               <button className="w-full bg-rose-400 hover:bg-rose-500 text-white py-2 rounded-lg font-medium transition">
@@ -99,7 +139,7 @@ export default function Services() {
           <div className="bg-white rounded-2xl shadow-lg overflow-hidden">
             <img src={uñas7} alt="Servicio 5" className="h-48 w-full object-cover" />
             <div className="p-6">
-              <h3 className="text-xl font-bold text-rose-500 mb-2">Uñas Semipermanente</h3>
+              <h3 className="text-xl font-bold text-rose-500 mb-2">Uñas Semipermanentes</h3>
               <p className="text-gray-600 mb-2">Uñas semi con el diseño que gustes.</p>
               <p className="text-sm text-gray-500">Duración: 40 min</p>
               <p className="text-sm text-gray-500 mb-4">Precio: $45.000</p>
@@ -113,7 +153,7 @@ export default function Services() {
           <div className="bg-white rounded-2xl shadow-lg overflow-hidden">
             <img src={Pestañas} alt="Servicio 6" className="h-48 w-full object-cover" />
             <div className="p-6">
-              <h3 className="text-xl font-bold text-rose-500 mb-2">Cejas Pelo a Pelo</h3>
+              <h3 className="text-xl font-bold text-rose-500 mb-2">Pestañas Pelo a Pelo</h3>
               <p className="text-gray-600 mb-2">Resalta tu mirada con un diseño perfecto.</p>
               <p className="text-sm text-gray-500">Duración: 50 min</p>
               <p className="text-sm text-gray-500 mb-4">Precio: $90.000</p>
@@ -165,6 +205,47 @@ export default function Services() {
             </div>
           </div>
 
+          {/* Carta 10 */}
+          <div className="bg-white rounded-2xl shadow-lg overflow-hidden">
+            <img src={uñas7} alt="Servicio 7" className="h-48 w-full object-cover" />
+            <div className="p-6">
+              <h3 className="text-xl font-bold text-rose-500 mb-2">-----</h3>
+              <p className="text-gray-600 mb-2">descripcion</p>
+              <p className="text-sm text-gray-500">tiempo</p>
+              <p className="text-sm text-gray-500 mb-4">Precio</p>
+              <button className="w-full bg-rose-400 hover:bg-rose-500 text-white py-2 rounded-lg font-medium transition">
+                Reservar
+              </button>
+            </div>
+          </div>
+
+          {/* Carta 11 */}
+          <div className="bg-white rounded-2xl shadow-lg overflow-hidden">
+            <img src={uñas7} alt="Servicio 8" className="h-48 w-full object-cover" />
+            <div className="p-6">
+              <h3 className="text-xl font-bold text-rose-500 mb-2">-----</h3>
+              <p className="text-gray-600 mb-2">descripcion</p>
+              <p className="text-sm text-gray-500">tiempo</p>
+              <p className="text-sm text-gray-500 mb-4">Precio</p>
+              <button className="w-full bg-rose-400 hover:bg-rose-500 text-white py-2 rounded-lg font-medium transition">
+                Reservar
+              </button>
+            </div>
+          </div>
+
+          {/* Carta 12 */}
+          <div className="bg-white rounded-2xl shadow-lg overflow-hidden">
+            <img src={uñas7} alt="Servicio 9" className="h-48 w-full object-cover" />
+            <div className="p-6">
+              <h3 className="text-xl font-bold text-rose-500 mb-2">-----</h3>
+              <p className="text-gray-600 mb-2">descripcion</p>
+              <p className="text-sm text-gray-500">tiempo</p>
+              <p className="text-sm text-gray-500 mb-4">Precio</p>
+              <button className="w-full bg-rose-400 hover:bg-rose-500 text-white py-2 rounded-lg font-medium transition">
+                Reservar
+              </button>
+            </div>
+          </div>
 
         </div>
       </main>

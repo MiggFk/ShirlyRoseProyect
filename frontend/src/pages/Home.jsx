@@ -23,7 +23,7 @@ export default function Home() {
             alt="Logo Shirly Rose"
             className="h-12 w-12 object-contain"
           />
-          <h1 className="text-xl font-bold text-rose-500">Shirly Rose</h1>
+          <h1 className="text-xl font-bold text-rose-500">SHIRLY ROSE</h1>
         </div>
 
         {/* Navegación */}
@@ -85,7 +85,7 @@ export default function Home() {
       {/* Sección de Servicios */}
       <section className="py-12 px-6 bg-white">
         <h3 className="text-2xl font-bold text-rose-500 text-center mb-8">
-          Nuestros Servicios
+          Servicios Destacados
         </h3>
         <div className="grid grid-cols-1 md:grid-cols-3 gap-6 max-w-6xl mx-auto">
           <div className="bg-white rounded-xl shadow hover:shadow-lg transition overflow-hidden">
@@ -152,7 +152,7 @@ export default function Home() {
             <img src={Cremas} alt="Cremas" className="h-40 w-full object-cover" />
             <div className="p-6 flex flex-col gap-3">
               <h4 className="text-lg font-semibold text-gray-800">
-                Cremas Hidratantes
+                Exfoliante
               </h4>
               <p className="text-gray-600">Nutrición intensa para tu piel.</p>
               <Link
@@ -199,7 +199,7 @@ export default function Home() {
       {/* Footer */}
       <footer className="text-center py-6 bg-rose-200 mt-auto">
         <p className="text-sm text-gray-700">
-          © {new Date().getFullYear()} Shirly Rose · Estética & Spa
+          © {new Date().getFullYear()} 셜리 로즈 · Estética & Spa
         </p>
       </footer>
     </div>
