@@ -28,9 +28,9 @@ export default function Services() {
 
       {/* Menú lateral */}
       <div
-        className={`fixed top-0 left-0 h-full w-64 bg-white shadow-lg z-40 p-6 flex flex-col gap-6 transform transition-transform duration-300 ${
-          menuOpen ? "translate-x-0" : "-translate-x-full"
-        }`}
+  className={`fixed top-0 left-0 h-full w-64 bg-white shadow-lg z-40 p-6 flex flex-col gap-6 transform transition-transform duration-300 ${
+    menuOpen ? "translate-x-0" : "-translate-x-full"
+  }`}
       >
         <Link
           to=""
@@ -67,8 +67,10 @@ export default function Services() {
           onClick={() => setMenuOpen(false)}
         >
           셜리 로즈
-          </Link>  
+          </Link> 
       </div>
+
+      
 
       {/* Contenido */}
       <main className="pt-20 px-6 pb-12">
