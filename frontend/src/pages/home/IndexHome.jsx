@@ -1,14 +1,15 @@
 import { Link } from "react-router-dom";
 import Logo from "../../assets/icons/logoSR.png";
 
+
 // Importar imágenes de servicios
 import Nails1 from "../../assets/images/services/uñas-1.jpg";
 import Nails2 from "../../assets/images/services/uñas-2.jpg";
 import Nails3 from "../../assets/images/services/uñas-3.jpg";
-import Nails4 from "../../assets/images/services/uñas-4.jpg";
-import Nails5 from "../../assets/images/services/uñas-5.jpg";
-import Nails6 from "../../assets/images/services/uñas-6.jpg";
-import Nails7 from "../../assets/images/services/uñas-7.jpg";
+// import Nails4 from "../../assets/images/services/uñas-4.jpg";
+// import Nails5 from "../../assets/images/services/uñas-5.jpg";
+// import Nails6 from "../../assets/images/services/uñas-6.jpg";
+// import Nails7 from "../../assets/images/services/uñas-7.jpg";
 
 // Importar imágenes de productos
 import Aceites from "../../assets/images/products/aceite.jpg";

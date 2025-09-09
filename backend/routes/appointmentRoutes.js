@@ -12,6 +12,6 @@ router.post("/", auth, authorizeRoles("cliente", "admin"), createAppointment);
 router.get("/", auth, authorizeRoles("cliente", "admin"), getAppointments); // <-- Ejemplo para getAppointments
 
 // PUT: Actualizar el estado de una cita (quizá solo para admins o empleados)
-router.put("/:id", auth, authorizeRoles("admin", "empleado"), updateAppointmentStatus);
+router.put("/:id/status", auth, authorizeRoles("admin", "empleado"), updateAppointmentStatus);
 
 module.exports = router;

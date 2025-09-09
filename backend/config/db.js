@@ -2,15 +2,15 @@ const mongoose = require("mongoose");
 
 const connectDB = async () => {
   try {
-    await mongoose.connect(process.env.MONGO_URI);
-    console.log("✅ Conectado a MongoDB");
+    await mongoose.connect(process.env.MONGO_URI, {
+      useNewUrlParser: true,
+      useUnifiedTopology: true,
+    });
+    console.log("✅ Conectado a MongoDB Atlas");
   } catch (error) {
     console.error("❌ Error al conectar a MongoDB:", error);
-    process.exit(1);  // Detiene el servidor si falla
+    process.exit(1);
   }
 };
 
 module.exports = connectDB;
-
-
-//Aqui se maneja la conexion de mongo, ahorrando codigo en index.js y teniendo escalabilidad a futuro

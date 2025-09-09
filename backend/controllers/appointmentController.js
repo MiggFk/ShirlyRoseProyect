@@ -8,14 +8,14 @@ const createAppointment = async (req, res) => {
     let finalClientId = clientId;
 
     // Si el usuario autenticado es cliente → siempre usa su propio ID
-    if (req.user.role === "client") {
+    if (req.user.role === "cliente") {
       finalClientId = req.user.id;
     }
 
     // Lógica para limitar una cita por cliente
     const existingPendingAppointment = await Appointment.findOne({
       clientId: finalClientId,
-      status: "pending",
+      status: "pendiente",
     });
 
     if (existingPendingAppointment) {
@@ -68,7 +68,7 @@ const getAppointments = async (req, res) => {
     let filter = {};
 
     // Si es cliente → solo sus citas
-    if (req.user.role === "client") {
+    if (req.user.role === "cliente") {
       filter.clientId = req.user.id;
     }
 
@@ -112,8 +112,8 @@ const updateAppointmentStatus = async (req, res) => {
     const { id } = req.params;
     const { status } = req.body;
 
-    // Validar estado permitido
-    const allowedStatuses = ["pending", "completed", "canceled"];
+    // Estados válidos
+    const allowedStatuses = ["pendiente", "completada", "cancelada"];
     if (!allowedStatuses.includes(status)) {
       return res.status(400).json({ message: "Estado inválido" });
     }
@@ -124,13 +124,23 @@ const updateAppointmentStatus = async (req, res) => {
       return res.status(404).json({ message: "Cita no encontrada" });
     }
 
-    // Validar reglas de negocio: solo cambiar desde pending
-    if (appointment.status !== "pending") {
-      return res.status(409).json({ message: "Solo se pueden actualizar citas pendientes" });
+    // Definir transiciones permitidas
+    const allowedTransitions = {
+      pendiente: ["completada", "cancelada"],
+      completada: [], // no se puede cambiar
+      cancelada: ["pendiente"]   // no puede cambiar a completada
+    };
+
+    // Validar transición
+    if (!allowedTransitions[appointment.status].includes(status)) {
+      return res.status(409).json({
+        message: "No se pudo actualizar, la cita ya fue actualizada.",
+      });
     }
 
+    // Actualizar
     appointment.status = status;
-    appointment.updatedBy = req.user.id; // opcional: auditar quién lo cambió
+    appointment.updatedBy = req.user.id; // opcional: auditar quién hizo el cambio
     await appointment.save();
 
     res.status(200).json({
