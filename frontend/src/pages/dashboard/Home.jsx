@@ -134,7 +134,7 @@ export default function Home() {
               <ResponsiveContainer width="100%" height={300}>
                 <BarChart data={stats.monthly}>
                   <CartesianGrid strokeDasharray="3 3" />
-                  <XAxis dataKey="_id" />
+                  <XAxis dataKey="month" />
                   <YAxis allowDecimals={false} />
                   <Tooltip />
                   <Bar dataKey="count" fill="#3b82f6" radius={[10, 10, 0, 0]} />
@@ -156,7 +156,7 @@ export default function Home() {
                   <Pie
                     data={stats.services}
                     dataKey="count"
-                    nameKey="_id"
+                    nameKey="service"
                     cx="50%"
                     cy="50%"
                     outerRadius={100}

@@ -199,19 +199,31 @@ const getAppointmentStats = async (req, res) => {
     });
 
     // Por servicio
-    const serviceStats = await Appointment.aggregate([
-      { $group: { _id: "$serviceId", count: { $sum: 1 } } },
-      {
-        $lookup: {
-          from: "services",
-          localField: "_id",
-          foreignField: "_id",
-          as: "service"
-        }
-      },
-      { $unwind: "$service" },
-      { $project: { _id: "$service._id", name: "$service.name", count: 1 } }
-    ]);
+const serviceStats = await Appointment.aggregate([
+  {
+    $group: {
+      _id: "$serviceId",
+      count: { $sum: 1 }
+    }
+  },
+  {
+    $lookup: {
+      from: "services",
+      localField: "_id",
+      foreignField: "_id",
+      as: "service"
+    }
+  },
+  { $unwind: "$service" },
+  {
+    $project: {
+      _id: 0,
+      service: "$service.name",  // <-- usar "service" en lugar de "name"
+      count: 1
+    }
+  },
+  { $sort: { count: -1 } } // opcional para ordenar de más usado a menos
+]);
 
     // Por mes
     const monthlyStats = await Appointment.aggregate([
