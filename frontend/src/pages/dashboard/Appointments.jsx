@@ -1,15 +1,17 @@
 import { useEffect, useState } from "react";
-import axios from "axios";
+import Swal from "sweetalert2";
+import api from "../../api/axios"; // 👈 tu instancia de axios
 
 export default function Appointments() {
   const [appointments, setAppointments] = useState([]);
   const [search, setSearch] = useState("");
   const [dateFilter, setDateFilter] = useState("");
+  const [statusFilter, setStatusFilter] = useState("");
 
   const fetchAppointments = async () => {
     try {
       const token = localStorage.getItem("token");
-      const response = await axios.get("http://localhost:5000/api/appointments", {
+      const response = await api.get("/appointments", {
         headers: { Authorization: `Bearer ${token}` },
       });
       setAppointments(response.data.data || response.data);
@@ -21,16 +23,44 @@ export default function Appointments() {
   const updateStatus = async (id, status) => {
     try {
       const token = localStorage.getItem("token");
-      await axios.put(
-        `http://localhost:5000/api/appointments/${id}/status`,
+      await api.put(
+        `/appointments/${id}/status`,
         { status },
         { headers: { Authorization: `Bearer ${token}` } }
       );
       fetchAppointments();
     } catch (error) {
       console.error("Error al actualizar estado:", error);
-      const msg = error.response?.data?.message || "No se pudo actualizar la cita";
+      const msg =
+        error.response?.data?.message || "No se pudo actualizar la cita";
       alert(msg);
+    }
+  };
+
+  const deleteAppointment = async (id) => {
+    const result = await Swal.fire({
+      title: "¿Eliminar cita?",
+      text: "Esta acción no se puede deshacer",
+      icon: "warning",
+      showCancelButton: true,
+      confirmButtonColor: "#e11d48",
+      cancelButtonColor: "#6b7280",
+      confirmButtonText: "Sí, eliminar",
+      cancelButtonText: "Cancelar",
+    });
+
+    if (result.isConfirmed) {
+      try {
+        const token = localStorage.getItem("token");
+        await api.delete(`/appointments/${id}`, {
+          headers: { Authorization: `Bearer ${token}` },
+        });
+        setAppointments((prev) => prev.filter((cita) => cita._id !== id));
+        Swal.fire("Eliminada", "La cita ha sido eliminada", "success");
+      } catch (error) {
+        console.error("Error al eliminar cita:", error);
+        Swal.fire("Error", "No se pudo eliminar la cita", "error");
+      }
     }
   };
 
@@ -38,6 +68,7 @@ export default function Appointments() {
     fetchAppointments();
   }, []);
 
+  // 🔎 Filtros
   const filteredAppointments = appointments.filter((cita) => {
     const clientName = cita.clientId?.name?.toLowerCase() || "";
     const searchMatch = clientName.includes(search.toLowerCase());
@@ -45,9 +76,14 @@ export default function Appointments() {
     const citaDate = new Date(cita.dateTime).toISOString().split("T")[0];
     const dateMatch = dateFilter ? citaDate === dateFilter : true;
 
-    return searchMatch && dateMatch;
+    const statusMatch = statusFilter
+      ? cita.status === statusFilter
+      : true;
+
+    return searchMatch && dateMatch && statusMatch;
   });
 
+  // 🎨 Badges para estado
   const getStatusBadge = (status) => {
     const base = "px-2 py-1 rounded-full text-xs font-semibold";
     switch (status) {
@@ -83,10 +119,21 @@ export default function Appointments() {
           onChange={(e) => setDateFilter(e.target.value)}
           className="border border-pink-300 focus:ring-2 focus:ring-pink-400 focus:outline-none px-3 py-2 rounded-lg"
         />
+        <select
+          value={statusFilter}
+          onChange={(e) => setStatusFilter(e.target.value)}
+          className="border border-pink-300 focus:ring-2 focus:ring-pink-400 focus:outline-none px-3 py-2 rounded-lg"
+        >
+          <option value="">Todos</option>
+          <option value="pendiente">Pendiente</option>
+          <option value="completada">Completada</option>
+          <option value="cancelada">Cancelada</option>
+        </select>
         <button
           onClick={() => {
             setSearch("");
             setDateFilter("");
+            setStatusFilter("");
           }}
           className="bg-pink-500 text-white px-4 py-2 rounded-lg shadow hover:bg-pink-600 transition"
         >
@@ -116,9 +163,15 @@ export default function Appointments() {
                     i % 2 === 0 ? "bg-pink-50" : "bg-white"
                   }`}
                 >
-                  <td className="py-2 px-4">{cita.clientId?.name || "Sin nombre"}</td>
-                  <td className="py-2 px-4">{cita.serviceId?.name || "Sin servicio"}</td>
-                  <td className="py-2 px-4">{cita.employeeId?.name || "Sin empleado"}</td>
+                  <td className="py-2 px-4">
+                    {cita.clientId?.name || "Sin nombre"}
+                  </td>
+                  <td className="py-2 px-4">
+                    {cita.serviceId?.name || "Sin servicio"}
+                  </td>
+                  <td className="py-2 px-4">
+                    {cita.employeeId?.name || "Sin empleado"}
+                  </td>
                   <td className="py-2 px-4">
                     {new Date(cita.dateTime).toLocaleString()}
                   </td>
@@ -127,16 +180,24 @@ export default function Appointments() {
                       {cita.status}
                     </span>
                   </td>
-                  <td className="py-2 px-4">
+                  <td className="py-2 px-4 flex gap-2">
                     <select
                       value={cita.status}
-                      onChange={(e) => updateStatus(cita._id, e.target.value)}
+                      onChange={(e) =>
+                        updateStatus(cita._id, e.target.value)
+                      }
                       className="border border-pink-300 bg-white px-2 py-1 rounded-lg focus:ring-2 focus:ring-pink-400"
                     >
                       <option value="pendiente">Pendiente</option>
                       <option value="completada">Completada</option>
                       <option value="cancelada">Cancelada</option>
                     </select>
+                    <button
+                      onClick={() => deleteAppointment(cita._id)}
+                      className="bg-red-500 text-white px-3 py-1 rounded-lg shadow hover:bg-red-600 transition"
+                    >
+                      Eliminar
+                    </button>
                   </td>
                 </tr>
               ))

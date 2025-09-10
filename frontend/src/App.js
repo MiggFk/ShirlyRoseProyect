@@ -11,8 +11,8 @@ import Users from "./pages/dashboard/Users";
 import PrivateRoute from "./components/PrivateRoute";
 import RoleRoute from "./components/RoleRoute";
 import IndexHome from "./pages/home/IndexHome";
-import ServicesHome from "./pages/home/Services";
-import ProductsHome from "./pages/home/Products";
+// import ServicesHome from "./pages/home/Services";
+// import ProductsHome from "./pages/home/Products";
 
 function App() {
   return (
@@ -31,7 +31,7 @@ function App() {
           }
         />
 
-        <Route
+        {/* <Route
           path="/servicesHome"
           element={
             <PrivateRoute>
@@ -47,7 +47,7 @@ function App() {
               <ProductsHome />
             </PrivateRoute>
           }
-        />
+        /> */}
 
         <Route
           path="/dashboard"

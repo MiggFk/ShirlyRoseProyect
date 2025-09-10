@@ -2,7 +2,7 @@ const Appointment = require("../models/Appointment");
 
 const createAppointment = async (req, res) => {
   try {
-    const { clientId, employeeId, serviceId, dateTime } = req.body;
+    const { clientId, employeeId, serviceId, dateTime, status } = req.body;
 
     // Determinar quién es el cliente de la cita
     let finalClientId = clientId;
@@ -44,12 +44,19 @@ const createAppointment = async (req, res) => {
         .json({ message: "El empleado ya tiene una cita en ese horario." });
     }
 
+     // si es admin, respeta el status enviado
+    let appointmentStatus = "pendiente"; // por defecto
+    if (req.user.role === "admin" && status) {
+      appointmentStatus = status; 
+    }
+
     // Crear la cita
     const newAppointment = new Appointment({
       clientId: finalClientId,
       employeeId,
       serviceId,
       dateTime,
+      status: appointmentStatus,
     });
 
     await newAppointment.save();
@@ -152,10 +159,98 @@ const updateAppointmentStatus = async (req, res) => {
   }
 };
 
+  //Eliminar una cita (solo admin)
+  const deleteAppointment = async (req, res) => {
+  try {
+    const appointment = await Appointment.findById(req.params.id);
+
+    if (!appointment) {
+      return res.status(404).json({ message: "Cita no encontrada" });
+    }
+
+    await appointment.deleteOne();
+    res.json({ message: "Cita eliminada correctamente" });
+  } catch (error) {
+    res.status(500).json({ message: "Error al eliminar cita", error: error.message });
+  }
+};
+
+// Obtener estadísticas de citas por estado
+const getAppointmentStats = async (req, res) => {
+  try {
+    // Total
+    const totalAppointments = await Appointment.countDocuments();
+
+    // Por estado
+    const statusStats = await Appointment.aggregate([
+      { $group: { _id: "$status", count: { $sum: 1 } } }
+    ]);
+
+    const formattedStatus = {
+      pending: 0,
+      completed: 0,
+      cancelled: 0,
+    };
+
+    statusStats.forEach(stat => {
+      if (stat._id === "pendiente") formattedStatus.pending = stat.count;
+      if (stat._id === "completada") formattedStatus.completed = stat.count;
+      if (stat._id === "cancelada") formattedStatus.cancelled = stat.count;
+    });
+
+    // Por servicio
+    const serviceStats = await Appointment.aggregate([
+      { $group: { _id: "$serviceId", count: { $sum: 1 } } },
+      {
+        $lookup: {
+          from: "services",
+          localField: "_id",
+          foreignField: "_id",
+          as: "service"
+        }
+      },
+      { $unwind: "$service" },
+      { $project: { _id: "$service._id", name: "$service.name", count: 1 } }
+    ]);
+
+    // Por mes
+    const monthlyStats = await Appointment.aggregate([
+      {
+        $group: {
+          _id: { $month: "$dateTime" },
+          count: { $sum: 1 }
+        }
+      },
+      { $sort: { "_id": 1 } }
+    ]);
+
+    const monthNames = [
+      "", "Enero", "Febrero", "Marzo", "Abril", "Mayo", "Junio",
+      "Julio", "Agosto", "Septiembre", "Octubre", "Noviembre", "Diciembre"
+    ];
+
+    const formattedMonthly = monthlyStats.map(m => ({
+      month: monthNames[m._id],
+      count: m.count
+    }));
+
+    res.json({
+      totalAppointments,
+      status: formattedStatus,
+      services: serviceStats,
+      monthly: formattedMonthly
+    });
+  } catch (error) {
+    console.error("Error al obtener estadísticas:", error);
+    res.status(500).json({ message: "Error al obtener estadísticas" });
+  }
+};
 
 module.exports = {
   createAppointment,
   getAppointments,
   updateAppointmentStatus,
+  deleteAppointment,
+  getAppointmentStats,
 };
 
