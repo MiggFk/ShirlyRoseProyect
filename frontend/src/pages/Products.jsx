@@ -53,7 +53,7 @@ export default function Products() {
       img: Balsamo,
     },
         {
-      id:5,
+      id:6,
       nombre: "Nombre producto",
       descripcion: "Descripcion",
       precio: "Precio",
@@ -61,7 +61,15 @@ export default function Products() {
       img: Balsamo,
     },
         {
-      id:5,
+      id:7,
+      nombre: "Nombre producto",
+      descripcion: "Descripcion",
+      precio: "Precio",
+      duracion: "ml del producto",
+      img: Balsamo,
+    },
+    {
+      id:8,
       nombre: "Nombre producto",
       descripcion: "Descripcion",
       precio: "Precio",
@@ -69,12 +77,36 @@ export default function Products() {
       img: Balsamo,
     },
         {
-      id:5,
+      id:9,
       nombre: "Nombre producto",
       descripcion: "Descripcion",
       precio: "Precio",
       duracion: "ml del producto",
       img: Balsamo,
+    },
+        {
+      id:10,
+      nombre: "Nombre producto",
+      descripcion: "Descripcion",
+      precio: "Precio",
+      duracion: "ml del producto",
+      img: Balsamo,
+    },
+        {
+      id:11,
+      nombre: "Nombre producto",
+      descripcion: "Descripcion",
+      precio: "Precio",
+      duracion: "ml del producto",
+      img: Balsamo,
+    },
+        {
+      id:12,
+      nombre: "Nombre producto",
+      descripcion: "Descripcion",
+      precio: "Precio",
+      duracion: "ml del producto",
+      img:Balsamo,
     }
   ];
 
@@ -108,6 +140,13 @@ export default function Products() {
         aria-hidden={!menuOpen}
       >
         <Link
+          to=""
+          className="text-rose-600 font-medium hover:text-rose-800"
+          onClick={() => setMenuOpen(false)}
+        >
+          ----
+        </Link>
+        <Link
           to="/"
           className="text-rose-600 font-medium hover:text-rose-800"
           onClick={() => setMenuOpen(false)}
@@ -120,13 +159,6 @@ export default function Products() {
           onClick={() => setMenuOpen(false)}
         >
           Servicios
-        </Link>
-        <Link
-          to="/products"
-          className="text-rose-600 font-medium hover:text-rose-800"
-          onClick={() => setMenuOpen(false)}
-        >
-          Productos
         </Link>
         <Link
           to="/about"
@@ -142,6 +174,13 @@ export default function Products() {
         >
           Contacto
         </Link>
+        <Link
+          to=""
+          className="text-rose-600 font-medium hover:text-rose-800"
+          onClick={() => setMenuOpen(false)}
+        >
+          셜리 로즈
+          </Link> 
       </nav>
 
       {/* Fondo semi-transparente ajustado para no tapar el header */}
