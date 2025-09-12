@@ -123,57 +123,64 @@ export default function Home() {
             </ResponsiveContainer>
           </div>
 
-          {/* 📅 Citas por mes */}
-          <div className="bg-white p-6 rounded-2xl shadow-lg">
-            <h2 className="text-xl font-semibold mb-4 text-pink-600">
-              Citas por mes
-            </h2>
-            {stats.monthly.length === 0 ? (
-              <p className="text-gray-500">No hay datos suficientes aún.</p>
-            ) : (
-              <ResponsiveContainer width="100%" height={300}>
-                <BarChart data={stats.monthly}>
-                  <CartesianGrid strokeDasharray="3 3" />
-                  <XAxis dataKey="month" />
-                  <YAxis allowDecimals={false} />
-                  <Tooltip />
-                  <Bar dataKey="count" fill="#3b82f6" radius={[10, 10, 0, 0]} />
-                </BarChart>
-              </ResponsiveContainer>
-            )}
-          </div>
+          {/* 📅 Citas por mes + 🍩 Servicios más solicitados */}
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+            {/* 📅 Citas por mes */}
+            <div className="bg-white p-6 rounded-2xl shadow-lg">
+              <h2 className="text-xl font-semibold mb-4 text-pink-600">
+                Citas por mes
+              </h2>
+              {stats.monthly.length === 0 ? (
+                <p className="text-gray-500">No hay datos suficientes aún.</p>
+              ) : (
+                <ResponsiveContainer width="100%" height={300}>
+                  <BarChart data={stats.monthly}>
+                    <CartesianGrid strokeDasharray="3 3" />
+                    <XAxis dataKey="month" />
+                    <YAxis allowDecimals={false} />
+                    <Tooltip />
+                    <Bar
+                      dataKey="count"
+                      fill="#3b82f6"
+                      radius={[10, 10, 0, 0]}
+                    />
+                  </BarChart>
+                </ResponsiveContainer>
+              )}
+            </div>
 
-          {/* 🍩 Servicios más solicitados */}
-          <div className="bg-white p-6 rounded-2xl shadow-lg">
-            <h2 className="text-xl font-semibold mb-4 text-pink-600">
-              Servicios más solicitados
-            </h2>
-            {stats.services.length === 0 ? (
-              <p className="text-gray-500">No hay datos suficientes aún.</p>
-            ) : (
-              <ResponsiveContainer width="100%" height={300}>
-                <PieChart>
-                  <Pie
-                    data={stats.services}
-                    dataKey="count"
-                    nameKey="service"
-                    cx="50%"
-                    cy="50%"
-                    outerRadius={100}
-                    label
-                  >
-                    {stats.services.map((entry, index) => (
-                      <Cell
-                        key={`cell-${index}`}
-                        fill={serviceColors[index % serviceColors.length]}
-                      />
-                    ))}
-                  </Pie>
-                  <Tooltip />
-                  <Legend />
-                </PieChart>
-              </ResponsiveContainer>
-            )}
+            {/* 🍩 Servicios más solicitados */}
+            <div className="bg-white p-6 rounded-2xl shadow-lg">
+              <h2 className="text-xl font-semibold mb-4 text-pink-600">
+                Servicios más solicitados
+              </h2>
+              {stats.services.length === 0 ? (
+                <p className="text-gray-500">No hay datos suficientes aún.</p>
+              ) : (
+                <ResponsiveContainer width="100%" height={300}>
+                  <PieChart>
+                    <Pie
+                      data={stats.services}
+                      dataKey="count"
+                      nameKey="service"
+                      cx="50%"
+                      cy="50%"
+                      outerRadius={100}
+                      label
+                    >
+                      {stats.services.map((entry, index) => (
+                        <Cell
+                          key={`cell-${index}`}
+                          fill={serviceColors[index % serviceColors.length]}
+                        />
+                      ))}
+                    </Pie>
+                    <Tooltip />
+                    <Legend />
+                  </PieChart>
+                </ResponsiveContainer>
+              )}
+            </div>
           </div>
         </>
       )}
