@@ -14,6 +14,7 @@
     "axios": "^1.10.0",
     "date-fns": "^4.1.0",
     "formik": "^2.4.6",
+    "framer-motion": "^12.23.12",
     "lucide-react": "^0.543.0",
     "react": "^19.1.0",
     "react-big-calendar": "^1.19.4",
@@ -22,6 +23,7 @@
     "react-router-dom": "^7.6.3",
     "react-scripts": "5.0.1",
     "recharts": "^3.2.0",
+    "swal": "^0.1.0",
     "sweetalert2": "^11.22.2",
     "web-vitals": "^2.1.4",
     "yup": "^1.6.1"

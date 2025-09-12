@@ -1,4 +1,4 @@
-import React, { useState, useMemo } from 'react';
+import React, { useState, useMemo } from "react";
 
 const AppointmentsCalendar = ({ appointments }) => {
     const [calendarDate, setCalendarDate] = useState(new Date());
@@ -7,7 +7,6 @@ const AppointmentsCalendar = ({ appointments }) => {
     const daysOfWeek = ['Dom', 'Lun', 'Mar', 'Mié', 'Jue', 'Vie', 'Sáb'];
     const months = ['Enero', 'Febrero', 'Marzo', 'Abril', 'Mayo', 'Junio', 'Julio', 'Agosto', 'Septiembre', 'Octubre', 'Noviembre', 'Diciembre'];
 
-    // Agrupa las citas por día para un acceso más rápido
     const appointmentsByDay = useMemo(() => {
         const map = {};
         appointments.forEach(cita => {
@@ -21,7 +20,6 @@ const AppointmentsCalendar = ({ appointments }) => {
         return map;
     }, [appointments]);
 
-    // Genera una lista de días del mes, incluyendo los días vacíos al inicio
     const getCalendarDays = () => {
         const year = calendarDate.getFullYear();
         const month = calendarDate.getMonth();
@@ -40,32 +38,25 @@ const AppointmentsCalendar = ({ appointments }) => {
         return calendarDays;
     };
 
-    // Comprueba si un día tiene citas
     const hasAppointmentOnDay = (day) => {
         if (!day) return false;
         const dateKey = new Date(calendarDate.getFullYear(), calendarDate.getMonth(), day).toISOString().split('T')[0];
         return !!appointmentsByDay[dateKey];
     };
 
-    // Maneja el clic en un día para mostrar las citas correspondientes
     const handleDayClick = (day) => {
         if (!day) return;
         const dateKey = new Date(calendarDate.getFullYear(), calendarDate.getMonth(), day).toISOString().split('T')[0];
         setSelectedDayAppointments(appointmentsByDay[dateKey] || []);
     };
-    
-    // Obtiene el estilo de la insignia de estado
+
     const getStatusBadge = (status) => {
         const base = "px-2 py-1 rounded-full text-xs font-semibold";
         switch (status) {
-            case "pendiente":
-                return `${base} bg-yellow-100 text-yellow-700`;
-            case "completada":
-                return `${base} bg-green-100 text-green-700`;
-            case "cancelada":
-                return `${base} bg-red-100 text-red-700`;
-            default:
-                return `${base} bg-gray-100 text-gray-700`;
+            case "pendiente": return `${base} bg-yellow-100 text-yellow-700`;
+            case "completada": return `${base} bg-green-100 text-green-700`;
+            case "cancelada": return `${base} bg-red-100 text-red-700`;
+            default: return `${base} bg-gray-100 text-gray-700`;
         }
     };
 
@@ -79,9 +70,7 @@ const AppointmentsCalendar = ({ appointments }) => {
                 <button onClick={() => setCalendarDate(prev => new Date(prev.getFullYear(), prev.getMonth() + 1, 1))} className="bg-gray-200 text-gray-700 px-3 py-1 rounded-lg hover:bg-gray-300 transition">&gt;</button>
             </div>
             <div className="grid grid-cols-7 gap-1 text-center font-bold mb-2">
-                {daysOfWeek.map(day => (
-                    <div key={day} className="day-header">{day}</div>
-                ))}
+                {daysOfWeek.map(day => <div key={day} className="day-header">{day}</div>)}
             </div>
             <div className="grid grid-cols-7 gap-1">
                 {getCalendarDays().map((day, index) => (
@@ -102,7 +91,9 @@ const AppointmentsCalendar = ({ appointments }) => {
 
             {selectedDayAppointments && (
                 <div className="mt-6 bg-gray-50 p-4 rounded-lg shadow-inner">
-                    <h4 className="font-semibold text-lg mb-2">Citas para el día: {new Date(calendarDate.getFullYear(), calendarDate.getMonth(), selectedDayAppointments[0] ? new Date(selectedDayAppointments[0].dateTime).getDate() : null).toLocaleDateString()}</h4>
+                    <h4 className="font-semibold text-lg mb-2">
+                      Citas para el día: {new Date(calendarDate.getFullYear(), calendarDate.getMonth(), selectedDayAppointments[0] ? new Date(selectedDayAppointments[0].dateTime).getDate() : null).toLocaleDateString()}
+                    </h4>
                     {selectedDayAppointments.length > 0 ? (
                         selectedDayAppointments.map(appointment => (
                             <div key={appointment._id} className="p-3 border rounded-lg bg-white mb-2 shadow-sm">

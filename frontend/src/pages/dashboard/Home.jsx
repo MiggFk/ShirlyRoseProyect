@@ -1,5 +1,3 @@
-import { useEffect, useState } from "react";
-import api from "../../api/axios";
 import {
   BarChart,
   Bar,
@@ -20,32 +18,12 @@ import {
   Clock,
 } from "lucide-react";
 
+// Importa el nuevo hook
+import { useStats } from "../../hooks/useStats";
+
 export default function Home() {
-  const [stats, setStats] = useState({
-    totalAppointments: 0,
-    status: { pending: 0, completed: 0, cancelled: 0 },
-    services: [],
-    monthly: [],
-  });
-  const [loading, setLoading] = useState(true);
-
-  useEffect(() => {
-    const fetchStats = async () => {
-      try {
-        const token = localStorage.getItem("token");
-        const res = await api.get("/appointments/stats", {
-          headers: { Authorization: `Bearer ${token}` },
-        });
-        setStats(res.data);
-      } catch (error) {
-        console.error("Error al cargar estadísticas:", error);
-      } finally {
-        setLoading(false);
-      }
-    };
-
-    fetchStats();
-  }, []);
+  // Usa el hook para obtener los datos y el estado de carga
+  const { stats, loading } = useStats();
 
   // 📊 Data para gráficos
   const statusData = [
@@ -53,7 +31,6 @@ export default function Home() {
     { name: "Completadas", value: stats.status.completed, color: "#22c55e" },
     { name: "Canceladas", value: stats.status.cancelled, color: "#ef4444" },
   ];
-
   const serviceColors = ["#ec4899", "#3b82f6", "#22c55e", "#f97316", "#a855f7"];
 
   return (
@@ -125,7 +102,6 @@ export default function Home() {
 
           {/* 📅 Citas por mes + 🍩 Servicios más solicitados */}
           <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-            {/* 📅 Citas por mes */}
             <div className="bg-white p-6 rounded-2xl shadow-lg">
               <h2 className="text-xl font-semibold mb-4 text-pink-600">
                 Citas por mes
@@ -149,7 +125,6 @@ export default function Home() {
               )}
             </div>
 
-            {/* 🍩 Servicios más solicitados */}
             <div className="bg-white p-6 rounded-2xl shadow-lg">
               <h2 className="text-xl font-semibold mb-4 text-pink-600">
                 Servicios más solicitados
