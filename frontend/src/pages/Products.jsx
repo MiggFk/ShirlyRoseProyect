@@ -7,6 +7,8 @@ import shampoo from "../assets/images/products/shampoo.jpg";
 import exfoliante from "../assets/images/products/exfoliante.jpg";
 import aceite from "../assets/images/products/aceite.jpg";
 import Balsamo from "../assets/images/products/Balsamo.jpg";
+import SinNada from "../assets/images/SinFoto.jpg";
+
 
 export default function Products() {
   const [menuOpen, setMenuOpen] = useState(false);
@@ -50,7 +52,7 @@ export default function Products() {
       descripcion: "Descripcion",
       precio: "Precio",
       duracion: "ml del producto",
-      img: Balsamo,
+      img: SinNada,
     },
         {
       id:6,
@@ -58,7 +60,7 @@ export default function Products() {
       descripcion: "Descripcion",
       precio: "Precio",
       duracion: "ml del producto",
-      img: Balsamo,
+      img: SinNada,
     },
         {
       id:7,
@@ -66,7 +68,7 @@ export default function Products() {
       descripcion: "Descripcion",
       precio: "Precio",
       duracion: "ml del producto",
-      img: Balsamo,
+      img: SinNada,
     },
     {
       id:8,
@@ -74,7 +76,7 @@ export default function Products() {
       descripcion: "Descripcion",
       precio: "Precio",
       duracion: "ml del producto",
-      img: Balsamo,
+      img: SinNada,
     },
         {
       id:9,
@@ -82,7 +84,7 @@ export default function Products() {
       descripcion: "Descripcion",
       precio: "Precio",
       duracion: "ml del producto",
-      img: Balsamo,
+      img: SinNada,
     },
         {
       id:10,
@@ -90,7 +92,7 @@ export default function Products() {
       descripcion: "Descripcion",
       precio: "Precio",
       duracion: "ml del producto",
-      img: Balsamo,
+      img: SinNada,
     },
         {
       id:11,
@@ -98,7 +100,7 @@ export default function Products() {
       descripcion: "Descripcion",
       precio: "Precio",
       duracion: "ml del producto",
-      img: Balsamo,
+      img: SinNada,
     },
         {
       id:12,
@@ -106,7 +108,7 @@ export default function Products() {
       descripcion: "Descripcion",
       precio: "Precio",
       duracion: "ml del producto",
-      img:Balsamo,
+      img:SinNada,
     }
   ];
 

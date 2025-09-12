@@ -3,14 +3,15 @@ import { Link } from "react-router-dom";
 import { FiMenu, FiX, FiSearch } from "react-icons/fi"; // 👈 añadí la lupa
 
 // Imágenes (asegúrate que las rutas coincidan con tu /src/assets)
-import pressOn from "../assets/images/services/pressOn.jpg";
-import RecubrimientoPoli from "../assets/images/services/Recubrimiento-Poligel.jpg";
-import Hidralips from "../assets/images/services/Hidralips.jpg";
-import Acrilico from "../assets/images/services/Acrilico.jpg";
-import Pestañas from "../assets/images/services/Pestañas.jpg";
-import Acriesculpido from "../assets/images/services/Acrilico-esculpido.jpg";
-import PeloaPeloHibridas from "../assets/images/services/pelo-hibridas.jpg";
-import Voltecnologico from "../assets/images/services/volumen-Tecnologico.jpg"
+import pressOn from "../assets/images/services/Uñas/pressOn.jpg";
+import RecubrimientoPoli from "../assets/images/services/Uñas/Recubrimiento-Poligel.jpg";
+import Hidralips from "../assets/images/services/EsteticaFacial/Hidralips.jpg";
+import Acrilico from "../assets/images/services/Uñas/Acrilico.jpg";
+import Pestañas from "../assets/images/services/CejasyPestañas/Pestañas.jpg";
+import Acriesculpido from "../assets/images/services/Uñas/Acrilico-esculpido.jpg";
+import PeloaPeloHibridas from "../assets/images/services/CejasyPestañas/pelo-hibridas.jpg";
+import Voltecnologico from "../assets/images/services/CejasyPestañas/volumen-Tecnologico.jpg"
+import SinNada from "../assets/images/SinFoto.jpg";
 
 // Mantengo exactamente tus servicios por categoría tal como los mandaste
 const servicesByCategory = {
@@ -49,17 +50,17 @@ const servicesByCategory = {
       description: "descripcion",
       duration: "duracion",
       price: "precio",
-      image: Acrilico,
+      image: SinNada,
     },
     {
       title: "Titulo",
       description: "descripcion",
       duration: "duracion",
       price: "precio",
-      image: Acrilico,
+      image: SinNada,
     },
   ],
-  "Cejas": [
+  "Estetica Facial": [
     {
       title: "Hidralips",
       description:
@@ -73,17 +74,17 @@ const servicesByCategory = {
       description: "descripcion",
       duration: "tiempo",
       price: "Precio",
-      image: PeloaPeloHibridas,
+      image: SinNada,
     },
     {
       title: "-----",
       description: "descripcion",
       duration: "tiempo",
       price: "Precio",
-      image: Acrilico,
+      image: SinNada,
     },
   ],
-  "Pestañas": [
+  "Pestañas y Cejas": [
     {
       title: "Pestañas pelo a pelo",
       description: "Descripcion",
@@ -112,44 +113,67 @@ const servicesByCategory = {
       description: "descripcion",
       duration: "tiempo",
       price: "Precio",
-      image: Acrilico,
+      image: SinNada,
     },
     {
       title: "-----",
       description: "descripcion",
       duration: "tiempo",
       price: "Precio",
-      image: Acrilico,
+      image: SinNada,
     },
     {
       title: "-----",
       description: "descripcion",
       duration: "tiempo",
       price: "Precio",
-      image: Acrilico, 
+      image: SinNada, 
     },
     {
       title: "-----",
       description: "descripcion",
       duration: "tiempo",
       price: "Precio",
-      image: Acrilico,
+      image: SinNada,
     },
     {
       title: "-----",
       description: "descripcion",
       duration: "tiempo",
       price: "Precio",
-      image: Acrilico, 
+      image: SinNada, 
     },
     {
       title: "-----",
       description: "descripcion",
       duration: "tiempo",
       price: "Precio",
-      image: Acrilico,
+      image: SinNada,
     }
   ],
+  "Depilacion":[
+    {
+      title: "-----",
+      description: "descripcion",
+      duration: "tiempo",
+      price: "Precio",
+      image: SinNada,
+    },
+    {
+      title: "-----",
+      description: "descripcion",
+      duration: "tiempo",
+      price: "Precio",
+      image: SinNada,
+    },
+    {
+      title: "-----",
+      description: "descripcion",
+      duration: "tiempo",
+      price: "Precio",
+      image: SinNada,
+    }
+  ]
 };
 
 export default function Services() {

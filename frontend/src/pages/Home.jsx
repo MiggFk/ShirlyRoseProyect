@@ -2,9 +2,9 @@ import { Link } from "react-router-dom";
 import Logo from "../assets/logos/Logo-ShirlyRose.png";
 
 // Importar imágenes de servicios
-import Nails1 from "../assets/images/services/uñas-1.jpg";
-import Nails2 from "../assets/images/services/uñas-2.jpg";
-import Nails3 from "../assets/images/services/uñas-3.jpg";
+import LimpiezaFac from "../assets/images/services/EsteticaFacial/LimpiezaFacialPremium.png";
+import Pestañas from "../assets/images/services/CejasyPestañas/PestañasHome.jpg";
+import Manicure from "../assets/images/services/Uñas/Manicure.jpg";
 
 // Importar imágenes de productos
 import Aceites from "../assets/images/products/aceite.jpg";
@@ -89,13 +89,13 @@ export default function Home() {
         </h3>
         <div className="grid grid-cols-1 md:grid-cols-3 gap-6 max-w-6xl mx-auto">
           <div className="bg-white rounded-xl shadow hover:shadow-lg transition overflow-hidden">
-            <img src={Nails1} alt="Uñas 1" className="h-40 w-full object-cover" />
+            <img src={Pestañas} alt="Uñas 1" className="h-40 w-full object-cover" />
             <div className="p-6 flex flex-col gap-3">
               <h4 className="text-xl font-semibold text-rose-400">
-                Diseño de Uñas
+                Cejas y Pestañas
               </h4>
               <p className="text-gray-600">
-                Manicure profesional con estilos únicos.
+                Cejas y pestañas con el estilo que desees y el mejor procedimiento. 
               </p>
               <Link
                 to="/services"
@@ -106,13 +106,13 @@ export default function Home() {
             </div>
           </div>
           <div className="bg-white rounded-xl shadow hover:shadow-lg transition overflow-hidden">
-            <img src={Nails2} alt="Uñas 2" className="h-40 w-full object-cover" />
+            <img src={LimpiezaFac} alt="Uñas 2" className="h-40 w-full object-cover" />
             <div className="p-6 flex flex-col gap-3">
               <h4 className="text-xl font-semibold text-rose-400">
-                Pedicure Spa
+                Spa - Limpiezas Faciales
               </h4>
               <p className="text-gray-600">
-                Relaja tus pies y luce impecable.
+                Relaja tu piel y luce impecable.
               </p>
               <Link
                 to="/services"
@@ -123,13 +123,13 @@ export default function Home() {
             </div>
           </div>
           <div className="bg-white rounded-xl shadow hover:shadow-lg transition overflow-hidden">
-            <img src={Nails3} alt="Uñas 3" className="h-40 w-full object-cover" />
+            <img src={Manicure} alt="Uñas 3" className="h-40 w-full object-cover" />
             <div className="p-6 flex flex-col gap-3">
               <h4 className="text-xl font-semibold text-rose-400">
-                Uñas Acrílicas
+                Manicure y Pedicure
               </h4>
               <p className="text-gray-600">
-                Estilos modernos y de larga duración.
+                Uñas manos y pies. 
               </p>
               <Link
                 to="/services"
