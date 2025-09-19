@@ -1,19 +1,56 @@
 import { Formik, Form, Field, ErrorMessage } from "formik";
 import * as Yup from "yup";
-import axios from "axios";
-import { useNavigate } from "react-router-dom";
+import { Link } from "react-router-dom";
+import { motion } from "framer-motion";
+import { FiHome } from "react-icons/fi";
 import LogoShirly from "../../components/LogoShirly";
+import { useRegister } from "../../hooks/useRegister";
 
 export default function Register() {
-  const navigate = useNavigate();
+  const { handleSubmit } = useRegister();
+
+  const validationSchema = Yup.object({
+    name: Yup.string()
+      .min(3, "Mínimo 3 caracteres")
+      .required("El nombre es obligatorio"),
+    email: Yup.string()
+      .email("Correo inválido")
+      .required("El correo es obligatorio"),
+    password: Yup.string()
+      .min(6, "Mínimo 6 caracteres")
+      .required("La contraseña es obligatoria"),
+    confirmPassword: Yup.string()
+      .oneOf([Yup.ref("password"), null], "Las contraseñas no coinciden")
+      .required("Confirma tu contraseña"),
+  });
 
   return (
-    <div className="min-h-screen flex items-center justify-center bg-rose-100">
-      <div className="bg-white/90 backdrop-blur-sm p-8 rounded-2xl shadow-xl w-full max-w-md">
-        <h2 className="text-3xl font-bold text-center text-rose-600 mb-6 drop-shadow-sm">
+    <div className="relative flex items-center justify-center min-h-screen bg-gradient-to-br from-pink-50 via-white to-rose-50">
+      {/* 🔹 Icono de Home */}
+      <Link
+        to="/"
+        title="Volver al inicio"
+        className="absolute top-6 left-6 text-pink-600 hover:text-pink-800 transition-colors"
+      >
+        <FiHome size={32} />
+      </Link>
+
+      <motion.div
+        initial={{ opacity: 0, scale: 0.95 }}
+        animate={{ opacity: 1, scale: 1 }}
+        transition={{ duration: 0.5 }}
+        className="bg-white p-8 md:p-10 rounded-3xl shadow-2xl w-full max-w-sm md:max-w-md"
+      >
+        <div className="flex justify-center mb-6">
+          <LogoShirly size="h-24 w-24" />
+        </div>
+
+        <h2 className="text-3xl font-bold text-center mb-2 text-gray-800">
           Crear cuenta
         </h2>
-        <LogoShirly size="h-20 w-20" />
+        <p className="text-center text-gray-500 mb-6">
+          Crea tu cuenta para acceder a la aplicación
+        </p>
 
         <Formik
           initialValues={{
@@ -22,57 +59,16 @@ export default function Register() {
             password: "",
             confirmPassword: "",
           }}
-          validationSchema={Yup.object({
-            name: Yup.string()
-              .min(3, "Mínimo 3 caracteres")
-              .required("El nombre es obligatorio"),
-            email: Yup.string()
-              .email("Correo inválido")
-              .required("El correo es obligatorio"),
-            password: Yup.string()
-              .min(6, "Mínimo 6 caracteres")
-              .required("La contraseña es obligatoria"),
-            confirmPassword: Yup.string()
-              .oneOf([Yup.ref("password"), null], "Las contraseñas no coinciden")
-              .required("Confirma tu contraseña"),
-          })}
-          onSubmit={async (values, { setSubmitting, setFieldError }) => {
-            try {
-              // 1. Petición al backend
-              const { data } = await axios.post(
-                "http://localhost:5000/api/auth/register",
-                {
-                  name: values.name,
-                  email: values.email,
-                  password: values.password,
-                }
-              );
-
-              // 2. Guardar token y usuario en localStorage
-              localStorage.setItem("token", data.token);
-              localStorage.setItem("user", JSON.stringify(data.user));
-
-              // 3. Redirigir después de registro
-              navigate("/login");
-            } catch (err) {
-              if (err.response?.status === 400) {
-                setFieldError("email", "Este correo ya está registrado");
-              } else {
-                alert("Error en el servidor. Intenta más tarde.");
-              }
-            } finally {
-              setSubmitting(false);
-            }
-          }}
+          validationSchema={validationSchema}
+          onSubmit={handleSubmit}
         >
-          {() => (
+          {({ isSubmitting }) => (
             <Form className="space-y-4">
               <div>
-                <label className="block text-sm text-gray-700">Nombre</label>
                 <Field
                   name="name"
                   type="text"
-                  className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-purple-400"
+                  className="w-full px-5 py-3 border border-gray-300 rounded-xl focus:outline-none focus:ring-2 focus:ring-pink-400 focus:border-transparent transition"
                   placeholder="Tu nombre completo"
                 />
                 <ErrorMessage
@@ -83,11 +79,10 @@ export default function Register() {
               </div>
 
               <div>
-                <label className="block text-sm text-gray-700">Correo</label>
                 <Field
                   name="email"
                   type="email"
-                  className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-purple-400"
+                  className="w-full px-5 py-3 border border-gray-300 rounded-xl focus:outline-none focus:ring-2 focus:ring-pink-400 focus:border-transparent transition"
                   placeholder="ejemplo@correo.com"
                 />
                 <ErrorMessage
@@ -98,12 +93,11 @@ export default function Register() {
               </div>
 
               <div>
-                <label className="block text-sm text-gray-700">Contraseña</label>
                 <Field
                   name="password"
                   type="password"
-                  className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-purple-400"
-                  placeholder="••••••••"
+                  className="w-full px-5 py-3 border border-gray-300 rounded-xl focus:outline-none focus:ring-2 focus:ring-pink-400 focus:border-transparent transition"
+                  placeholder="Contraseña"
                 />
                 <ErrorMessage
                   name="password"
@@ -113,14 +107,11 @@ export default function Register() {
               </div>
 
               <div>
-                <label className="block text-sm text-gray-700">
-                  Confirmar contraseña
-                </label>
                 <Field
                   name="confirmPassword"
                   type="password"
-                  className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-purple-400"
-                  placeholder="••••••••"
+                  className="w-full px-5 py-3 border border-gray-300 rounded-xl focus:outline-none focus:ring-2 focus:ring-pink-400 focus:border-transparent transition"
+                  placeholder="Confirmar contraseña"
                 />
                 <ErrorMessage
                   name="confirmPassword"
@@ -131,25 +122,31 @@ export default function Register() {
 
               <button
                 type="submit"
-                className="w-full bg-purple-600 hover:bg-purple-700 text-white font-semibold py-2 px-4 rounded-lg transition duration-200"
+                className={`w-full py-3 rounded-xl font-bold transition shadow-lg flex justify-center items-center gap-2
+                  ${isSubmitting ? "bg-pink-300 cursor-not-allowed" : "bg-pink-500 hover:bg-pink-600 text-white"}
+                `}
+                disabled={isSubmitting}
               >
-                Registrarse
+                {isSubmitting ? (
+                  <div className="w-5 h-5 border-4 border-white border-t-transparent rounded-full animate-spin"></div>
+                ) : (
+                  "Registrarse"
+                )}
               </button>
-              <div className="text-center mt-4">
-                <p className="text-sm text-gray-600">
-                  ¿Ya tienes cuenta?{" "}
-                  <a
-                    href="/login"
-                    className="text-purple-600 hover:underline font-medium"
-                  >
-                    Inicia sesión
-                  </a>
-                </p>
-              </div>
             </Form>
           )}
         </Formik>
-      </div>
+
+        <p className="text-center text-sm mt-6 text-gray-600">
+          ¿Ya tienes cuenta?{" "}
+          <Link
+            to="/login"
+            className="text-pink-600 font-semibold hover:underline"
+          >
+            Inicia sesión
+          </Link>
+        </p>
+      </motion.div>
     </div>
   );
 }

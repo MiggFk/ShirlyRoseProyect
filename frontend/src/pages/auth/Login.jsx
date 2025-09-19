@@ -1,13 +1,13 @@
 import { Formik, Form, Field, ErrorMessage } from "formik";
 import * as Yup from "yup";
-import axios from "axios";
-import { useNavigate, Link } from "react-router-dom";
+import { Link } from "react-router-dom";
 import { motion } from "framer-motion";
 import { FiHome } from "react-icons/fi";
 import LogoShirly from "../../components/LogoShirly";
+import { useLogin } from "../../hooks/UseLogin";
 
 export default function Login() {
-  const navigate = useNavigate();
+  const { handleSubmit } = useLogin();
 
   const validationSchema = Yup.object({
     email: Yup.string()
@@ -47,41 +47,10 @@ export default function Login() {
         <Formik
           initialValues={{ email: "", password: "" }}
           validationSchema={validationSchema}
-          onSubmit={async (values, { setSubmitting, setStatus }) => {
-            try {
-              const { data } = await axios.post(
-                "http://localhost:5000/api/auth/login",
-                values
-              );
-
-              localStorage.setItem("token", data.token);
-              localStorage.setItem("user", JSON.stringify(data.user));
-
-              if (data.user.role === "admin" || data.user.role === "empleado") {
-                navigate("/dashboard");
-              } else {
-                navigate("/");
-              }
-            } catch (err) {
-              const message = err.response?.data?.message || "Correo o contraseña incorrectos";
-              setStatus({ error: message });
-            } finally {
-              setSubmitting(false);
-            }
-          }}
+          onSubmit={handleSubmit}
         >
-          {({ isSubmitting, status }) => (
+          {({ isSubmitting }) => (
             <Form className="space-y-4">
-              {status?.error && (
-                <motion.div
-                  initial={{ opacity: 0, y: -10 }}
-                  animate={{ opacity: 1, y: 0 }}
-                  className="bg-red-100 text-red-600 p-3 rounded-xl mb-4 text-center font-medium border border-red-200"
-                >
-                  {status.error}
-                </motion.div>
-              )}
-
               <div>
                 <Field
                   name="email"
