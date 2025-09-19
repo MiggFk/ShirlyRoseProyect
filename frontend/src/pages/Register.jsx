@@ -1,7 +1,6 @@
 import { useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import axios from "axios";
-import Logo from "../components/Logo";
 import { FiHome } from "react-icons/fi"; // ✅ Importar icono de Home
 
 export default function Register() {
@@ -46,8 +45,6 @@ export default function Register() {
         <h2 className="text-3xl font-bold text-center text-rose-600 mb-6 drop-shadow-sm">
           Crear cuenta
         </h2>
-
-        <Logo size="h-20 w-20" />
 
         {error && (
           <p className="bg-rose-200 text-rose-700 p-3 rounded-lg mb-4 text-center text-sm font-medium">

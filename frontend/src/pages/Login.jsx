@@ -1,7 +1,6 @@
 import { useState } from "react";
 import { useNavigate, Link } from "react-router-dom";
 import axios from "axios";
-import Logo from "../components/Logo";
 import { FiHome } from "react-icons/fi"; // 👈 importamos el icono
 
 export default function Login() {
@@ -43,8 +42,6 @@ export default function Login() {
         <h2 className="text-3xl font-bold text-center mb-6 text-rose-600 drop-shadow-sm">
           Inicia sesión
         </h2>
-
-        <Logo size="h-20 w-20" />
 
         {error && (
           <div className="bg-rose-200 text-rose-700 p-3 rounded-lg mb-4 text-center text-sm font-medium">

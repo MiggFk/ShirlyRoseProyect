@@ -1,18 +1,126 @@
+import { useState } from "react";
+import { Link } from "react-router-dom";
+import { FiMenu, FiX } from "react-icons/fi";
+import { motion } from "framer-motion";
+
+import founderImg from "../assets/images/SinFoto.jpg";
+import trayectoriaImg from "../assets/images/SinFoto.jpg";
+import empresaImg from "../assets/images/SinFoto.jpg";
+import publicoImg from "../assets/images/SinFoto.jpg";
+
 export default function About() {
+  const [menuOpen, setMenuOpen] = useState(false);
+
+  const sections = [
+    {
+      title: "Nuestra Fundadora",
+      text: "Shirly Rose, con más de 10 años de experiencia en estética y spa, fundó este espacio con la visión de transformar el cuidado personal en un momento de conexión y bienestar.",
+      image: founderImg,
+      side: "left",
+    },
+    {
+      title: "Trayectoria",
+      text: "Durante los últimos años, hemos crecido como empresa referente en estética, especializándonos en técnicas modernas de uñas, pestañas, cejas y tratamientos faciales.",
+      image: trayectoriaImg,
+      side: "right",
+    },
+    {
+      title: "Sobre la Empresa",
+      text: "Shirly Rose · Estética & Spa nace para ofrecer un servicio personalizado, donde cada detalle cuenta para brindar experiencias únicas de relajación y belleza.",
+      image: empresaImg,
+      side: "left",
+    },
+    {
+      title: "Enfoque hacia el Público",
+      text: "Nos enfocamos en resaltar la belleza natural de cada persona, ofreciendo servicios innovadores con productos de alta calidad y un ambiente de confianza.",
+      image: publicoImg,
+      side: "right",
+    },
+  ];
+
   return (
     <div className="min-h-screen flex flex-col bg-rose-100">
-      {/* Header */}
-      <header className="p-6 bg-white shadow-md">
-        <h1 className="text-3xl font-bold text-center text-rose-500">
-          Sobre Nosotros
+      {/* Header fijo */}
+      <header className="fixed top-0 left-0 w-full bg-white shadow-md z-50 flex items-center px-6 py-3">
+        {/* Botón menú hamburguesa */}
+        <button
+          onClick={() => setMenuOpen(!menuOpen)}
+          className="text-rose-600 hover:text-rose-800 transition"
+          aria-label={menuOpen ? "Cerrar menú" : "Abrir menú"}
+        >
+          {menuOpen ? <FiX size={28} /> : <FiMenu size={28} />}
+        </button>
+
+        {/* Título centrado */}
+        <h1
+          className="absolute left-1/2 transform -translate-x-1/2 text-4xl md:text-3xl font-extrabold text-rose-500 italic"
+          style={{ fontFamily: "'Great Vibes', cursive" }}
+        >
+          Shirly Rose
         </h1>
       </header>
 
-      {/* Contenido */}
-      <main className="flex-grow py-12 px-6 max-w-5xl mx-auto">
-        <p className="text-center text-gray-700 text-lg">
-          En Shirly Rose nos especializamos en estética y spa, ofreciendo experiencias únicas de relajación y cuidado personal.
-        </p>
+      {/* Menú lateral */}
+      <nav
+        className={`fixed top-0 left-0 h-full w-64 bg-white shadow-lg z-40 p-6 flex flex-col gap-6 transform transition-transform duration-300 ${
+          menuOpen ? "translate-x-0" : "-translate-x-full"
+        }`}
+      >
+        <Link to="/" className="text-rose-600 font-medium hover:text-rose-800" onClick={() => setMenuOpen(false)}>Inicio</Link>
+        <Link to="/services" className="text-rose-600 font-medium hover:text-rose-800" onClick={() => setMenuOpen(false)}>Servicios</Link>
+        <Link to="/about" className="text-rose-600 font-medium hover:text-rose-800" onClick={() => setMenuOpen(false)}>Nosotros</Link>
+        <Link to="/contact" className="text-rose-600 font-medium hover:text-rose-800" onClick={() => setMenuOpen(false)}>Contacto</Link>
+      </nav>
+
+      {/* Overlay semi-transparente */}
+      {menuOpen && (
+        <button
+          onClick={() => setMenuOpen(false)}
+          className="fixed top-0 left-0 w-full h-full bg-black/20 z-30"
+          aria-hidden="true"
+        />
+      )}
+
+      {/* Contenido principal */}
+      <main className="flex-grow py-24 px-4 md:px-12 relative">
+        {/* Línea central */}
+        <div className="absolute top-0 left-1/2 transform -translate-x-1/2 w-1 bg-rose-300 h-full rounded"></div>
+
+        <div className="space-y-32 relative">
+          {sections.map((section, index) => (
+            <motion.div
+              key={index}
+              className={`flex flex-col md:flex-row items-center gap-12 ${
+                section.side === "left"
+                  ? "md:justify-start"
+                  : "md:flex-row-reverse md:justify-end"
+              }`}
+              initial={{ opacity: 0, y: 80 }}
+              whileInView={{ opacity: 1, y: 0 }}
+              transition={{ duration: 0.8 }}
+              viewport={{ once: true }}
+            >
+              {/* Imagen */}
+              <div className="flex-1 flex justify-center md:justify-end">
+                <img
+                  src={section.image}
+                  alt={section.title}
+                  className="w-[400px] h-64 object-cover rounded-2xl shadow-xl"
+                />
+              </div>
+
+              {/* Texto */}
+              <div className="flex-1 bg-white p-6 md:p-8 rounded-3xl shadow-lg max-w-md">
+                <h2 className="text-2xl font-bold text-rose-500 mb-4 italic">
+                  {section.title}
+                </h2>
+                <p className="text-gray-700 text-lg leading-relaxed">
+                  {section.text}
+                </p>
+              </div>
+            </motion.div>
+          ))}
+        </div>
       </main>
 
       {/* Footer */}
