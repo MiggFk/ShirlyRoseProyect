@@ -1,10 +1,10 @@
 const Appointment = require("../models/Appointment");
 
+// Crear una nueva cita
 const createAppointment = async (req, res) => {
   try {
     const { clientId, employeeId, serviceId, dateTime, status } = req.body;
 
-    // Determinar quién es el cliente de la cita
     let finalClientId = clientId;
 
     // Si el usuario autenticado es cliente → siempre usa su propio ID
@@ -12,7 +12,7 @@ const createAppointment = async (req, res) => {
       finalClientId = req.user.id;
     }
 
-    // Lógica para limitar una cita por cliente
+    // Validar si ya tiene una cita pendiente
     const existingPendingAppointment = await Appointment.findOne({
       clientId: finalClientId,
       status: "pendiente",
@@ -24,33 +24,28 @@ const createAppointment = async (req, res) => {
       });
     }
 
-
     // Validar fecha en el futuro
     if (new Date(dateTime) < new Date()) {
-      return res
-        .status(400)
-        .json({ message: "No se puede agendar una cita en el pasado." });
+      return res.status(400).json({ message: "No se puede agendar una cita en el pasado." });
     }
 
-    // Validar si ya existe una cita con ese empleado en la misma fecha y hora
+    // Validar disponibilidad del empleado
     const existingAppointment = await Appointment.findOne({
       employeeId,
       dateTime,
     });
 
     if (existingAppointment) {
-      return res
-        .status(400)
-        .json({ message: "El empleado ya tiene una cita en ese horario." });
+      return res.status(400).json({ message: "El empleado ya tiene una cita en ese horario." });
     }
 
-     // si es admin, respeta el status enviado
-    let appointmentStatus = "pendiente"; // por defecto
+    // Estado inicial
+    let appointmentStatus = "pendiente";
     if (req.user.role === "admin" && status) {
-      appointmentStatus = status; 
+      appointmentStatus = status;
     }
 
-    // Crear la cita
+    // Crear cita
     const newAppointment = new Appointment({
       clientId: finalClientId,
       employeeId,
@@ -61,15 +56,25 @@ const createAppointment = async (req, res) => {
 
     await newAppointment.save();
 
+    // 🔹 Populate para devolver cita completa
+    const populatedAppointment = await Appointment.findById(newAppointment._id)
+      .populate({
+        path: "clientId",
+        populate: { path: "usuarioId", select: "name email" },
+      })
+      .populate("employeeId", "name email role")
+      .populate("serviceId", "name price");
+
     res.status(201).json({
       message: "Cita creada correctamente",
-      appointment: newAppointment,
+      appointment: populatedAppointment,
     });
   } catch (error) {
     res.status(500).json({ message: "Error al crear la cita", error: error.message });
   }
 };
 
+// Obtener citas
 const getAppointments = async (req, res) => {
   try {
     let filter = {};
@@ -95,7 +100,10 @@ const getAppointments = async (req, res) => {
     const total = await Appointment.countDocuments(filter);
 
     const appointments = await Appointment.find(filter)
-      .populate("clientId", "name email")
+      .populate({
+        path: "clientId",
+        populate: { path: "usuarioId", select: "name email" },
+      })
       .populate("employeeId", "name email role")
       .populate("serviceId", "name price")
       .sort({ dateTime: 1 })
@@ -113,41 +121,36 @@ const getAppointments = async (req, res) => {
   }
 };
 
-
+// Actualizar estado de cita
 const updateAppointmentStatus = async (req, res) => {
   try {
     const { id } = req.params;
     const { status } = req.body;
 
-    // Estados válidos
     const allowedStatuses = ["pendiente", "completada", "cancelada"];
     if (!allowedStatuses.includes(status)) {
       return res.status(400).json({ message: "Estado inválido" });
     }
 
-    // Buscar cita
     const appointment = await Appointment.findById(id);
     if (!appointment) {
       return res.status(404).json({ message: "Cita no encontrada" });
     }
 
-    // Definir transiciones permitidas
     const allowedTransitions = {
       pendiente: ["completada", "cancelada"],
-      completada: [], // no se puede cambiar
-      cancelada: ["pendiente"]   // no puede cambiar a completada
+      completada: [],
+      cancelada: ["pendiente"],
     };
 
-    // Validar transición
     if (!allowedTransitions[appointment.status].includes(status)) {
       return res.status(409).json({
         message: "No se pudo actualizar, la cita ya fue actualizada.",
       });
     }
 
-    // Actualizar
     appointment.status = status;
-    appointment.updatedBy = req.user.id; // opcional: auditar quién hizo el cambio
+    appointment.updatedBy = req.user.id;
     await appointment.save();
 
     res.status(200).json({
@@ -159,8 +162,8 @@ const updateAppointmentStatus = async (req, res) => {
   }
 };
 
-  //Eliminar una cita (solo admin)
-  const deleteAppointment = async (req, res) => {
+// Eliminar cita
+const deleteAppointment = async (req, res) => {
   try {
     const appointment = await Appointment.findById(req.params.id);
 
@@ -175,82 +178,74 @@ const updateAppointmentStatus = async (req, res) => {
   }
 };
 
-// Obtener estadísticas de citas por estado
+// Estadísticas
 const getAppointmentStats = async (req, res) => {
   try {
-    // Total
     const totalAppointments = await Appointment.countDocuments();
 
-    // Por estado
     const statusStats = await Appointment.aggregate([
-      { $group: { _id: "$status", count: { $sum: 1 } } }
+      { $group: { _id: "$status", count: { $sum: 1 } } },
     ]);
 
-    const formattedStatus = {
-      pending: 0,
-      completed: 0,
-      cancelled: 0,
-    };
-
-    statusStats.forEach(stat => {
+    const formattedStatus = { pending: 0, completed: 0, cancelled: 0 };
+    statusStats.forEach((stat) => {
       if (stat._id === "pendiente") formattedStatus.pending = stat.count;
       if (stat._id === "completada") formattedStatus.completed = stat.count;
       if (stat._id === "cancelada") formattedStatus.cancelled = stat.count;
     });
 
-    // Por servicio
-const serviceStats = await Appointment.aggregate([
-  {
-    $group: {
-      _id: "$serviceId",
-      count: { $sum: 1 }
-    }
-  },
-  {
-    $lookup: {
-      from: "services",
-      localField: "_id",
-      foreignField: "_id",
-      as: "service"
-    }
-  },
-  { $unwind: "$service" },
-  {
-    $project: {
-      _id: 0,
-      service: "$service.name",  // <-- usar "service" en lugar de "name"
-      count: 1
-    }
-  },
-  { $sort: { count: -1 } } // opcional para ordenar de más usado a menos
-]);
-
-    // Por mes
-    const monthlyStats = await Appointment.aggregate([
+    const serviceStats = await Appointment.aggregate([
+      { $group: { _id: "$serviceId", count: { $sum: 1 } } },
       {
-        $group: {
-          _id: { $month: "$dateTime" },
-          count: { $sum: 1 }
-        }
+        $lookup: {
+          from: "services",
+          localField: "_id",
+          foreignField: "_id",
+          as: "service",
+        },
       },
-      { $sort: { "_id": 1 } }
+      { $unwind: "$service" },
+      {
+        $project: {
+          _id: 0,
+          service: "$service.name",
+          count: 1,
+        },
+      },
+      { $sort: { count: -1 } },
+    ]);
+
+    const monthlyStats = await Appointment.aggregate([
+      { $group: { _id: { $month: "$dateTime" }, count: { $sum: 1 } } },
+      { $sort: { "_id": 1 } },
     ]);
 
     const monthNames = [
-      "", "Enero", "Febrero", "Marzo", "Abril", "Mayo", "Junio",
-      "Julio", "Agosto", "Septiembre", "Octubre", "Noviembre", "Diciembre"
+      "",
+      "Enero",
+      "Febrero",
+      "Marzo",
+      "Abril",
+      "Mayo",
+      "Junio",
+      "Julio",
+      "Agosto",
+      "Septiembre",
+      "Octubre",
+      "Noviembre",
+      "Diciembre",
     ];
 
-    const formattedMonthly = monthlyStats.map(m => ({
+    const formattedMonthly = monthlyStats.map((m) => ({
       month: monthNames[m._id],
-      count: m.count
+      count: m.count,
     }));
 
     res.json({
       totalAppointments,
       status: formattedStatus,
       services: serviceStats,
-      monthly: formattedMonthly
+      monthly: formattedMonthly,
     });
   } catch (error) {
     console.error("Error al obtener estadísticas:", error);
@@ -265,4 +260,3 @@ module.exports = {
   deleteAppointment,
   getAppointmentStats,
 };
-
