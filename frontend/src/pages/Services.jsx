@@ -218,7 +218,8 @@ export default function Services() {
         <Link to="/products" className="text-rose-600 font-medium hover:text-rose-800" onClick={() => setMenuOpen(false)}>Productos</Link>
         <Link to="/about" className="text-rose-600 font-medium hover:text-rose-800" onClick={() => setMenuOpen(false)}>Nosotros</Link>
         <Link to="/contact" className="text-rose-600 font-medium hover:text-rose-800" onClick={() => setMenuOpen(false)}>Contacto</Link>
-        <Link to="" className="text-rose-600 font-medium hover:text-rose-800" onClick={() => setMenuOpen(false)}>셜리 로즈</Link>
+        <Link to="/Cita"className="text-rose-600 font-medium hover:text-rose-800"onClick={() => setMenuOpen(false)}>Agenda Cita</Link>
+        <Link to="/services" className="text-rose-600 font-medium hover:text-rose-800" onClick={() => setMenuOpen(false)}>셜리 로즈</Link>
       </nav>
 
       {/* Overlay semi-transparente */}

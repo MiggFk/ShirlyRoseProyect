@@ -2,7 +2,7 @@ import { useState } from "react";
 import { Link } from "react-router-dom";
 import { FiMenu, FiX } from "react-icons/fi";
 
-// Ajusta rutas si tus imágenes están en otra carpeta
+// Rutas de las imagenes
 import shampoo from "../assets/images/products/shampoo.jpg";
 import exfoliante from "../assets/images/products/exfoliante.jpg";
 import aceite from "../assets/images/products/aceite.jpg";
@@ -12,6 +12,8 @@ import SinNada from "../assets/images/SinFoto.jpg";
 
 export default function Products() {
   const [menuOpen, setMenuOpen] = useState(false);
+
+// Productos
 
   const productos = [
     {
@@ -141,48 +143,13 @@ export default function Products() {
   }`}
         aria-hidden={!menuOpen}
       >
-        <Link
-          to=""
-          className="text-rose-600 font-medium hover:text-rose-800"
-          onClick={() => setMenuOpen(false)}
-        >
-          ----
-        </Link>
-        <Link
-          to="/"
-          className="text-rose-600 font-medium hover:text-rose-800"
-          onClick={() => setMenuOpen(false)}
-        >
-          Inicio
-        </Link>
-        <Link
-          to="/services"
-          className="text-rose-600 font-medium hover:text-rose-800"
-          onClick={() => setMenuOpen(false)}
-        >
-          Servicios
-        </Link>
-        <Link
-          to="/about"
-          className="text-rose-600 font-medium hover:text-rose-800"
-          onClick={() => setMenuOpen(false)}
-        >
-          Nosotros
-        </Link>
-        <Link
-          to="/contact"
-          className="text-rose-600 font-medium hover:text-rose-800"
-          onClick={() => setMenuOpen(false)}
-        >
-          Contacto
-        </Link>
-        <Link
-          to=""
-          className="text-rose-600 font-medium hover:text-rose-800"
-          onClick={() => setMenuOpen(false)}
-        >
-          셜리 로즈
-          </Link> 
+        <Link to="" className="text-rose-600 font-medium hover:text-rose-800 "onClick={() => setMenuOpen(false)}>----</Link>
+        <Link to="/"className="text-rose-600 font-medium hover:text-rose-800"onClick={() => setMenuOpen(false)}>Inicio</Link>
+        <Link to="/services"className="text-rose-600 font-medium hover:text-rose-800"onClick={() => setMenuOpen(false)}>Servicios</Link>
+        <Link to="/about"className="text-rose-600 font-medium hover:text-rose-800"onClick={() => setMenuOpen(false)}>Nosotros</Link>
+        <Link to="/contact"className="text-rose-600 font-medium hover:text-rose-800"onClick={() => setMenuOpen(false)}>Contacto</Link>
+        <Link to="/Cita"className="text-rose-600 font-medium hover:text-rose-800"onClick={() => setMenuOpen(false)}>Agenda Cita</Link> 
+        <Link to=""className="text-rose-600 font-medium hover:text-rose-800"onClick={() => setMenuOpen(false)}>셜리 로즈</Link> 
       </nav>
 
       {/* Fondo semi-transparente ajustado para no tapar el header */}

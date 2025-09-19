@@ -75,7 +75,7 @@ export default function Home() {
           estética y spa. Aquí podrás reservar tu cita fácilmente.
         </p>
         <Link
-          to="/appointments"
+          to="/Cita"
           className="px-8 py-3 rounded-xl bg-rose-400 text-white font-semibold shadow hover:bg-rose-500 transition duration-200"
         >
           Agenda tu cita
@@ -91,7 +91,7 @@ export default function Home() {
           <div className="bg-white rounded-xl shadow hover:shadow-lg transition overflow-hidden">
             <img src={Pestañas} alt="Uñas 1" className="h-40 w-full object-cover" />
             <div className="p-6 flex flex-col gap-3">
-              <h4 className="text-xl font-semibold text-rose-400">
+              <h4 className="text-lg font-semibold text-gray-800">
                 Cejas y Pestañas
               </h4>
               <p className="text-gray-600">
@@ -108,7 +108,7 @@ export default function Home() {
           <div className="bg-white rounded-xl shadow hover:shadow-lg transition overflow-hidden">
             <img src={LimpiezaFac} alt="Uñas 2" className="h-40 w-full object-cover" />
             <div className="p-6 flex flex-col gap-3">
-              <h4 className="text-xl font-semibold text-rose-400">
+              <h4 className="text-lg font-semibold text-gray-800">
                 Spa - Limpiezas Faciales
               </h4>
               <p className="text-gray-600">
@@ -125,7 +125,7 @@ export default function Home() {
           <div className="bg-white rounded-xl shadow hover:shadow-lg transition overflow-hidden">
             <img src={Manicure} alt="Uñas 3" className="h-40 w-full object-cover" />
             <div className="p-6 flex flex-col gap-3">
-              <h4 className="text-xl font-semibold text-rose-400">
+              <h4 className="text-lg font-semibold text-gray-800">
                 Manicure y Pedicure
               </h4>
               <p className="text-gray-600">
