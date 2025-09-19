@@ -25,7 +25,7 @@ export default function Register() {
   });
 
   return (
-    <div className="relative flex items-center justify-center min-h-screen bg-gradient-to-br from-pink-50 via-white to-rose-50">
+    <div className="relative flex flex-col items-center justify-center min-h-screen bg-gradient-to-br from-pink-50 via-white to-rose-50 p-4 overflow-hidden">
       {/* 🔹 Icono de Home */}
       <Link
         to="/"
@@ -39,16 +39,16 @@ export default function Register() {
         initial={{ opacity: 0, scale: 0.95 }}
         animate={{ opacity: 1, scale: 1 }}
         transition={{ duration: 0.5 }}
-        className="bg-white p-8 md:p-10 rounded-3xl shadow-2xl w-full max-w-sm md:max-w-md"
+        className="bg-white p-6 md:p-8 rounded-3xl shadow-2xl w-full max-w-sm"
       >
-        <div className="flex justify-center mb-6">
-          <LogoShirly size="h-24 w-24" />
+        <div className="flex justify-center mb-4">
+          <LogoShirly size="h-20 w-20" />
         </div>
 
-        <h2 className="text-3xl font-bold text-center mb-2 text-gray-800">
+        <h2 className="text-2xl font-bold text-center mb-2 text-gray-800">
           Crear cuenta
         </h2>
-        <p className="text-center text-gray-500 mb-6">
+        <p className="text-center text-gray-500 mb-6 text-sm">
           Crea tu cuenta para acceder a la aplicación
         </p>
 
@@ -63,18 +63,18 @@ export default function Register() {
           onSubmit={handleSubmit}
         >
           {({ isSubmitting }) => (
-            <Form className="space-y-4">
+            <Form className="space-y-3">
               <div>
                 <Field
                   name="name"
                   type="text"
-                  className="w-full px-5 py-3 border border-gray-300 rounded-xl focus:outline-none focus:ring-2 focus:ring-pink-400 focus:border-transparent transition"
+                  className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-pink-400 transition"
                   placeholder="Tu nombre completo"
                 />
                 <ErrorMessage
                   name="name"
                   component="div"
-                  className="text-sm text-red-500 mt-1"
+                  className="text-xs text-red-500 mt-1"
                 />
               </div>
 
@@ -82,13 +82,13 @@ export default function Register() {
                 <Field
                   name="email"
                   type="email"
-                  className="w-full px-5 py-3 border border-gray-300 rounded-xl focus:outline-none focus:ring-2 focus:ring-pink-400 focus:border-transparent transition"
+                  className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-pink-400 transition"
                   placeholder="ejemplo@correo.com"
                 />
                 <ErrorMessage
                   name="email"
                   component="div"
-                  className="text-sm text-red-500 mt-1"
+                  className="text-xs text-red-500 mt-1"
                 />
               </div>
 
@@ -96,13 +96,13 @@ export default function Register() {
                 <Field
                   name="password"
                   type="password"
-                  className="w-full px-5 py-3 border border-gray-300 rounded-xl focus:outline-none focus:ring-2 focus:ring-pink-400 focus:border-transparent transition"
+                  className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-pink-400 transition"
                   placeholder="Contraseña"
                 />
                 <ErrorMessage
                   name="password"
                   component="div"
-                  className="text-sm text-red-500 mt-1"
+                  className="text-xs text-red-500 mt-1"
                 />
               </div>
 
@@ -110,25 +110,25 @@ export default function Register() {
                 <Field
                   name="confirmPassword"
                   type="password"
-                  className="w-full px-5 py-3 border border-gray-300 rounded-xl focus:outline-none focus:ring-2 focus:ring-pink-400 focus:border-transparent transition"
+                  className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-pink-400 transition"
                   placeholder="Confirmar contraseña"
                 />
                 <ErrorMessage
                   name="confirmPassword"
                   component="div"
-                  className="text-sm text-red-500 mt-1"
+                  className="text-xs text-red-500 mt-1"
                 />
               </div>
 
               <button
                 type="submit"
-                className={`w-full py-3 rounded-xl font-bold transition shadow-lg flex justify-center items-center gap-2
+                className={`w-full py-2 rounded-lg font-bold transition shadow-lg flex justify-center items-center gap-2
                   ${isSubmitting ? "bg-pink-300 cursor-not-allowed" : "bg-pink-500 hover:bg-pink-600 text-white"}
                 `}
                 disabled={isSubmitting}
               >
                 {isSubmitting ? (
-                  <div className="w-5 h-5 border-4 border-white border-t-transparent rounded-full animate-spin"></div>
+                  <div className="w-4 h-4 border-4 border-white border-t-transparent rounded-full animate-spin"></div>
                 ) : (
                   "Registrarse"
                 )}
@@ -137,7 +137,7 @@ export default function Register() {
           )}
         </Formik>
 
-        <p className="text-center text-sm mt-6 text-gray-600">
+        <p className="text-center text-sm mt-4 text-gray-600">
           ¿Ya tienes cuenta?{" "}
           <Link
             to="/login"

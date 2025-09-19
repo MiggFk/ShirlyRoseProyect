@@ -4,7 +4,7 @@ import { Link } from "react-router-dom";
 import { motion } from "framer-motion";
 import { FiHome } from "react-icons/fi";
 import LogoShirly from "../../components/LogoShirly";
-import { useLogin } from "../../hooks/UseLogin";
+import { useLogin } from "../../hooks/useLogin";
 
 export default function Login() {
   const { handleSubmit } = useLogin();
