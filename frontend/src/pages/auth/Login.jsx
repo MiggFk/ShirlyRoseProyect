@@ -1,69 +1,93 @@
 import { Formik, Form, Field, ErrorMessage } from "formik";
 import * as Yup from "yup";
 import axios from "axios";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, Link } from "react-router-dom";
+import { motion } from "framer-motion";
+import { FiHome } from "react-icons/fi";
 import LogoShirly from "../../components/LogoShirly";
 
 export default function Login() {
-  const navigate = useNavigate(); // ← para redireccionar después
+  const navigate = useNavigate();
+
+  const validationSchema = Yup.object({
+    email: Yup.string()
+      .email("Correo inválido")
+      .required("El correo es obligatorio"),
+    password: Yup.string().required("La contraseña es obligatoria"),
+  });
+
   return (
-    <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-purple-200 via-pink-100 to-yellow-50">
-      <div className="bg-white p-8 rounded-2xl shadow-md w-full max-w-sm">
-        <h2 className="text-2xl font-bold text-center mb-6 text-purple-700">
-          Iniciar Sesión
+    <div className="relative flex items-center justify-center min-h-screen bg-gradient-to-br from-pink-50 via-white to-rose-50">
+      {/* 🔹 Icono de Home */}
+      <Link
+        to="/"
+        title="Volver al inicio"
+        className="absolute top-6 left-6 text-pink-600 hover:text-pink-800 transition-colors"
+      >
+        <FiHome size={32} />
+      </Link>
+
+      <motion.div
+        initial={{ opacity: 0, scale: 0.95 }}
+        animate={{ opacity: 1, scale: 1 }}
+        transition={{ duration: 0.5 }}
+        className="bg-white p-8 md:p-10 rounded-3xl shadow-2xl w-full max-w-sm md:max-w-md"
+      >
+        <div className="flex justify-center mb-6">
+          <LogoShirly size="h-24 w-24" />
+        </div>
+
+        <h2 className="text-3xl font-bold text-center mb-2 text-gray-800">
+          Inicia sesión
         </h2>
-        <LogoShirly size="h-20 w-20" />
+        <p className="text-center text-gray-500 mb-6">
+          Ingresa tus credenciales para continuar
+        </p>
 
         <Formik
           initialValues={{ email: "", password: "" }}
-          validationSchema={Yup.object({
-            email: Yup.string()
-              .email("Correo inválido")
-              .required("El correo es obligatorio"),
-            password: Yup.string()
-              .min(6, "Mínimo 6 caracteres")
-              .required("La contraseña es obligatoria"),
-          })}
-          onSubmit={async (values, { setSubmitting, setFieldError }) => {
-      try {
-          // 1. Petición al backend
-          const { data } = await axios.post(
-            "http://localhost:5000/api/auth/login",
-            values
-          );
+          validationSchema={validationSchema}
+          onSubmit={async (values, { setSubmitting, setStatus }) => {
+            try {
+              const { data } = await axios.post(
+                "http://localhost:5000/api/auth/login",
+                values
+              );
 
-          // 2. Guardar token y usuario en localStorage
-          localStorage.setItem("token", data.token);
-          localStorage.setItem("user", JSON.stringify(data.user));
+              localStorage.setItem("token", data.token);
+              localStorage.setItem("user", JSON.stringify(data.user));
 
-          // 3. Redirigir según rol
-          if (data.user.role === "admin" || data.user.role === "empleado") {
-            navigate("/dashboard");
-          } else {
-            navigate("/");
-          }
-        } catch (err) {
-          if (err.response && err.response.status === 401) {
-            // Credenciales incorrectas
-            setFieldError("password", "Correo o contraseña incorrectos");
-          } else {
-            alert("Error del servidor. Intenta más tarde.");
-          }
-        } finally {
-          setSubmitting(false);
-        }
-      }}
-
+              if (data.user.role === "admin" || data.user.role === "empleado") {
+                navigate("/dashboard");
+              } else {
+                navigate("/");
+              }
+            } catch (err) {
+              const message = err.response?.data?.message || "Correo o contraseña incorrectos";
+              setStatus({ error: message });
+            } finally {
+              setSubmitting(false);
+            }
+          }}
         >
-          {() => (
+          {({ isSubmitting, status }) => (
             <Form className="space-y-4">
+              {status?.error && (
+                <motion.div
+                  initial={{ opacity: 0, y: -10 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  className="bg-red-100 text-red-600 p-3 rounded-xl mb-4 text-center font-medium border border-red-200"
+                >
+                  {status.error}
+                </motion.div>
+              )}
+
               <div>
-                <label className="block text-sm text-gray-700">Correo</label>
                 <Field
                   name="email"
                   type="email"
-                  className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-purple-400"
-                  placeholder="ejemplo@correo.com"
+                  className="w-full px-5 py-3 border border-gray-300 rounded-xl focus:outline-none focus:ring-2 focus:ring-pink-400 focus:border-transparent transition"
+                  placeholder="Correo electrónico"
                 />
                 <ErrorMessage
                   name="email"
@@ -73,12 +97,11 @@ export default function Login() {
               </div>
 
               <div>
-                <label className="block text-sm text-gray-700">Contraseña</label>
                 <Field
                   name="password"
                   type="password"
-                  className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-purple-400"
-                  placeholder="••••••••"
+                  className="w-full px-5 py-3 border border-gray-300 rounded-xl focus:outline-none focus:ring-2 focus:ring-pink-400 focus:border-transparent transition"
+                  placeholder="Contraseña"
                 />
                 <ErrorMessage
                   name="password"
@@ -89,25 +112,31 @@ export default function Login() {
 
               <button
                 type="submit"
-                className="w-full bg-purple-600 hover:bg-purple-700 text-white font-semibold py-2 px-4 rounded-lg transition duration-200"
+                className={`w-full py-3 rounded-xl font-bold transition shadow-lg flex justify-center items-center gap-2
+                  ${isSubmitting ? "bg-pink-300 cursor-not-allowed" : "bg-pink-500 hover:bg-pink-600 text-white"}
+                `}
+                disabled={isSubmitting}
               >
-                Ingresar
+                {isSubmitting ? (
+                  <div className="w-5 h-5 border-4 border-white border-t-transparent rounded-full animate-spin"></div>
+                ) : (
+                  "Ingresar"
+                )}
               </button>
-              <div className="text-center mt-4">
-                <p className="text-sm text-gray-600">
-                  ¿No tienes cuenta?{" "}
-                  <a
-                    href="/register"
-                    className="text-purple-600 hover:underline font-medium"
-                  >
-                    Regístrate aquí
-                  </a>
-                </p>
-              </div>
             </Form>
           )}
         </Formik>
-      </div>
+
+        <p className="text-center text-sm mt-6 text-gray-600">
+          ¿No tienes cuenta?{" "}
+          <Link
+            to="/register"
+            className="text-pink-600 font-semibold hover:underline"
+          >
+            Regístrate aquí
+          </Link>
+        </p>
+      </motion.div>
     </div>
   );
 }
