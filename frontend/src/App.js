@@ -7,7 +7,7 @@ import Services from "./pages/Services";
 import Products from "./pages/Products";
 import About from "./pages/About";
 import Dashboard from "./pages/dashboard";
-import Cita from "./pages/Cita";
+import Appointment from "./pages/appointment";
 
 function App() {
   const location = useLocation();
@@ -23,10 +23,10 @@ function App() {
         <Route path="/register" element={<Register />} />
 
         {/* Páginas públicas adicionales */}
-        <Route path="/services" element={<Services />} />
+        <Route path="/Services" element={<Services />} />
         <Route path="/products" element={<Products />} />
         <Route path="/about" element={<About />} />
-        <Route path="/Cita" element={<Cita/>} />
+        <Route path="/appointment" element={<Appointment/>} />
 
         {/* Dashboard privado */}
         <Route path="/dashboard/*" element={<Dashboard />} />

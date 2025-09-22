@@ -1,13 +1,12 @@
 import { useState } from "react";
 import { Link } from "react-router-dom";
 import { FiMenu, FiX } from "react-icons/fi";
-import { motion } from "framer-motion";
+import { motion, AnimatePresence } from "framer-motion";
 
-// Asegúrate de que estas rutas de imágenes sean correctas
+// rutas de imágenes
 import founderImg from "../assets/images/SinFoto.jpg";
 import trayectoriaImg from "../assets/images/SinFoto.jpg";
 import empresaImg from "../assets/images/SinFoto.jpg";
-import publicoImg from "../assets/images/SinFoto.jpg";
 
 export default function About() {
   const [menuOpen, setMenuOpen] = useState(false);
@@ -31,12 +30,6 @@ export default function About() {
       image: empresaImg,
       side: "left",
     },
-    {
-      title: "Enfoque hacia el Público",
-      text: "Nos enfocamos en resaltar la belleza natural de cada persona, ofreciendo servicios innovadores con productos de alta calidad y un ambiente de confianza.",
-      image: publicoImg,
-      side: "right",
-    },
   ];
 
   const timelineItemVariants = {
@@ -45,56 +38,90 @@ export default function About() {
   };
 
   return (
-    <div className="min-h-screen flex flex-col bg-rose-100 font-sans text-gray-800">
+    <motion.div
+      className="min-h-screen bg-rose-100"
+      initial={{ opacity: 0 }}
+      animate={{ opacity: 1, transition: { duration: 0.8 } }}
+    >
       {/* Header fijo */}
-      <header className="fixed top-0 left-0 w-full bg-white shadow-md z-50 flex items-center px-6 py-3">
+      <motion.header
+        className="fixed top-0 left-0 w-full bg-white shadow-md z-50 flex items-center px-6 py-3"
+        initial={{ y: -50, opacity: 0 }}
+        animate={{ y: 0, opacity: 1, transition: { duration: 0.5, delay: 0.2 } }}
+      >
         {/* Botón menú hamburguesa */}
         <button
           onClick={() => setMenuOpen(!menuOpen)}
-          className="text-rose-600 hover:text-rose-800 transition"
+          className="text-rose-600 hover:text-rose-800 transition z-20"
           aria-label={menuOpen ? "Cerrar menú" : "Abrir menú"}
         >
-          {menuOpen ? <FiX size={28} /> : <FiMenu size={28} />}
+          <AnimatePresence mode="wait">
+            {menuOpen ? (
+              <motion.div key="close-icon" initial={{ rotate: 180, scale: 0 }} animate={{ rotate: 0, scale: 1 }} exit={{ rotate: 180, scale: 0 }}><FiX size={28} /></motion.div>
+            ) : (
+              <motion.div key="menu-icon" initial={{ rotate: 180, scale: 0 }} animate={{ rotate: 0, scale: 1 }} exit={{ rotate: 180, scale: 0 }}><FiMenu size={28} /></motion.div>
+            )}
+          </AnimatePresence>
         </button>
 
-        {/* Título centrado */}
+        {/* Título centrado (Great Vibes) */}
         <h1
           className="absolute left-1/2 transform -translate-x-1/2 text-4xl md:text-3xl font-extrabold text-rose-500 italic"
           style={{ fontFamily: "'Great Vibes', cursive" }}
         >
           Shirly Rose
         </h1>
-      </header>
+      </motion.header>
 
-      {/* Menú lateral */}
-      <nav
-        className={`fixed top-0 left-0 h-full w-64 bg-white shadow-lg z-40 p-6 flex flex-col gap-6 transform transition-transform duration-300 ${
-          menuOpen ? "translate-x-0" : "-translate-x-full"
-        }`}
-      >
-        <Link to="/" className="text-rose-600 font-medium hover:text-rose-800" onClick={() => setMenuOpen(false)}>----</Link>
-        <Link to="/" className="text-rose-600 font-medium hover:text-rose-800" onClick={() => setMenuOpen(false)}>Inicio</Link>
-        <Link to="/services" className="text-rose-600 font-medium hover:text-rose-800" onClick={() => setMenuOpen(false)}>Servicios</Link>
-        <Link to="/products" className="text-rose-600 font-medium hover:text-rose-800" onClick={() => setMenuOpen(false)}>Productos</Link>
-        <Link to="/contact" className="text-rose-600 font-medium hover:text-rose-800" onClick={() => setMenuOpen(false)}>Contacto</Link>
-        <Link to="/Cita"className="text-rose-600 font-medium hover:text-rose-800"onClick={() => setMenuOpen(false)}>Agenda Cita</Link>
-        <Link to="/about" className="text-rose-600 font-medium hover:text-rose-800" onClick={() => setMenuOpen(false)}>셜리 로즈</Link>
-      </nav>
+      <AnimatePresence>
+        {/* Menú lateral */}
+        {menuOpen && (
+          <motion.nav
+            initial={{ x: "-100%" }}
+            animate={{ x: 0 }}
+            exit={{ x: "-100%" }}
+            transition={{ duration: 0.3 }}
+            className="fixed top-0 left-0 h-full w-64 bg-white shadow-lg z-40 p-6 flex flex-col gap-6"
+          >
+            <Link to="/" className="text-rose-600 font-medium hover:text-rose-800" onClick={() => setMenuOpen(false)}>-----</Link>
+            <Link to="/" className="text-rose-600 font-medium hover:text-rose-800" onClick={() => setMenuOpen(false)}>Inicio</Link>
+            <Link to="/products" className="text-rose-600 font-medium hover:text-rose-800" onClick={() => setMenuOpen(false)}>Productos</Link>
+            <Link to="/Services" className="text-rose-600 font-medium hover:text-rose-800" onClick={() => setMenuOpen(false)}>Servicios</Link>
+            <Link to="/contact" className="text-rose-600 font-medium hover:text-rose-800" onClick={() => setMenuOpen(false)}>Contacto</Link>
+            <Link to="/appointment" className="text-rose-600 font-medium hover:text-rose-800" onClick={() => setMenuOpen(false)}>Agenda Cita</Link>
+            <Link to="/about" className="text-rose-600 font-medium hover:text-rose-800" onClick={() => setMenuOpen(false)}>셜리 로즈</Link>
+          </motion.nav>
+        )}
 
-      {/* Overlay semi-transparente */}
-      {menuOpen && (
-        <button
-          onClick={() => setMenuOpen(false)}
-          className="fixed top-0 left-0 w-full h-full bg-black/20 z-30"
-          aria-hidden="true"
-        />
-      )}
+        {/* Overlay semi-transparente */}
+        {menuOpen && (
+          <motion.button
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            exit={{ opacity: 0 }}
+            onClick={() => setMenuOpen(false)}
+            className="fixed top-0 left-0 w-full h-full bg-black/20 z-30"
+            aria-hidden="true"
+          />
+        )}
+      </AnimatePresence>
 
       {/* Contenido principal */}
-      <main className="flex-grow pt-24 pb-12 px-4 md:px-8 relative overflow-hidden">
-        <h1 className="text-5xl font-bold text-rose-600 text-center mb-6">
-          Sobre Nosotros
-        </h1>
+      <motion.main 
+        initial={{ opacity: 0 }}
+        animate={{ opacity: 1 }}
+        transition={{ duration: 1, delay: 0.5 }}
+        className="flex-grow pt-24 pb-12 px-4 md:px-8 relative overflow-hidden"
+      >
+        <motion.h1 
+          initial={{ scale: 0.8, opacity: 0 }}
+          animate={{ scale: 1, opacity: 1 }}
+          transition={{ type: "spring", stiffness: 100, delay: 0.7 }}
+          className="text-5xl font-bold text-rose-500 text-left mb-10" 
+          style={{ fontFamily: "'Zalando Sans Expanded', 'sans-serif'" }}
+        >
+          Sobre Shirly Rose
+        </motion.h1>
 
         <div className="relative max-w-5xl mx-auto py-8">
           {/* Línea central con extremos */}
@@ -121,7 +148,12 @@ export default function About() {
                     section.side === "left" ? "end" : "start"
                   }`}
                 >
-                  <div className="w-[calc(100%-2rem)] md:w-[80%] max-w-sm">
+                  <motion.div 
+                    className="w-[calc(100%-2rem)] md:w-[80%] max-w-sm"
+                    whileHover={{ scale: 1.05 }}
+                    whileTap={{ scale: 0.95 }}
+                    transition={{ type: "spring", stiffness: 300 }}
+                  >
                     {section.side === "left" && (
                       <div className="p-6 bg-white rounded-2xl shadow-lg border-2 border-rose-200">
                         <h2 className="text-2xl font-bold text-rose-500 mb-2">
@@ -137,7 +169,7 @@ export default function About() {
                         className="w-full h-auto object-cover rounded-xl shadow-lg"
                       />
                     )}
-                  </div>
+                  </motion.div>
                 </div>
 
                 {/* Bloque de contenido opuesto */}
@@ -146,7 +178,12 @@ export default function About() {
                     section.side === "left" ? "start" : "end"
                   }`}
                 >
-                  <div className="w-[calc(100%-2rem)] md:w-[80%] max-w-sm">
+                  <motion.div 
+                    className="w-[calc(100%-2rem)] md:w-[80%] max-w-sm"
+                    whileHover={{ scale: 1.05 }}
+                    whileTap={{ scale: 0.95 }}
+                    transition={{ type: "spring", stiffness: 300 }}
+                  >
                     {section.side === "left" && (
                       <img
                         src={section.image}
@@ -162,20 +199,25 @@ export default function About() {
                         <p className="text-gray-700 leading-relaxed">{section.text}</p>
                       </div>
                     )}
-                  </div>
+                  </motion.div>
                 </div>
               </motion.div>
             ))}
           </div>
         </div>
-      </main>
+      </motion.main>
 
       {/* Footer */}
-      <footer className="text-center py-6 bg-rose-200">
+      <motion.footer 
+        initial={{ opacity: 0 }}
+        animate={{ opacity: 1 }}
+        transition={{ delay: 1.5, duration: 0.8 }}
+        className="text-center py-6 bg-rose-200"
+      >
         <p className="text-sm text-gray-700">
           © {new Date().getFullYear()} Shirly Rose · Estética & Spa
         </p>
-      </footer>
-    </div>
+      </motion.footer>
+      </motion.div>
   );
 }

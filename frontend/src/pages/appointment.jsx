@@ -3,7 +3,7 @@ import { Link } from "react-router-dom";
 import { FiHome } from "react-icons/fi";
 import { motion } from "framer-motion";
 
-export default function Cita() {
+export default function Appointment() {
   const [nombre, setNombre] = useState("");
   const [hora, setHora] = useState("");
   const [servicio, setServicio] = useState("");
