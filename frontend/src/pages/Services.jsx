@@ -263,7 +263,7 @@ export default function Services() {
       <main className="pt-28 px-6 pb-12">
         <h2 className="text-3xl font-bold text-rose-600 text-center mb-6">Nuestros Servicios</h2>
 
-        {/* Barra de búsqueda con ícono 🔍 */}
+        {/* Barra de búsqueda */}
         <motion.div
           className="flex justify-center mb-10"
           initial={{ y: 20, opacity: 0 }}
