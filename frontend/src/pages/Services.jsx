@@ -11,7 +11,7 @@ import Acrilico from "../assets/images/services/Uñas/Acrilico.jpg";
 import Pestañas from "../assets/images/services/CejasyPestañas/Pestañas.jpg";
 import Acriesculpido from "../assets/images/services/Uñas/Acrilico-esculpido.jpg";
 import PeloaPeloHibridas from "../assets/images/services/CejasyPestañas/pelo-hibridas.jpg";
-import Voltecnologico from "../assets/images/services/CejasyPestañas/volumen-Tecnologico.jpg"
+import Voltecnologico from "../assets/images/services/CejasyPestañas/volumen-Tecnologico.jpg";
 import SinNada from "../assets/images/SinFoto.jpg";
 
 // Servicios por categoria

@@ -2,17 +2,18 @@ import { useState } from "react";
 import { Link } from "react-router-dom";
 import { FiHome } from "react-icons/fi";
 import { motion } from "framer-motion";
+import fondo from "../assets/images/paloRosa.png"; // coloca tu imagen aquí en la carpeta assets
 
 export default function Appointment() {
   const [nombre, setNombre] = useState("");
-  const [hora, setHora] = useState("");
   const [servicio, setServicio] = useState("");
+  const [hora, setHora] = useState("");
+  const [fecha, setFecha] = useState("");
   const [producto, setProducto] = useState("");
 
   const handleSubmit = (e) => {
     e.preventDefault();
-    // Aquí iría la lógica para agendar la cita
-    console.log("Cita agendada:", { nombre, hora, servicio, producto });
+    console.log("Cita agendada:", { nombre, servicio, hora, fecha, producto });
   };
 
   const pageVariants = {
@@ -23,24 +24,33 @@ export default function Appointment() {
 
   return (
     <motion.div
-      className="relative flex flex-col items-center justify-center min-h-screen bg-rose-100 p-4 overflow-hidden"
+      className="relative flex flex-col items-center justify-center min-h-screen p-4 overflow-hidden"
       variants={pageVariants}
       initial="initial"
       animate="animate"
       exit="exit"
     >
-      {/* 🔹 Icono de Home */}
+      {/* Fondo con degradado */}
+      <div
+        className="absolute inset-0 z-0"
+        style={{
+          backgroundImage: `linear-gradient(rgba(255, 192, 203, 0.6), rgba(0, 0, 0, 0.6)), url(${fondo})`,
+          backgroundSize: "cover",
+          backgroundPosition: "center",
+        }}
+      />
+
       <Link
         to="/"
         title="Volver al inicio"
-        className="absolute top-8 left-8 text-rose-600 hover:text-rose-800 transition z-20"
+        className="absolute top-8 left-8 text-white hover:text-rose-200 transition z-20"
       >
         <FiHome size={32} />
       </Link>
 
-      {/* 🔹 Contenedor del formulario */}
+      {/* formulario */}
       <motion.div
-        className="w-full max-w-md p-6 md:p-10 bg-white/90 backdrop-blur-sm rounded-3xl shadow-2xl"
+        className="relative z-10 w-full max-w-md p-6 md:p-10 bg-white/90 backdrop-blur-sm rounded-3xl shadow-2xl"
         initial={{ y: 20, opacity: 0 }}
         animate={{ y: 0, opacity: 1, transition: { duration: 0.8, delay: 0.5 } }}
       >
@@ -59,6 +69,14 @@ export default function Appointment() {
           />
           <input
             type="text"
+            placeholder="Servicio"
+            value={servicio}
+            onChange={(e) => setNombre(e.target.value)}
+            className="w-full px-4 py-2 border border-rose-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-rose-300 transition-colors"
+            required
+          />
+          <input
+            type="text"
             placeholder="Hora"
             value={hora}
             onChange={(e) => setHora(e.target.value)}
@@ -67,8 +85,8 @@ export default function Appointment() {
           />
           <input
             type="text"
-            placeholder="Servicio"
-            value={servicio}
+            placeholder="Fecha"
+            value={fecha}
             onChange={(e) => setServicio(e.target.value)}
             className="w-full px-4 py-2 border border-rose-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-rose-300 transition-colors"
             required
