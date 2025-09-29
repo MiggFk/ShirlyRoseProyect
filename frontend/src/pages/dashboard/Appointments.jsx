@@ -30,8 +30,8 @@ export default function Appointments() {
 
   const filteredAppointments = useMemo(() => {
     return appointments.filter((cita) => {
-      const clientName =
-        cita.clientId?.usuarioId?.name?.toLowerCase() || "";
+      // 🔹 CORREGIDO: clientId.name en lugar de clientId.usuarioId.name
+      const clientName = cita.clientId?.name?.toLowerCase() || "";
       const searchMatch = clientName.includes(search.toLowerCase());
       const citaDate = new Date(cita.dateTime).toISOString().split("T")[0];
       const dateMatch = dateFilter ? citaDate === dateFilter : true;
@@ -257,7 +257,8 @@ export default function Appointments() {
                       }`}
                     >
                       <td className="py-2 px-4">
-                        {cita.clientId?.usuarioId?.name || "Sin nombre"}
+                        {/* 🔹 CORREGIDO: clientId.name en lugar de clientId.usuarioId.name */}
+                        {cita.clientId?.name || "Sin nombre"}
                       </td>
                       <td className="py-2 px-4">
                         {cita.serviceId?.name || "Sin servicio"}

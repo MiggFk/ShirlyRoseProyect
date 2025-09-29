@@ -2,20 +2,22 @@ import { useState, useEffect } from "react";
 import Swal from "sweetalert2";
 import api from "../api/axios";
 
-
-//separar la logica de negocio de la presentacion
-
 export function useAppointments() {
   const [appointments, setAppointments] = useState([]);
   const [isLoading, setIsLoading] = useState(true);
 
-  const fetchAppointments = async () => {
+    const fetchAppointments = async () => {
     setIsLoading(true);
     try {
       const token = localStorage.getItem("token");
       const response = await api.get("/appointments", {
         headers: { Authorization: `Bearer ${token}` },
       });
+      
+      // 🔍 DEBUG: Ver qué trae el GET
+      console.log("Citas traídas del backend:", response.data.data);
+      console.log("Primera cita:", response.data.data[0]);
+      
       setAppointments(response.data.data || []);
     } catch (error) {
       console.error("Error al cargar citas:", error);
@@ -25,13 +27,20 @@ export function useAppointments() {
     }
   };
 
-  const createAppointment = async (data) => {
+    const createAppointment = async (data) => {
     try {
       const token = localStorage.getItem("token");
       const res = await api.post("/appointments", data, {
         headers: { Authorization: `Bearer ${token}` },
       });
-      setAppointments((prev) => [...prev, res.data.data]);
+      
+      // 🔍 DEBUG: Ver qué devuelve el backend
+      console.log("Respuesta del backend al crear:", res.data);
+      console.log("Cita creada:", res.data.data);
+      console.log("ClientId:", res.data.data?.clientId);
+      
+      await fetchAppointments();
+      
       Swal.fire("Éxito", "La cita ha sido creada correctamente", "success");
     } catch (error) {
       console.error("Error al crear cita:", error);
@@ -57,34 +66,33 @@ export function useAppointments() {
     }
   };
 
- const deleteAppointment = async (id) => {
-  const result = await Swal.fire({
-    title: "¿Eliminar cita?",
-    text: "Esta acción no se puede deshacer",
-    icon: "warning",
-    showCancelButton: true,
-    confirmButtonColor: "#d33",
-    cancelButtonColor: "#3085d6",
-    confirmButtonText: "Sí, eliminar",
-    cancelButtonText: "Cancelar",
-  });
-
-  if (!result.isConfirmed) return;
-
-  try {
-    const token = localStorage.getItem("token");
-    await api.delete(`/appointments/${id}`, {
-      headers: { Authorization: `Bearer ${token}` },
+  const deleteAppointment = async (id) => {
+    const result = await Swal.fire({
+      title: "¿Eliminar cita?",
+      text: "Esta acción no se puede deshacer",
+      icon: "warning",
+      showCancelButton: true,
+      confirmButtonColor: "#d33",
+      cancelButtonColor: "#3085d6",
+      confirmButtonText: "Sí, eliminar",
+      cancelButtonText: "Cancelar",
     });
-    setAppointments((prev) => prev.filter((cita) => cita._id !== id));
-    Swal.fire("Eliminada", "La cita ha sido eliminada", "success");
-  } catch (error) {
-    console.error("Error al eliminar cita:", error);
-    const msg = error.response?.data?.message || "No se pudo eliminar la cita";
-    Swal.fire("Error", msg, "error");
-  }
-};
 
+    if (!result.isConfirmed) return;
+
+    try {
+      const token = localStorage.getItem("token");
+      await api.delete(`/appointments/${id}`, {
+        headers: { Authorization: `Bearer ${token}` },
+      });
+      setAppointments((prev) => prev.filter((cita) => cita._id !== id));
+      Swal.fire("Eliminada", "La cita ha sido eliminada", "success");
+    } catch (error) {
+      console.error("Error al eliminar cita:", error);
+      const msg = error.response?.data?.message || "No se pudo eliminar la cita";
+      Swal.fire("Error", msg, "error");
+    }
+  };
 
   useEffect(() => {
     fetchAppointments();

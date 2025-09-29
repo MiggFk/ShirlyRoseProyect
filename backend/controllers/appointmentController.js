@@ -12,7 +12,25 @@ const createAppointment = async (req, res) => {
       finalClientId = req.user.id;
     }
 
-    // Validar si ya tiene una cita pendiente
+    // 🔹 VALIDACIÓN 1: Fecha en el futuro (PRIMERO)
+    if (new Date(dateTime) < new Date()) {
+      return res.status(400).json({ message: "No se puede agendar una cita en el pasado." });
+    }
+
+    // 🔹 VALIDACIÓN 2: Disponibilidad del empleado
+    const existingAppointment = await Appointment.findOne({
+      employeeId,
+      dateTime,
+      status: { $ne: "cancelada" } // Ignorar citas canceladas
+    });
+
+    if (existingAppointment) {
+      return res.status(400).json({ message: "El empleado ya tiene una cita en ese horario." });
+    }
+
+    // 🔹 VALIDACIÓN 3: Cliente solo puede tener 1 cita pendiente (OPCIONAL)
+    // COMENTADO porque puede causar problemas si quieres permitir múltiples citas
+    /*
     const existingPendingAppointment = await Appointment.findOne({
       clientId: finalClientId,
       status: "pendiente",
@@ -23,21 +41,7 @@ const createAppointment = async (req, res) => {
         message: "Ya tienes una cita pendiente. Cancela la anterior para agendar una nueva.",
       });
     }
-
-    // Validar fecha en el futuro
-    if (new Date(dateTime) < new Date()) {
-      return res.status(400).json({ message: "No se puede agendar una cita en el pasado." });
-    }
-
-    // Validar disponibilidad del empleado
-    const existingAppointment = await Appointment.findOne({
-      employeeId,
-      dateTime,
-    });
-
-    if (existingAppointment) {
-      return res.status(400).json({ message: "El empleado ya tiene una cita en ese horario." });
-    }
+    */
 
     // Estado inicial
     let appointmentStatus = "pendiente";
@@ -56,17 +60,19 @@ const createAppointment = async (req, res) => {
 
     await newAppointment.save();
 
-    // 🔹 Populate para devolver cita completa
+    // 🔹 POPULATE CORREGIDO - clientId es directamente User
     const populatedAppointment = await Appointment.findById(newAppointment._id)
       .populate("clientId", "name email")
       .populate("employeeId", "name email role")
       .populate("serviceId", "name price");
 
-      res.status(201).json({
+    // 🔹 RESPUESTA ESTANDARIZADA con "data"
+    res.status(201).json({
       message: "Cita creada correctamente",
-      data: populatedAppointment, // ← Cambiar a "data"
-});
+      data: populatedAppointment,
+    });
   } catch (error) {
+    console.error("Error al crear cita:", error);
     res.status(500).json({ message: "Error al crear la cita", error: error.message });
   }
 };
@@ -96,6 +102,7 @@ const getAppointments = async (req, res) => {
 
     const total = await Appointment.countDocuments(filter);
 
+    // 🔹 POPULATE CORREGIDO - clientId es directamente User
     const appointments = await Appointment.find(filter)
       .populate("clientId", "name email")
       .populate("employeeId", "name email role")
@@ -111,6 +118,7 @@ const getAppointments = async (req, res) => {
       limit,
     });
   } catch (error) {
+    console.error("Error al obtener citas:", error);
     res.status(500).json({ message: "Error al obtener citas", error: error.message });
   }
 };
@@ -150,8 +158,9 @@ const updateAppointmentStatus = async (req, res) => {
     res.status(200).json({
       message: "Estado actualizado correctamente",
       data: appointment,
-  });
+    });
   } catch (error) {
+    console.error("Error al actualizar cita:", error);
     res.status(500).json({ message: "Error al actualizar cita", error: error.message });
   }
 };
@@ -168,6 +177,7 @@ const deleteAppointment = async (req, res) => {
     await appointment.deleteOne();
     res.json({ message: "Cita eliminada correctamente" });
   } catch (error) {
+    console.error("Error al eliminar cita:", error);
     res.status(500).json({ message: "Error al eliminar cita", error: error.message });
   }
 };
@@ -241,11 +251,11 @@ const getAppointmentStats = async (req, res) => {
         status: formattedStatus,
         services: serviceStats,
         monthly: formattedMonthly,
-    }
-  });
+      }
+    });
   } catch (error) {
     console.error("Error al obtener estadísticas:", error);
-    res.status(500).json({ message: "Error al obtener estadísticas" });
+    res.status(500).json({ message: "Error al obtener estadísticas", error: error.message });
   }
 };
 

@@ -17,10 +17,10 @@ export function useFormOptions() {
         api.get("/users", { headers: { Authorization: `Bearer ${token}` } }),
       ]);
 
-      // Normalizamos clientes
+      // 🔹 CORREGIDO: Usar usuarioId._id en lugar de c._id
       setClients(
         resClients.data.map((c) => ({
-          _id: c._id,
+          _id: c.usuarioId?._id || c._id, // ← Usar el _id del User, no del Client
           name: c.usuarioId?.name || "Cliente sin usuario",
           email: c.usuarioId?.email || "Sin correo",
         }))
