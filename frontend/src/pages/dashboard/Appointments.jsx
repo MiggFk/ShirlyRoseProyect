@@ -4,7 +4,13 @@ import { useFormOptions } from "../../hooks/useFormOptions";
 import AppointmentsCalendar from "../../components/AppointmentsCalendar";
 
 export default function Appointments() {
-  const { appointments, isLoading, createAppointment, updateStatus, deleteAppointment } = useAppointments();
+  const {
+    appointments,
+    isLoading,
+    createAppointment,
+    updateStatus,
+    deleteAppointment,
+  } = useAppointments();
   const { clients, services, employees } = useFormOptions();
 
   const [search, setSearch] = useState("");
@@ -24,7 +30,8 @@ export default function Appointments() {
 
   const filteredAppointments = useMemo(() => {
     return appointments.filter((cita) => {
-      const clientName = cita.clientId?.name?.toLowerCase() || "";
+      const clientName =
+        cita.clientId?.usuarioId?.name?.toLowerCase() || "";
       const searchMatch = clientName.includes(search.toLowerCase());
       const citaDate = new Date(cita.dateTime).toISOString().split("T")[0];
       const dateMatch = dateFilter ? citaDate === dateFilter : true;
@@ -51,7 +58,12 @@ export default function Appointments() {
     e.preventDefault();
     await createAppointment(formData);
     setShowModal(false);
-    setFormData({ clientId: "", serviceId: "", employeeId: "", dateTime: "" });
+    setFormData({
+      clientId: "",
+      serviceId: "",
+      employeeId: "",
+      dateTime: "",
+    });
   };
 
   return (
@@ -245,7 +257,7 @@ export default function Appointments() {
                       }`}
                     >
                       <td className="py-2 px-4">
-                        {cita.clientId?.name || "Sin nombre"}
+                        {cita.clientId?.usuarioId?.name || "Sin nombre"}
                       </td>
                       <td className="py-2 px-4">
                         {cita.serviceId?.name || "Sin servicio"}

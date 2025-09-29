@@ -17,7 +17,7 @@ router.put("/:id/status", auth, authorizeRoles("admin", "empleado"), updateAppoi
 // DELETE: Eliminar una cita (solo admin)
 router.delete("/:id", auth, authorizeRoles("admin"), deleteAppointment);
 
-// GET: Obtener estadísticas de citas por estado (solo admin)
-router.get("/stats", auth, authorizeRoles("admin"), getAppointmentStats);
+// GET: Obtener estadísticas de citas por estado ()
+router.get("/stats", auth, authorizeRoles("admin", "empleado"), getAppointmentStats);
 
 module.exports = router;

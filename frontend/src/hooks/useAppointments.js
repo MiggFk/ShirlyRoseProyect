@@ -16,7 +16,7 @@ export function useAppointments() {
       const response = await api.get("/appointments", {
         headers: { Authorization: `Bearer ${token}` },
       });
-      setAppointments(response.data.data || response.data);
+      setAppointments(response.data.data || []);
     } catch (error) {
       console.error("Error al cargar citas:", error);
       Swal.fire("Error", "No se pudieron cargar las citas.", "error");
@@ -31,11 +31,12 @@ export function useAppointments() {
       const res = await api.post("/appointments", data, {
         headers: { Authorization: `Bearer ${token}` },
       });
-      setAppointments((prev) => [...prev, res.data]);
+      setAppointments((prev) => [...prev, res.data.data]);
       Swal.fire("Éxito", "La cita ha sido creada correctamente", "success");
     } catch (error) {
       console.error("Error al crear cita:", error);
-      Swal.fire("Error", "No se pudo crear la cita", "error");
+      const msg = error.response?.data?.message || "No se pudo crear la cita";
+      Swal.fire("Error", msg, "error");
     }
   };
 
@@ -79,7 +80,8 @@ export function useAppointments() {
     Swal.fire("Eliminada", "La cita ha sido eliminada", "success");
   } catch (error) {
     console.error("Error al eliminar cita:", error);
-    Swal.fire("Error", "No se pudo eliminar la cita", "error");
+    const msg = error.response?.data?.message || "No se pudo eliminar la cita";
+    Swal.fire("Error", msg, "error");
   }
 };
 

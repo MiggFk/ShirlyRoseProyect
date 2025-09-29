@@ -58,17 +58,14 @@ const createAppointment = async (req, res) => {
 
     // 🔹 Populate para devolver cita completa
     const populatedAppointment = await Appointment.findById(newAppointment._id)
-      .populate({
-        path: "clientId",
-        populate: { path: "usuarioId", select: "name email" },
-      })
+      .populate("clientId", "name email")
       .populate("employeeId", "name email role")
       .populate("serviceId", "name price");
 
-    res.status(201).json({
+      res.status(201).json({
       message: "Cita creada correctamente",
-      appointment: populatedAppointment,
-    });
+      data: populatedAppointment, // ← Cambiar a "data"
+});
   } catch (error) {
     res.status(500).json({ message: "Error al crear la cita", error: error.message });
   }
@@ -100,10 +97,7 @@ const getAppointments = async (req, res) => {
     const total = await Appointment.countDocuments(filter);
 
     const appointments = await Appointment.find(filter)
-      .populate({
-        path: "clientId",
-        populate: { path: "usuarioId", select: "name email" },
-      })
+      .populate("clientId", "name email")
       .populate("employeeId", "name email role")
       .populate("serviceId", "name price")
       .sort({ dateTime: 1 })
@@ -155,8 +149,8 @@ const updateAppointmentStatus = async (req, res) => {
 
     res.status(200).json({
       message: "Estado actualizado correctamente",
-      appointment,
-    });
+      data: appointment,
+  });
   } catch (error) {
     res.status(500).json({ message: "Error al actualizar cita", error: error.message });
   }
@@ -242,11 +236,13 @@ const getAppointmentStats = async (req, res) => {
     }));
 
     res.json({
-      totalAppointments,
-      status: formattedStatus,
-      services: serviceStats,
-      monthly: formattedMonthly,
-    });
+      data: {
+        totalAppointments,
+        status: formattedStatus,
+        services: serviceStats,
+        monthly: formattedMonthly,
+    }
+  });
   } catch (error) {
     console.error("Error al obtener estadísticas:", error);
     res.status(500).json({ message: "Error al obtener estadísticas" });
