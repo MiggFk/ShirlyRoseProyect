@@ -6,8 +6,9 @@ import Register from "./pages/Register";
 import Services from "./pages/Services";
 import Products from "./pages/Products";
 import About from "./pages/About";
-import Dashboard from "./pages/dashboard";
-import Appointment from "./pages/appointment";
+import Dashboard from "./pages/Dashboard";
+import Appointment from "./pages/Appointment";
+import Profile from "./pages/Profile";
 
 function App() {
   const location = useLocation();
@@ -26,10 +27,11 @@ function App() {
         <Route path="/Services" element={<Services />} />
         <Route path="/products" element={<Products />} />
         <Route path="/about" element={<About />} />
-        <Route path="/appointment" element={<Appointment/>} />
+        <Route path="/Appointment" element={<Appointment/>} />
+        <Route path="/Profile" element={<Profile/>} />
 
         {/* Dashboard privado */}
-        <Route path="/dashboard/*" element={<Dashboard />} />
+        <Route path="/Dashboard/*" element={<Dashboard />} />
       </Routes>
     </AnimatePresence>
   );

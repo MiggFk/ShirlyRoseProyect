@@ -2,6 +2,8 @@ import { useState } from "react";
 import { Link } from "react-router-dom";
 import { motion, AnimatePresence } from "framer-motion";
 import { FiMenu, FiX } from "react-icons/fi";
+import Footer from "../components/Footer";
+
 
 // Rutas de las imagenes
 import shampoo from "../assets/images/products/shampoo.jpg";
@@ -9,6 +11,7 @@ import exfoliante from "../assets/images/products/exfoliante.jpg";
 import aceite from "../assets/images/products/aceite.jpg";
 import Balsamo from "../assets/images/products/Balsamo.jpg";
 import SinNada from "../assets/images/SinFoto.jpg";
+
 
 
 export default function Products() {
@@ -179,7 +182,7 @@ export default function Products() {
           >
             <Link to="/" className="text-rose-600 font-medium hover:text-rose-800" onClick={() => setMenuOpen(false)}>-----</Link>
             <Link to="/" className="text-rose-600 font-medium hover:text-rose-800" onClick={() => setMenuOpen(false)}>Inicio</Link>
-            <Link to="/products" className="text-rose-600 font-medium hover:text-rose-800" onClick={() => setMenuOpen(false)}>Productos</Link>
+            <Link to="/services" className="text-rose-600 font-medium hover:text-rose-800" onClick={() => setMenuOpen(false)}>Servicios</Link>
             <Link to="/about" className="text-rose-600 font-medium hover:text-rose-800" onClick={() => setMenuOpen(false)}>Nosotros</Link>
             <Link to="/contact" className="text-rose-600 font-medium hover:text-rose-800" onClick={() => setMenuOpen(false)}>Contacto</Link>
             <Link to="/appointment" className="text-rose-600 font-medium hover:text-rose-800" onClick={() => setMenuOpen(false)}>Agenda Cita</Link>
@@ -268,7 +271,7 @@ export default function Products() {
         initial={{ y: 50, opacity: 0 }}
         animate={{ y: 0, opacity: 1, transition: { duration: 0.5, delay: 0.8 } }}
       >
-        <p className="text-sm text-gray-700">© {new Date().getFullYear()} Shirly Rose · Estética & Spa</p>
+        <Footer />
       </motion.footer>
     </motion.div>
   );

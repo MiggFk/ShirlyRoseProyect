@@ -1,6 +1,8 @@
 import { Link } from "react-router-dom";
 import { motion } from "framer-motion";
 import Logo from "../assets/logos/Logo-ShirlyRose.png";
+import { FaUserCircle } from "react-icons/fa";
+
 
 // imágenes de servicios
 import LimpiezaFac from "../assets/images/services/EsteticaFacial/LimpiezaFacialPremium.png";
@@ -11,6 +13,7 @@ import Manicure from "../assets/images/services/Uñas/Manicure.jpg";
 import Aceites from "../assets/images/products/aceite.jpg";
 import Cremas from "../assets/images/products/exfoliante.jpg";
 import Shampoo from "../assets/images/products/shampoo.jpg";
+import Footer from "../components/Footer";
 
 const cardVariants = {
   hidden: { opacity: 0, scale: 0.9 },
@@ -39,7 +42,7 @@ export default function Home() {
               className="h-14 w-14 object-contain"
             />
           </Link>
-          <h1 className="text-3xl text-gray-600" style={{ fontFamily: "'Great Vibes', cursive" }}>Shirly Rose</h1>
+          <h1 className="text-2xl text-gray-600" >Shirly Rose</h1>
         </div>
 
         {/* Navegación header*/}
@@ -47,6 +50,7 @@ export default function Home() {
           <Link to="/services" className="text-gray-700 hover:text-rose-500 font-medium transition">Servicios</Link>
           <Link to="/products" className="text-gray-700 hover:text-rose-500 font-medium transition">Productos</Link>
           <Link to="/about" className="text-gray-700 hover:text-rose-500 font-medium transition">Nosotros</Link>
+          <Link to="/appointment" className="text-gray-700 hover:text-rose-500 font-medium transition">Agendar Cita</Link>
         </nav>
 
         {/* Botones */}
@@ -57,12 +61,20 @@ export default function Home() {
           >
             Iniciar Sesión
           </Link>
+
           <Link
             to="/register"
             className="px-4 py-2 rounded-lg text-sm bg-rose-400 text-white font-medium shadow hover:bg-rose-500 transition"
           >
             Registrarse
           </Link>
+
+          <Link
+           to="/Profile">
+          <FaUserCircle
+        className="text-pink-600 text-4xl cursor-pointer hover:text-pink-800 transition-colors duration-200"/>
+          </Link>
+
         </div>
       </motion.header>
 
@@ -234,9 +246,7 @@ export default function Home() {
         initial={{ y: 50, opacity: 0 }}
         animate={{ y: 0, opacity: 1, transition: { duration: 0.5, delay: 0.8 } }}
       >
-        <p className="text-sm text-gray-700">
-          © {new Date().getFullYear()} Shirly Rose · Estética & Spa
-        </p>
+        <Footer />
       </motion.footer>
     </motion.div>
   );

@@ -2,6 +2,7 @@ import { useState } from "react";
 import { Link } from "react-router-dom";
 import { FiMenu, FiX, FiSearch } from "react-icons/fi";
 import { motion, AnimatePresence } from "framer-motion";
+import Footer from "../components/Footer";
 
 // Imágenes
 import pressOn from "../assets/images/services/Uñas/pressOn.jpg";
@@ -336,7 +337,7 @@ export default function Services() {
         initial={{ y: 50, opacity: 0 }}
         animate={{ y: 0, opacity: 1, transition: { duration: 0.5, delay: 0.8 } }}
       >
-        <p className="text-sm text-gray-700">© {new Date().getFullYear()} Shirly Rose · Estética & Spa</p>
+        <Footer />
       </motion.footer>
     </motion.div>
   );

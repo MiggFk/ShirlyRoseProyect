@@ -2,7 +2,7 @@ import { useState } from "react";
 import { Link } from "react-router-dom";
 import { FiHome } from "react-icons/fi";
 import { motion } from "framer-motion";
-import fondo from "../assets/images/paloRosa.png"; // coloca tu imagen aquí en la carpeta assets
+import fondo from "../assets/images/arbolOscuro.png";
 
 export default function Appointment() {
   const [nombre, setNombre] = useState("");
@@ -71,7 +71,7 @@ export default function Appointment() {
             type="text"
             placeholder="Servicio"
             value={servicio}
-            onChange={(e) => setNombre(e.target.value)}
+            onChange={(e) => setServicio(e.target.value)}
             className="w-full px-4 py-2 border border-rose-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-rose-300 transition-colors"
             required
           />
@@ -87,7 +87,7 @@ export default function Appointment() {
             type="text"
             placeholder="Fecha"
             value={fecha}
-            onChange={(e) => setServicio(e.target.value)}
+            onChange={(e) => setFecha(e.target.value)}
             className="w-full px-4 py-2 border border-rose-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-rose-300 transition-colors"
             required
           />
