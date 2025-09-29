@@ -133,12 +133,12 @@ export default function Login() {
             </button>
           </form>
           <p className="text-center text-sm mt-6 text-gray-600">
-            ¿No tienes cuenta?{" "}
+            ¿Se te olvido la contraseña?{" "}
             <Link
-              to="/register"
+              to=""
               className="text-rose-500 font-medium hover:underline"
             >
-              Regístrate
+              Recuperarla
             </Link>
           </p>
         </motion.div>

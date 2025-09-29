@@ -185,8 +185,8 @@ export default function Products() {
             <Link to="/services" className="text-rose-600 font-medium hover:text-rose-800" onClick={() => setMenuOpen(false)}>Servicios</Link>
             <Link to="/about" className="text-rose-600 font-medium hover:text-rose-800" onClick={() => setMenuOpen(false)}>Nosotros</Link>
             <Link to="/contact" className="text-rose-600 font-medium hover:text-rose-800" onClick={() => setMenuOpen(false)}>Contacto</Link>
-            <Link to="/appointment" className="text-rose-600 font-medium hover:text-rose-800" onClick={() => setMenuOpen(false)}>Agenda Cita</Link>
-            <Link to="/services" className="text-rose-600 font-medium hover:text-rose-800" onClick={() => setMenuOpen(false)}>셜리 로즈</Link>
+            <Link to="/appointment" className="text-rose-600 font-medium hover:text-rose-800" onClick={() => setMenuOpen(false)}>Agenda tu Cita</Link>
+            <Link to="" className="text-rose-600 font-medium hover:text-rose-800" onClick={() => setMenuOpen(false)}>셜리 로즈</Link>
           </motion.nav>
         )}
 

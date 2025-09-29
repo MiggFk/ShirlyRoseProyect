@@ -9,6 +9,7 @@ import About from "./pages/About";
 import Dashboard from "./pages/Dashboard";
 import Appointment from "./pages/Appointment";
 import Profile from "./pages/Profile";
+import Terms from "./pages/Terms";
 
 function App() {
   const location = useLocation();
@@ -29,6 +30,7 @@ function App() {
         <Route path="/about" element={<About />} />
         <Route path="/Appointment" element={<Appointment/>} />
         <Route path="/Profile" element={<Profile/>} />
+        <Route path="/terms" element={<Terms />} />
 
         {/* Dashboard privado */}
         <Route path="/Dashboard/*" element={<Dashboard />} />

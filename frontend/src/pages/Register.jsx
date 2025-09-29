@@ -8,7 +8,9 @@ import Logo from '../components/Logo.jsx';
 export default function Register() {
   const [name, setName] = useState("");
   const [email, setEmail] = useState("");
+  const [phone, setPhone] = useState("");
   const [password, setPassword] = useState("");
+  const [acceptedTerms, setAcceptedTerms] = useState(false);
   const [error, setError] = useState("");
   const navigate = useNavigate();
 
@@ -16,32 +18,39 @@ export default function Register() {
     e.preventDefault();
     setError("");
 
+    if (!acceptedTerms) {
+      setError("Debes aceptar los términos y condiciones para registrarte.");
+      return;
+    }
+
     try {
       const response = await axios.post("http://localhost:5000/api/auth/register", {
         name,
         email,
+        phone,
         password,
       });
 
       if (response.status === 201) {
-        navigate("/login");
+        navigate("/Login");
       }
     } catch (err) {
       setError(err.response?.data?.message || "Error al registrar usuario");
     }
   };
 
+  // Animaciones
   const pageVariants = {
     initial: { x: "100%" },
     animate: { x: "0%", transition: { duration: 0.7, ease: "easeOut" } },
-    exit: { x: "-100%", transition: { duration: 0.7, ease: "easeIn" } }
+    exit: { x: "-100%", transition: { duration: 0.7, ease: "easeIn" } },
   };
 
   const triangleVariants = {
     hidden: { x: "-100%" },
     visible: {
       x: "0%",
-      transition: { type: "spring", stiffness: 50, damping: 15, duration: 1.5, delay: 0.2},
+      transition: { type: "spring", stiffness: 50, damping: 15, duration: 1.5, delay: 0.2 },
     },
   };
 
@@ -63,7 +72,7 @@ export default function Register() {
       animate="animate"
       exit="exit"
     >
-      {/* 🔹 Triángulo de fondo animado (invertido) */}
+      {/* Triángulo de fondo animado */}
       <motion.div
         className="absolute left-0 top-0 bottom-0 w-2/3 bg-rose-200 z-0"
         style={{ clipPath: "polygon(0% 0%, 75% 0%, 100% 100%, 0% 100%)" }}
@@ -72,7 +81,7 @@ export default function Register() {
         animate="visible"
       />
 
-      {/* 🔹 Icono de Home animado */}
+      {/* Icono de Home */}
       <motion.div
         initial={{ x: 100 }}
         animate={{ x: 0 }}
@@ -84,9 +93,9 @@ export default function Register() {
         </Link>
       </motion.div>
 
-      {/* 🔹 Contenedor principal de registro */}
+      {/* Contenedor principal */}
       <div className="relative flex flex-col md:flex-row-reverse items-center justify-around w-full max-w-7xl mx-auto p-4 md:p-8 z-10">
-        {/* 🔹 Sección del logo */}
+        {/* Logo */}
         <motion.div
           className="flex justify-center items-center p-8 md:p-12 mb-8 md:mb-0"
           variants={logoContainerVariants}
@@ -96,7 +105,7 @@ export default function Register() {
           <Logo size="h-64 w-64 md:h-80 md:w-80 object-contain" />
         </motion.div>
 
-        {/* 🔹 Sección del formulario */}
+        {/* Formulario */}
         <motion.div
           className="w-full max-w-md p-6 md:p-10 bg-white/90 backdrop-blur-sm rounded-3xl shadow-2xl"
           variants={formVariants}
@@ -131,6 +140,14 @@ export default function Register() {
               required
             />
             <input
+              type="tel"
+              placeholder="teléfono"
+              value={phone}
+              onChange={(e) => setPhone(e.target.value)}
+              className="w-full px-4 py-2 border border-rose-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-rose-300 transition-colors"
+              required
+            />
+            <input
               type="password"
               placeholder="Contraseña"
               value={password}
@@ -138,6 +155,25 @@ export default function Register() {
               className="w-full px-4 py-2 border border-rose-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-rose-300 transition-colors"
               required
             />
+
+            {/* Casilla de términos */}
+            <div className="flex items-center space-x-2 mt-2">
+              <input
+                type="checkbox"
+                id="terms"
+                checked={acceptedTerms}
+                onChange={(e) => setAcceptedTerms(e.target.checked)}
+                className="h-4 w-4 text-rose-500 border-rose-300 rounded focus:ring-rose-400"
+              />
+              <label htmlFor="terms" className="text-sm text-gray-600">
+              Acepto los{" "}
+              <Link
+              to="/terms"
+              className="text-rose-500 hover:underline cursor-pointer">
+                términos y condiciones
+                </Link>
+                </label>
+                </div>
 
             <button
               type="submit"

@@ -14,7 +14,7 @@ export default function Footer() {
       initial={{ opacity: 0, y: 50 }}
       animate={{ opacity: 1, y: 0 }}
       transition={{ duration: 0.8, ease: "easeOut" }}
-      className="bg-rose-200 text-pink-700 py-10 px-6"
+      className="bg-rose-200 text-rose-700 py-10 px-6"
     >
       {/* Contenedor principal */}
       <div className="max-w-7xl mx-auto grid grid-cols-1 md:grid-cols-4 gap-14 text-center md:text-left">
@@ -42,7 +42,7 @@ export default function Footer() {
                 <motion.li
                   key={i}
                   whileHover={{ x: 5, scale: 1.05 }}
-                  className="cursor-pointer hover:text-pink-900 transition-colors"
+                  className="cursor-pointer hover:text-rose-500 transition-colors"
                 >
                   {item}
                 </motion.li>
@@ -66,7 +66,7 @@ export default function Footer() {
               <motion.li
                 key={i}
                 whileHover={{ x: 5, scale: 1.05 }}
-                className="cursor-pointer hover:text-pink-900 transition-colors"
+                className="cursor-pointer hover:text-rose-500 transition-colors"
               >
                 {item}
               </motion.li>
@@ -91,7 +91,7 @@ export default function Footer() {
                 href={link}
                 whileHover={{ scale: 1.2 }}
                 whileTap={{ scale: 0.9 }}
-                className="text-pink hover:text-white transition-colors"
+                className="text-rose hover:text-white transition-colors"
               >
                 <Icon />
               </motion.a>
@@ -101,7 +101,7 @@ export default function Footer() {
       </div>
 
       {/* Línea separadora */}
-      <div className="border-t border-pink-700 mt-8 pt-4 text-center text-sm text-pink-600">
+      <div className="border-t border-rose-700 mt-8 pt-4 text-center text-sm text-rose-600">
         © {new Date().getFullYear()} Shirly Rose · Estética & Spa. Todos los derechos reservados.
       </div>
     </motion.footer>

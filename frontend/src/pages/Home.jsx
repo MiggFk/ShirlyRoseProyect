@@ -72,9 +72,8 @@ export default function Home() {
           <Link
            to="/Profile">
           <FaUserCircle
-        className="text-pink-600 text-4xl cursor-pointer hover:text-pink-800 transition-colors duration-200"/>
+        className="text-rose-500 text-4xl cursor-pointer hover:text-rose-700 transition-colors duration-200"/>
           </Link>
-
         </div>
       </motion.header>
 
