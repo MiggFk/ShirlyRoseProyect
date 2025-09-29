@@ -1,25 +1,21 @@
+// src/hooks/useLogin.js (Simplificado para usar el contexto)
 import { useNavigate } from "react-router-dom";
-import api from "../api/axios";
 import Swal from "sweetalert2";
+// ⬅️ Importa el nuevo hook del contexto
+import { useAuth } from '../context/AuthContext'; 
 
 /**
- * Custom hook para manejar la lógica de inicio de sesión.
- *
- * Este hook encapsula la llamada a la API, el almacenamiento del token
- * y la redirección del usuario, manteniendo el componente de login limpio.
- *
- * @returns {object} Un objeto con la función handleSubmit para Formik.
+ * Custom hook para manejar la lógica de envío del formulario de inicio de sesión.
  */
 export const useLogin = () => {
+  // ⬅️ Obtiene la función login, isLoading, etc. del contexto
+  const { login, isLoading } = useAuth(); 
   const navigate = useNavigate();
 
   const handleSubmit = async (values, { setSubmitting }) => {
     try {
-      const { data } = await api.post("/auth/login", values);
-
-      // Guardar token y datos del usuario en el almacenamiento local
-      localStorage.setItem("token", data.token);
-      localStorage.setItem("user", JSON.stringify(data.user));
+      // 💥 LLAMADA AL LOGIN DEL CONTEXTO (realiza la petición a la API)
+      const user = await login(values.email, values.password); 
 
       // Mostrar alerta de éxito y luego redirigir
       Swal.fire({
@@ -27,17 +23,17 @@ export const useLogin = () => {
         title: '¡Inicio de sesión exitoso!',
         text: 'Redirigiendo a tu panel...',
         showConfirmButton: false,
-        timer: 1500, // La alerta se cierra automáticamente después de 1.5 segundos
+        timer: 1500,
       }).then(() => {
-        // Redirigir al usuario según su rol
-        if (data.user.role === "admin" || data.user.role === "empleado") {
+        // Redirigir al usuario según su rol (usando el objeto 'user' devuelto)
+        if (user.role === "admin" || user.role === "empleado") {
           navigate("/dashboard");
         } else {
           navigate("/");
         }
       });
     } catch (err) {
-      // Manejar errores de la API y mostrar un modal de error
+      // Manejar errores de la API
       const message = err.response?.data?.message || "Correo o contraseña incorrectos";
       Swal.fire({
         icon: 'error',
@@ -45,10 +41,9 @@ export const useLogin = () => {
         text: message,
       });
     } finally {
-      // Deshabilitar el estado de envío del formulario
       setSubmitting(false);
     }
   };
 
-  return { handleSubmit };
+  return { handleSubmit, isLoading }; // Retorna isLoading del contexto
 };

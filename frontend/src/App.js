@@ -1,5 +1,9 @@
 import React from "react";
-import { BrowserRouter, Routes, Route } from "react-router-dom";
+import { BrowserRouter, Routes, Route, Link } from "react-router-dom";
+// 💥 Importa el AuthProvider
+import { AuthProvider } from "./context/AuthContext"; 
+
+// Importaciones de Páginas y Componentes
 import Login from "./pages/auth/Login";
 import Register from "./pages/auth/Register";
 import Profile from "./pages/user/Profile";
@@ -14,7 +18,7 @@ import RoleRoute from "./components/RoleRoute";
 import IndexHome from "./pages/home/IndexHome";
 import ServicesHome from "./pages/home/Services";
 import ProductsHome from "./pages/home/Products";
-import { Link } from "react-router-dom";
+
 
 // Componente para manejar las rutas no encontradas
 const NotFound = () => (
@@ -30,53 +34,58 @@ const NotFound = () => (
 function App() {
   return (
     <BrowserRouter>
-      <Routes>
-        {/* Rutas Públicas */}
-        <Route path="/" element={<IndexHome />} />
-        <Route path="/servicesHome" element={<ServicesHome />} />
-        <Route path="/productsHome" element={<ProductsHome />} />
-        
-        {/* Rutas de Autenticación */}
-        <Route path="/login" element={<Login />} />
-        <Route path="/register" element={<Register />} />
+      {/* 💥 ENVUELVE las Rutas con el AuthProvider 💥 */}
+      <AuthProvider>
+        <Routes>
+          {/* Rutas Públicas */}
+          <Route path="/" element={<IndexHome />} />
+          <Route path="/servicesHome" element={<ServicesHome />} />
+          <Route path="/productsHome" element={<ProductsHome />} />
+          
+          {/* Rutas de Autenticación */}
+          <Route path="/login" element={<Login />} />
+          <Route path="/register" element={<Register />} />
 
-        {/* Ruta del perfil del usuario (clientes, empleados, admin) */}
-        <Route
-          path="/profile"
-          element={
-            <PrivateRoute>
-              <Profile />
-            </PrivateRoute>
-          }
-        />
-
-        {/* Rutas Privadas / Dashboard */}
-        <Route
-          path="/dashboard"
-          element={
-            <PrivateRoute>
-              <DashboardLayout />
-            </PrivateRoute>
-          }
-        >
-          {/* Rutas anidadas que se renderizan dentro de DashboardLayout */}
-          <Route index element={<Home />} />
-          <Route path="appointments" element={<Appointments />} />
-          <Route path="products" element={<Products />} />
+          {/* Ruta del perfil del usuario (clientes, empleados, admin) */}
           <Route
-            path="users"
+            path="/profile"
             element={
-              <RoleRoute allowedRoles={["admin"]}>
-                <Users />
-              </RoleRoute>
+              <PrivateRoute>
+                <Profile />
+              </PrivateRoute>
             }
           />
-          <Route path="services" element={<Services />} />
-        </Route>
 
-        {/* Ruta comodín para capturar URLs no válidas */}
-        <Route path="*" element={<NotFound />} />
-      </Routes>
+          {/* Rutas Privadas / Dashboard */}
+          <Route
+            path="/dashboard"
+            element={
+              <PrivateRoute>
+                <DashboardLayout />
+              </PrivateRoute>
+            }
+          >
+            {/* Rutas anidadas que se renderizan dentro de DashboardLayout */}
+            <Route index element={<Home />} />
+            <Route path="appointments" element={<Appointments />} />
+            <Route path="products" element={<Products />} />
+            <Route path="services" element={<Services />} />
+
+            {/* Ruta restringida por Rol (Solo Admin) */}
+            <Route
+              path="users"
+              element={
+                <RoleRoute allowedRoles={["admin"]}>
+                  <Users />
+                </RoleRoute>
+              }
+            />
+          </Route>
+
+          {/* Ruta comodín para capturar URLs no válidas */}
+          <Route path="*" element={<NotFound />} />
+        </Routes>
+      </AuthProvider>
     </BrowserRouter>
   );
 }

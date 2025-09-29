@@ -17,9 +17,18 @@ export function useStats() {
       const res = await api.get("/appointments/stats", {
         headers: { Authorization: `Bearer ${token}` },
       });
-      setStats(res.data);
+      
+      // 🔹 CORREGIDO: Backend devuelve { data: {...} }
+      setStats(res.data.data || res.data);
     } catch (error) {
       console.error("Error al cargar estadísticas:", error);
+      // 🔹 En caso de error, mantener el estado inicial vacío
+      setStats({
+        totalAppointments: 0,
+        status: { pending: 0, completed: 0, cancelled: 0 },
+        services: [],
+        monthly: [],
+      });
     } finally {
       setLoading(false);
     }
