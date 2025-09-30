@@ -1,37 +1,31 @@
-// src/hooks/useLogin.js (Simplificado para usar el contexto)
-import { useNavigate } from "react-router-dom";
+// src/hooks/useLogin.js (Versión Final)
 import Swal from "sweetalert2";
-// ⬅️ Importa el nuevo hook del contexto
 import { useAuth } from '../context/AuthContext'; 
 
 /**
  * Custom hook para manejar la lógica de envío del formulario de inicio de sesión.
  */
 export const useLogin = () => {
-  // ⬅️ Obtiene la función login, isLoading, etc. del contexto
   const { login, isLoading } = useAuth(); 
-  const navigate = useNavigate();
+  // Ya no necesitamos 'navigate' aquí porque el Contexto lo maneja
+  // const navigate = useNavigate();
 
   const handleSubmit = async (values, { setSubmitting }) => {
     try {
-      // 💥 LLAMADA AL LOGIN DEL CONTEXTO (realiza la petición a la API)
-      const user = await login(values.email, values.password); 
+      // LLAMADA AL LOGIN DEL CONTEXTO (Esta llamada ya actualiza el estado y redirige)
+      await login(values.email, values.password); 
+      // Nota: Ya no esperamos el 'user' retornado
 
-      // Mostrar alerta de éxito y luego redirigir
+      // Mostrar alerta de éxito ANTES de que el Contexto redirija
       Swal.fire({
         icon: 'success',
         title: '¡Inicio de sesión exitoso!',
         text: 'Redirigiendo a tu panel...',
         showConfirmButton: false,
         timer: 1500,
-      }).then(() => {
-        // Redirigir al usuario según su rol (usando el objeto 'user' devuelto)
-        if (user.role === "admin" || user.role === "empleado") {
-          navigate("/dashboard");
-        } else {
-          navigate("/");
-        }
-      });
+      }); 
+      
+      
     } catch (err) {
       // Manejar errores de la API
       const message = err.message || "Ocurrió un error desconocido.";
@@ -45,5 +39,5 @@ export const useLogin = () => {
     }
   };
 
-  return { handleSubmit, isLoading }; // Retorna isLoading del contexto
+  return { handleSubmit, isLoading };
 };

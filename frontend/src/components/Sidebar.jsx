@@ -1,5 +1,5 @@
 import { Link, useLocation } from "react-router-dom";
-// Iconos de Lucide React
+// Importaciones de Iconos de Lucide React
 import { Home, Calendar, Package, Users, UserCircle, ArrowLeft, LogOut } from "lucide-react";
 import LogoShirly from "./LogoShirly"; 
 import { useAuth } from "../context/AuthContext"; 
@@ -7,7 +7,7 @@ import { useAuth } from "../context/AuthContext";
 
 export default function Sidebar() {
   const location = useLocation();
-  // Obtiene el usuario y la función de logout del contexto
+  // ✅ OBTENEMOS user y logout DEL CONTEXTO
   const { user, logout } = useAuth(); 
 
   const userRole = user ? user.role : null; 
@@ -29,7 +29,7 @@ export default function Sidebar() {
   ];
 
   return (
-    // Contenedor principal: w-64, gradiente, min-h-screen y padding
+    // Contenedor principal: Usamos flex-col justify-between para empujar el botón de logout hacia abajo
     <div className="w-64 bg-gradient-to-b from-pink-500 to-purple-700 text-white min-h-screen p-6 shadow-2xl flex flex-col justify-between">
       
       <div>
@@ -46,11 +46,11 @@ export default function Sidebar() {
               <Link
                 key={link.to}
                 to={link.to}
-                // Clases de Tailwind para el diseño: flex, items-center, gap-4 para alineación
+                // Estilos de enlace y estado activo
                 className={`flex items-center gap-4 px-4 py-3 rounded-xl transition-all font-semibold ${
                   isActive
-                    ? "bg-white text-pink-700 shadow-md" // Enlace activo (fondo blanco, texto oscuro)
-                    : "hover:bg-pink-400/50 hover:text-white" // Efecto hover
+                    ? "bg-white text-pink-700 shadow-md" 
+                    : "hover:bg-pink-400/50 hover:text-white" 
                 }`}
               >
                 {link.icon}
@@ -61,7 +61,7 @@ export default function Sidebar() {
         </nav>
       </div>
 
-      {/* Botón de Logout (Fijado al final con justify-between) */}
+      {/* 🟢 BOTÓN DE CERRAR SESIÓN (Aparece si hay un usuario logueado) */}
       {user && (
         <button
           onClick={() => logout()}

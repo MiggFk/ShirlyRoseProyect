@@ -74,8 +74,12 @@ export const AuthProvider = ({ children }) => {
       // 💥 CRÍTICO: Configura el header de Axios inmediatamente después del login
       api.defaults.headers.common['Authorization'] = `Bearer ${data.token}`; 
 
-      // Devuelve el objeto user para que useLogin.js pueda redirigir
-      return data.user; 
+      // 💥 NUEVA LÓGICA: Redirigir DENTRO del Contexto después de ESTABLECER el estado
+      if (data.user.role === "admin" || data.user.role === "empleado") {
+        navigate("/dashboard");
+      } else {
+        navigate("/");
+      }
     } catch (err) {
       console.error("Error en login:", err);
       // 💥 PROPAGAR ERROR: Lanza el error para que useLogin.js lo capture

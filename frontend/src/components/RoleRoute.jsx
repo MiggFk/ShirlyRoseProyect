@@ -1,31 +1,28 @@
-// components/RoleRoute.jsx (CORREGIDO)
 import { Navigate } from "react-router-dom";
-// 💥 Importa el hook del Contexto
-import { useAuth } from '../context/AuthContext'; 
+import { useAuth } from '../context/AuthContext'; // ⬅️ Usamos el Contexto
 
 export default function RoleRoute({ children, allowedRoles }) {
-  // Obtiene el estado del contexto
-  const { user, isLoading } = useAuth(); 
+  // ✅ Obtiene el estado centralizado
+  const { user, isAuthenticated, isLoading } = useAuth();
 
-  // Muestra el indicador de carga
+  // 1. Esperar la carga del contexto
   if (isLoading) {
-    return <div className="p-10 text-center">Verificando permisos...</div>;
+    return <div className="flex items-center justify-center min-h-screen text-lg font-semibold text-gray-700">Verificando permisos...</div>;
   }
-
-  // 1. Verificación básica (debería ser capturado por PrivateRoute, pero es buena práctica)
-  if (!user) {
+  
+  // 2. Verificar autenticación (Si no está logueado, PrivateRoute debió atraparlo, pero chequeamos)
+  if (!isAuthenticated) {
     return <Navigate to="/login" replace />; 
   }
 
-  // 2. Verificación de Rol
-  const userRole = user.role;
-  
-  if (allowedRoles.includes(userRole)) {
-    return children; // Rol permitido
+  // 3. Verificar el rol
+  const isAuthorized = user && allowedRoles.includes(user.role);
+
+  if (isAuthorized) {
+    return children;
   }
 
-  // 💥 Redirección por Acceso Denegado: 
-  // Redirige al /profile si el usuario está logeado pero no tiene el rol necesario.
-  // Esto resuelve el problema que tenías de que el 'empleado' era redirigido al /profile.
+  // 4. Si no tiene el rol, redirigir al perfil o dashboard
+  // Redirigir al perfil es más seguro para evitar loops o errores 403.
   return <Navigate to="/profile" replace />;
 }

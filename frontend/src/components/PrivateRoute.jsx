@@ -1,24 +1,25 @@
-// components/PrivateRoute.jsx (CORREGIDO)
 import { Navigate } from "react-router-dom";
-// 💥 Importa el hook del Contexto
-import { useAuth } from '../context/AuthContext'; 
+import { useAuth } from '../context/AuthContext'; // ⬅️ CRÍTICO: Usar el Contexto
 
 export default function PrivateRoute({ children }) {
-  // Obtiene el estado del contexto
-  const { isAuthenticated, isLoading } = useAuth();
+  // ✅ Obtiene el estado centralizado
+  const { isAuthenticated, isLoading } = useAuth(); 
 
-  // Muestra un indicador mientras se carga el estado de autenticación (ej. revisando localStorage)
+  // 1. CONDICIÓN CRÍTICA: Esperar a que el Contexto termine de cargar.
+  // Esto evita que la Sidebar se monte sin un estado de usuario definido.
   if (isLoading) {
-    // Puedes reemplazar esto con un spinner o un componente de carga
-    return <div className="p-10 text-center">Cargando sesión...</div>; 
+    return (
+      <div className="flex items-center justify-center min-h-screen text-lg font-semibold text-gray-700">
+        Verificando sesión...
+      </div>
+    );
   }
-
-  // 💥 Redirección CORREGIDA: Si NO está autenticado, va al login.
-  // La redirección a "/" no es la práctica común, es mejor ir al login.
+  
+  // 2. Si NO está autenticado, redirigir al login
   if (!isAuthenticated) {
-    return <Navigate to="/login" replace />;
+    return <Navigate to="/login" replace />; 
   }
 
-  // Si está autenticado, permite el acceso
+  // 3. Si está autenticado y cargado, mostrar los hijos (DashboardLayout)
   return children;
 }
