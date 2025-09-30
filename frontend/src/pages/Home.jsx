@@ -2,6 +2,8 @@ import { Link } from "react-router-dom";
 import { motion } from "framer-motion";
 import Logo from "../assets/logos/Logo-ShirlyRose.png";
 import { FaUserCircle } from "react-icons/fa";
+import Modelo from "../assets/images/Fondo-Home.png"; 
+
 
 
 // imágenes de servicios
@@ -72,33 +74,50 @@ export default function Home() {
           <Link
            to="/Profile">
           <FaUserCircle
-        className="text-rose-500 text-4xl cursor-pointer hover:text-rose-700 transition-colors duration-200"/>
+        className="text-rose-400 text-4xl cursor-pointer hover:text-rose-700 transition-colors duration-200"/>
           </Link>
         </div>
       </motion.header>
 
       {/* Hero principal */}
       <motion.section
-        className="flex flex-col items-center text-center py-16 px-6"
+        className="relative w-full h-[90vh] flex items-center justify-start bg-cover bg-center"
+        style={{
+          backgroundImage: `url(${Modelo})`,
+          backgroundPosition: "right center",
+        }}
         initial={{ opacity: 0, y: 50 }}
         animate={{ opacity: 1, y: 0, transition: { duration: 0.8, delay: 0.5 } }}
       >
-        <h2 className="text-4xl md:text-6xl text-rose-500 mb-4 italic" style={{ fontFamily: "'Great Vibes', cursive" }}>
-          Bienvenido a
-        </h2>
-        <h2 className="text-4xl md:text-7xl font-extrabold text-rose-500 mb-4 italic" style={{ fontFamily: "'Great Vibes', cursive" }}>
-          Shirly Rose...
-        </h2>
-        <p className="text-lg text-gray-700 max-w-2xl mb-8">
-          Relájate, cuida tu piel y luce espectacular con nuestros servicios de
-          estética, spa y peluqueria. Aquí podrás reservar tu cita fácilmente.
-        </p>
-        <Link
-          to="/appointment"
-          className="px-8 py-3 rounded-xl bg-rose-400 text-white font-semibold shadow hover:bg-rose-500 transition duration-200"
-        >
-          Agenda tu cita
-        </Link>
+        {/* Capa semi-transparente para mejor legibilidad */}
+        <div className="absolute inset-0 bg-gradient-to-r from-rose-100/50 via-rose-50/20 to-transparent"></div>
+
+        {/* Contenido del Hero */}
+        <div className="relative z-10 pl-10 md:pl-20 max-w-lg text-left">
+          <h2
+            className="text-4xl md:text-6xl text-rose-500 mb-4 italic drop-shadow-md"
+            style={{ fontFamily: "'Great Vibes', cursive" }}
+          >
+            Bienvenido a
+          </h2>
+          <h2
+            className="text-4xl md:text-7xl font-extrabold text-rose-500 mb-4 italic drop-shadow-md"
+            style={{ fontFamily: "'Great Vibes', cursive" }}
+          >
+            Shirly Rose...
+          </h2>
+          <p className="text-lg text-gray-700 max-w-md mb-8">
+            Relájate, cuida tu piel y luce espectacular con nuestros servicios
+            de estética, spa y peluquería. Aquí podrás reservar tu cita
+            fácilmente.
+          </p>
+          <Link
+            to="/appointment"
+            className="px-8 py-3 rounded-xl bg-rose-400 text-white font-semibold shadow hover:bg-rose-500 transition duration-200"
+          >
+            Agenda tu cita
+          </Link>
+        </div>
       </motion.section>
 
       {/* Sección de Servicios */}

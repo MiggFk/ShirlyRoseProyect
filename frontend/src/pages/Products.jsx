@@ -17,7 +17,7 @@ import SinNada from "../assets/images/SinFoto.jpg";
 export default function Products() {
   const [menuOpen, setMenuOpen] = useState(false);
 
-  // Productos
+// Productos
 
   const productos = [
     {

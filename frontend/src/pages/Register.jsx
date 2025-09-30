@@ -32,7 +32,7 @@ export default function Register() {
       });
 
       if (response.status === 201) {
-        navigate("/Login");
+        navigate("/login");
       }
     } catch (err) {
       setError(err.response?.data?.message || "Error al registrar usuario");

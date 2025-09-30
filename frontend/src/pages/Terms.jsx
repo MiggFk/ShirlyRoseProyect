@@ -1,7 +1,7 @@
 import { Link } from "react-router-dom";
 import { FiHome } from "react-icons/fi";
 import { motion } from "framer-motion";
-import bgImage from "../assets/images/paloRosa.png";
+import bgImage from "../assets/images/fondo-rubia.png";
 
 export default function Terms() {
   return (
@@ -33,9 +33,9 @@ export default function Terms() {
 
       {/* Contenedor de términos */}
       <motion.div
-        className="relative max-w-3xl w-full p-8 rounded-2xl shadow-2xl backdrop-blur-md bg-white/30 text-white z-10"
-        initial={{ y: 20, opacity: 0 }}
-        animate={{ y: 0, opacity: 1, transition: { duration: 0.8 } }}
+        className="relative max-w-3xl w-full p-8 rounded-2xl shadow-2xl backdrop-blur-md bg-black/20 text-white z-10"
+        initial={{ y: 30, opacity: 0 }}
+        animate={{ y: 0, opacity: 1, transition: { duration: 0.9 } }}
       >
         <h1 className="text-3xl font-bold text-rose-300 mb-6 text-center">
           Términos y Condiciones

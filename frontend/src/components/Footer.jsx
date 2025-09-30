@@ -28,7 +28,7 @@ export default function Footer() {
             alt="Logo Shirly Rose"
             className="w-20 h-20"
           />
-          <p className="text-sm">cr23 #10-19   Caucasia - Antioquia  Colombia</p>
+          <p className="text-sm text-rose-700">cr23 #10-19   Caucasia - Antioquia  Colombia</p>
         </div>
 
         {/* Columna 2: Servicios */}
@@ -101,7 +101,7 @@ export default function Footer() {
       </div>
 
       {/* Línea separadora */}
-      <div className="border-t border-rose-700 mt-8 pt-4 text-center text-sm text-rose-600">
+      <div className="border-t border-rose-700 mt-8 pt-4 text-center text-sm text-rose-700">
         © {new Date().getFullYear()} Shirly Rose · Estética & Spa. Todos los derechos reservados.
       </div>
     </motion.footer>

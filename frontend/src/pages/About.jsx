@@ -6,9 +6,9 @@ import { motion, AnimatePresence } from "framer-motion";
 // Imágenes
 import founderImg from "../assets/images/Fundadora.jpg";
 import trayectoriaImg from "../assets/images/Girl.jpg";
-import empresaImg from "../assets/images/manos.jpg";
-import ValoresImg from "../assets/images/Fondo-Mujer.png";
-import VisionImg from "../assets/images/fondo-rosas-claras.png";
+import empresaImg from "../assets/images/SobreEmpresa.jpg";
+import ValoresImg from "../assets/images/manos.jpg";
+import VisionImg from "../assets/images/Empleada.jpg";
 import Footer from "../components/Footer";
 
 export default function About() {
@@ -17,7 +17,7 @@ export default function About() {
   const sections = [
     {
       title: "Nuestra Fundadora",
-      text: "Shirly Rose, con más de 10 años de experiencia en estética y spa, fundó este espacio con la visión de transformar el cuidado personal en un momento de conexión y bienestar.",
+      text: "Shirly Paola Montalvo Atencio, con más de 10 años de experiencia en cosmetologia, Uñas, estética y spa, fundó Shirly Rose con la visión de transformar el cuidado personal en un momento de conexión y bienestar.",
       image: founderImg,
       side: "left",
     },
@@ -149,7 +149,7 @@ export default function About() {
           Sobre Shirly Rose
         </motion.h1>
 
-        <div className="space-y-24">
+        <div className="space-y-10">
           {sections.map((section, index) => (
             <motion.div
               key={index}
@@ -162,7 +162,7 @@ export default function About() {
               variants={fadeIn}
             >
               {/* Imagen */}
-              <div className="w-full md:w-2/2 h-90">
+              <div className="w-full md:w-1/2 h-90">
                 <img
                   src={section.image}
                   alt={section.title}
@@ -185,7 +185,7 @@ export default function About() {
       </motion.main>
 
       {/* Footer */}
-      <div className="mt-10">
+      <div className="mt-20">
       <motion.footer
         className="text-center py-6 bg-rose-200 mt-auto mt-10"
         initial={{ y: 50, opacity: 0 }}
