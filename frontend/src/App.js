@@ -18,6 +18,8 @@ import RoleRoute from "./components/RoleRoute";
 import IndexHome from "./pages/home/IndexHome";
 import ServicesHome from "./pages/home/Services";
 import ProductsHome from "./pages/home/Products";
+import Terms from "./pages/home/Terms";
+import About from "./pages/home/About";
 
 
 // Componente para manejar las rutas no encontradas
@@ -41,6 +43,8 @@ function App() {
           <Route path="/" element={<IndexHome />} />
           <Route path="/servicesHome" element={<ServicesHome />} />
           <Route path="/productsHome" element={<ProductsHome />} />
+          <Route path="/about" element={<About />} />
+          <Route path="/terms" element={<Terms />} />
           
           {/* Rutas de Autenticación */}
           <Route path="/login" element={<Login />} />

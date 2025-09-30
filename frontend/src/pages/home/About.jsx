@@ -4,12 +4,12 @@ import { FiMenu, FiX } from "react-icons/fi";
 import { motion, AnimatePresence } from "framer-motion";
 
 // Imágenes
-import founderImg from "../assets/images/Fundadora.jpg";
-import trayectoriaImg from "../assets/images/Girl.jpg";
-import empresaImg from "../assets/images/manos.jpg";
-import ValoresImg from "../assets/images/Fondo-Mujer.png";
-import VisionImg from "../assets/images/fondo-rosas-claras.png";
-import Footer from "../components/Footer";
+import founderImg from "../../assets/images/Fundadora.jpg";
+import trayectoriaImg from "../../assets/images/Girl.jpg";
+import empresaImg from "../../assets/images/manos.jpg";
+import ValoresImg from "../../assets/images/Fondo-Mujer.png";
+import VisionImg from "../../assets/images/fondo-rosas-claras.png";
+import Footer from "../../components/Footer";
 
 export default function About() {
   const [menuOpen, setMenuOpen] = useState(false);

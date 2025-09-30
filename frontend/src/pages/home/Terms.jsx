@@ -1,7 +1,7 @@
 import { Link } from "react-router-dom";
 import { FiHome } from "react-icons/fi";
 import { motion } from "framer-motion";
-import bgImage from "../..assets/images/paloRosa.png";
+import bgImage from "../../assets/images/paloRosa.png";
 
 export default function Terms() {
   return (
