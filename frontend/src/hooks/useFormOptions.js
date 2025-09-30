@@ -9,18 +9,20 @@ export function useFormOptions() {
 
   const fetchData = async () => {
     try {
-      const token = localStorage.getItem("token");
+      // ❌ ELIMINADO: Ya no necesitamos obtener el token manualmente.
+      // const token = localStorage.getItem("token"); 
 
+      // ✅ Usamos api.get() directo. AuthContext ya configuró el header de Authorization globalmente.
       const [resClients, resServices, resEmployees] = await Promise.all([
-        api.get("/clients", { headers: { Authorization: `Bearer ${token}` } }),
-        api.get("/services", { headers: { Authorization: `Bearer ${token}` } }),
-        api.get("/users", { headers: { Authorization: `Bearer ${token}` } }),
+        api.get("/clients"), // Se envía el token automáticamente
+        api.get("/services"), // Se envía el token automáticamente
+        api.get("/users"), // Se envía el token automáticamente
       ]);
 
-      // 🔹 CORREGIDO: Usar usuarioId._id en lugar de c._id
+      // 🔹 Lógica de Mapeo de Clientes (Se mantiene)
       setClients(
         resClients.data.map((c) => ({
-          _id: c.usuarioId?._id || c._id, // ← Usar el _id del User, no del Client
+          _id: c.usuarioId?._id || c._id, 
           name: c.usuarioId?.name || "Cliente sin usuario",
           email: c.usuarioId?.email || "Sin correo",
         }))
@@ -32,8 +34,10 @@ export function useFormOptions() {
       // Solo usuarios con rol empleado
       setEmployees(resEmployees.data.filter((u) => u.role === "empleado"));
     } catch (error) {
-      console.error("Error cargando opciones:", error);
-      Swal.fire("Error", "No se pudieron cargar las opciones del formulario", "error");
+      console.error("Error cargando opciones:", error.response?.data?.message || error.message);
+      // Incluimos un manejo de error más informativo
+      const errorMessage = error.response?.data?.message || "Error de conexión o token expirado. Intente iniciar sesión de nuevo.";
+      Swal.fire("Error", errorMessage, "error");
     }
   };
 

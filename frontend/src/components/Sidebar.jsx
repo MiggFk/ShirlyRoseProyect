@@ -1,57 +1,76 @@
 import { Link, useLocation } from "react-router-dom";
-import { Home, Calendar, Package, Users, UserCircle, ArrowLeft } from "lucide-react";
+// Iconos de Lucide React
+import { Home, Calendar, Package, Users, UserCircle, ArrowLeft, LogOut } from "lucide-react";
 import LogoShirly from "./LogoShirly"; 
-// ✅ IMPORTA el nuevo hook useAuth
-import { useAuth } from "../hooks/useAuth"; // Asegúrate de que la ruta sea correcta
+import { useAuth } from "../context/AuthContext"; 
 
-// ❌ Se ELIMINA el hook useAuth simulado que estaba aquí
 
 export default function Sidebar() {
-  const location = useLocation();
-  // ✅ Llama al hook useAuth importado
-  const { user } = useAuth(); 
+  const location = useLocation();
+  // Obtiene el usuario y la función de logout del contexto
+  const { user, logout } = useAuth(); 
 
-  // ⚠️ Importante: Verifica que 'user' no sea null antes de acceder a 'user.role'
-  const userRole = user ? user.role : null; 
+  const userRole = user ? user.role : null; 
+  const ICON_SIZE = 24; // Tamaño de icono uniforme para que se vean grandes
 
-  const links = [
-    { to: "/dashboard", label: "Inicio", icon: <Home size={18} /> },
-    { to: "/dashboard/appointments", label: "Citas", icon: <Calendar size={18} /> },
-    { to: "/dashboard/products", label: "Productos", icon: <Package size={18} /> },
-    // 🔹 Muestra el enlace de "Usuarios" solo si el rol es 'admin'
-    ...(userRole === "admin" 
-      ? [{ to: "/dashboard/users", label: "Usuarios", icon: <Users size={18} /> }]
-      : []),
-    { to: "/profile", label: "Perfil", icon: <UserCircle size={18} /> },
-    { to: "/", label: "Volver al sitio", icon: <ArrowLeft size={18} /> },
-  ];
+  const links = [
+    { to: "/dashboard", label: "Inicio", icon: <Home size={ICON_SIZE} /> },
+    { to: "/dashboard/appointments", label: "Citas", icon: <Calendar size={ICON_SIZE} /> },
+    { to: "/dashboard/products", label: "Productos", icon: <Package size={ICON_SIZE} /> },
+    
+    // Renderizado condicional del enlace 'Usuarios'
+    ...(userRole === "admin" 
+      ? [{ to: "/dashboard/users", label: "Usuarios", icon: <Users size={ICON_SIZE} /> }]
+      : []),
+      
+    { to: "/profile", label: "Perfil", icon: <UserCircle size={ICON_SIZE} /> },
+    // Enlace para volver a la página principal del sitio
+    { to: "/", label: "Volver al sitio", icon: <ArrowLeft size={ICON_SIZE} /> },
+  ];
 
-  return (
-    <div className="w-64 bg-gradient-to-b from-pink-500 to-purple-700 text-white min-h-screen p-6 shadow-lg">
-      {/* ... (Resto del código sin cambios) ... */}
-      <div className="flex justify-center mb-10">
-        <LogoShirly size="h-20 w-20" />
-      </div>
+  return (
+    // Contenedor principal: w-64, gradiente, min-h-screen y padding
+    <div className="w-64 bg-gradient-to-b from-pink-500 to-purple-700 text-white min-h-screen p-6 shadow-2xl flex flex-col justify-between">
+      
+      <div>
+        {/* Logo */}
+        <div className="flex justify-center mb-10">
+          <LogoShirly size="h-24 w-24" />
+        </div>
 
-      <nav className="flex flex-col space-y-3">
-        {links.map((link) => {
-          const isActive = location.pathname === link.to;
-          return (
-            <Link
-              key={link.to}
-              to={link.to}
-              className={`flex items-center gap-4 px-4 py-2 rounded-lg transition-all ${
-                isActive
-                  ? "bg-pink-600 border-l-4 border-pink-400"
-                  : "hover:bg-pink-400/30"
-              }`}
-            >
-              {link.icon}
-              <span className="font-medium">{link.label}</span>
-            </Link>
-          );
-        })}
-      </nav>
-    </div>
-  );
+        {/* Navegación (Enlaces principales) */}
+        <nav className="flex flex-col space-y-3">
+          {links.map((link) => {
+            const isActive = location.pathname === link.to;
+            return (
+              <Link
+                key={link.to}
+                to={link.to}
+                // Clases de Tailwind para el diseño: flex, items-center, gap-4 para alineación
+                className={`flex items-center gap-4 px-4 py-3 rounded-xl transition-all font-semibold ${
+                  isActive
+                    ? "bg-white text-pink-700 shadow-md" // Enlace activo (fondo blanco, texto oscuro)
+                    : "hover:bg-pink-400/50 hover:text-white" // Efecto hover
+                }`}
+              >
+                {link.icon}
+                <span>{link.label}</span>
+              </Link>
+            );
+          })}
+        </nav>
+      </div>
+
+      {/* Botón de Logout (Fijado al final con justify-between) */}
+      {user && (
+        <button
+          onClick={() => logout()}
+          className="w-full flex items-center gap-4 px-4 py-3 rounded-xl bg-purple-900/30 text-white font-semibold hover:bg-purple-900/60 transition-colors mb-4"
+        >
+          <LogOut size={ICON_SIZE} />
+          <span>Cerrar Sesión</span>
+        </button>
+      )}
+    </div>
+  );
 }

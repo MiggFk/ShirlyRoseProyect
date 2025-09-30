@@ -34,7 +34,7 @@ export const useLogin = () => {
       });
     } catch (err) {
       // Manejar errores de la API
-      const message = err.response?.data?.message || "Correo o contraseña incorrectos";
+      const message = err.message || "Ocurrió un error desconocido.";
       Swal.fire({
         icon: 'error',
         title: 'Error al iniciar sesión',
