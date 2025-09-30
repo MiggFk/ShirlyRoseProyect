@@ -6,7 +6,7 @@ import {
   FaEnvelope,
 } from "react-icons/fa";
 
-import logo from "../assets/logos/Logo-ShirlyRose.png";
+import logo from "../components/LogoShirly";
 
 export default function Footer() {
   return (

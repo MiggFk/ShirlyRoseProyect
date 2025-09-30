@@ -1,56 +1,56 @@
 import { Link } from "react-router-dom";
-import Logo from "../../assets/icons/logoSR.png";
+import { motion } from "framer-motion";
+import Logo from "../../components/LogoShirly";
+import { FaUserCircle } from "react-icons/fa";
 
 
-// Importar imágenes de servicios
-import Nails1 from "../../assets/images/services/uñas-1.jpg";
-import Nails2 from "../../assets/images/services/uñas-2.jpg";
-import Nails3 from "../../assets/images/services/uñas-3.jpg";
-// import Nails4 from "../../assets/images/services/uñas-4.jpg";
-// import Nails5 from "../../assets/images/services/uñas-5.jpg";
-// import Nails6 from "../../assets/images/services/uñas-6.jpg";
-// import Nails7 from "../../assets/images/services/uñas-7.jpg";
+// imágenes de servicios
+import LimpiezaFac from "../../assets/images/services/EsteticaFacial/LimpiezaFacialPremium.png";
+import Pestañas from "../../assets/images/services/CejasyPestañas/PestañasHome.jpg";
+import Manicure from "../../assets/images/services/Uñas/Manicure.jpg";
 
-// Importar imágenes de productos
+// imágenes de productos
 import Aceites from "../../assets/images/products/aceite.jpg";
 import Cremas from "../../assets/images/products/exfoliante.jpg";
 import Shampoo from "../../assets/images/products/shampoo.jpg";
+import Footer from "../../components/Footer";
+
+const cardVariants = {
+  hidden: { opacity: 0, scale: 0.9 },
+  visible: { opacity: 1, scale: 1, transition: { duration: 0.5, ease: "easeOut" } },
+};
 
 export default function Home() {
   return (
-    <div className="min-h-screen flex flex-col bg-rose-100">
+    <motion.div
+      className="min-h-screen flex flex-col bg-rose-100"
+      initial={{ opacity: 0 }}
+      animate={{ opacity: 1, transition: { duration: 0.8 } }}
+    >
       {/* Header */}
-      <header className="flex justify-between items-center px-6 py-4 shadow-md bg-white">
+      <motion.header
+        className="flex justify-between items-center px-6 py-4 shadow-md bg-white"
+        initial={{ y: -50, opacity: 0 }}
+        animate={{ y: 0, opacity: 1, transition: { duration: 0.5, delay: 0.2 } }}
+      >
         {/* Logo + nombre */}
         <div className="flex items-center gap-2">
-          <img
-            src={Logo}
-            alt="Logo Shirly Rose"
-            className="h-12 w-12 object-contain"
-          />
-          <h1 className="text-xl font-bold text-rose-500">SHIRLY ROSE</h1>
+          <Link to="/">
+            <img
+              src={Logo}
+              alt="Logo Shirly Rose"
+              className="h-14 w-14 object-contain"
+            />
+          </Link>
+          <h1 className="text-2xl text-gray-600" >Shirly Rose</h1>
         </div>
 
-        {/* Navegación */}
+        {/* Navegación header*/}
         <nav className="hidden md:flex gap-6">
-          <Link
-            to="/services"
-            className="text-gray-700 hover:text-rose-500 font-medium transition"
-          >
-            Servicios
-          </Link>
-          <Link
-            to="/products"
-            className="text-gray-700 hover:text-rose-500 font-medium transition"
-          >
-            Productos
-          </Link>
-          <Link
-            to="/about"
-            className="text-gray-700 hover:text-rose-500 font-medium transition"
-          >
-            Nosotros
-          </Link>
+          <Link to="/services" className="text-gray-700 hover:text-rose-500 font-medium transition">Servicios</Link>
+          <Link to="/products" className="text-gray-700 hover:text-rose-500 font-medium transition">Productos</Link>
+          <Link to="/about" className="text-gray-700 hover:text-rose-500 font-medium transition">Nosotros</Link>
+          <Link to="/appointment" className="text-gray-700 hover:text-rose-500 font-medium transition">Agendar Cita</Link>
         </nav>
 
         {/* Botones */}
@@ -61,31 +61,45 @@ export default function Home() {
           >
             Iniciar Sesión
           </Link>
+
           <Link
             to="/register"
             className="px-4 py-2 rounded-lg text-sm bg-rose-400 text-white font-medium shadow hover:bg-rose-500 transition"
           >
             Registrarse
           </Link>
+
+          <Link
+           to="/Profile">
+          <FaUserCircle
+        className="text-rose-500 text-4xl cursor-pointer hover:text-rose-700 transition-colors duration-200"/>
+          </Link>
         </div>
-      </header>
+      </motion.header>
 
       {/* Hero principal */}
-      <section className="flex flex-col items-center text-center py-16 px-6">
+      <motion.section
+        className="flex flex-col items-center text-center py-16 px-6"
+        initial={{ opacity: 0, y: 50 }}
+        animate={{ opacity: 1, y: 0, transition: { duration: 0.8, delay: 0.5 } }}
+      >
+        <h2 className="text-4xl md:text-6xl text-rose-500 mb-4 italic" style={{ fontFamily: "'Great Vibes', cursive" }}>
+          Bienvenido a
+        </h2>
         <h2 className="text-4xl md:text-7xl font-extrabold text-rose-500 mb-4 italic" style={{ fontFamily: "'Great Vibes', cursive" }}>
-          Shirly Rose
+          Shirly Rose...
         </h2>
         <p className="text-lg text-gray-700 max-w-2xl mb-8">
           Relájate, cuida tu piel y luce espectacular con nuestros servicios de
-          estética y spa. Aquí podrás reservar tu cita fácilmente.
+          estética, spa y peluqueria. Aquí podrás reservar tu cita fácilmente.
         </p>
         <Link
-          to="/appointments"
+          to="/appointment"
           className="px-8 py-3 rounded-xl bg-rose-400 text-white font-semibold shadow hover:bg-rose-500 transition duration-200"
         >
           Agenda tu cita
         </Link>
-      </section>
+      </motion.section>
 
       {/* Sección de Servicios */}
       <section className="py-12 px-6 bg-white">
@@ -93,14 +107,18 @@ export default function Home() {
           Servicios Destacados
         </h3>
         <div className="grid grid-cols-1 md:grid-cols-3 gap-6 max-w-6xl mx-auto">
-          <div className="bg-white rounded-xl shadow hover:shadow-lg transition overflow-hidden">
-            <img src={Nails1} alt="Uñas 1" className="h-40 w-full object-cover" />
+          <motion.div
+            className="bg-white rounded-xl shadow hover:shadow-lg transition overflow-hidden"
+            variants={cardVariants}
+            initial="hidden"
+            whileInView="visible"
+            viewport={{ once: true, amount: 0.5 }}
+          >
+            <img src={Pestañas} alt="Cejas y Pestañas" className="h-40 w-full object-cover" />
             <div className="p-6 flex flex-col gap-3">
-              <h4 className="text-xl font-semibold text-rose-400">
-                Diseño de Uñas
-              </h4>
+              <h4 className="text-lg font-semibold text-gray-800">Cejas y Pestañas</h4>
               <p className="text-gray-600">
-                Manicure profesional con estilos únicos.
+                Cejas y pestañas con el estilo que desees y el mejor procedimiento.
               </p>
               <Link
                 to="/services"
@@ -109,15 +127,19 @@ export default function Home() {
                 Ver más →
               </Link>
             </div>
-          </div>
-          <div className="bg-white rounded-xl shadow hover:shadow-lg transition overflow-hidden">
-            <img src={Nails2} alt="Uñas 2" className="h-40 w-full object-cover" />
+          </motion.div>
+          <motion.div
+            className="bg-white rounded-xl shadow hover:shadow-lg transition overflow-hidden"
+            variants={cardVariants}
+            initial="hidden"
+            whileInView="visible"
+            viewport={{ once: true, amount: 0.5 }}
+          >
+            <img src={LimpiezaFac} alt="Limpieza Facial" className="h-40 w-full object-cover" />
             <div className="p-6 flex flex-col gap-3">
-              <h4 className="text-xl font-semibold text-rose-400">
-                Pedicure Spa
-              </h4>
+              <h4 className="text-lg font-semibold text-gray-800">Spa - Limpiezas Faciales</h4>
               <p className="text-gray-600">
-                Relaja tus pies y luce impecable.
+                Relaja tu piel y luce impecable.
               </p>
               <Link
                 to="/services"
@@ -126,15 +148,19 @@ export default function Home() {
                 Ver más →
               </Link>
             </div>
-          </div>
-          <div className="bg-white rounded-xl shadow hover:shadow-lg transition overflow-hidden">
-            <img src={Nails3} alt="Uñas 3" className="h-40 w-full object-cover" />
+          </motion.div>
+          <motion.div
+            className="bg-white rounded-xl shadow hover:shadow-lg transition overflow-hidden"
+            variants={cardVariants}
+            initial="hidden"
+            whileInView="visible"
+            viewport={{ once: true, amount: 0.5 }}
+          >
+            <img src={Manicure} alt="Manicure" className="h-40 w-full object-cover" />
             <div className="p-6 flex flex-col gap-3">
-              <h4 className="text-xl font-semibold text-rose-400">
-                Uñas Acrílicas
-              </h4>
+              <h4 className="text-lg font-semibold text-gray-800">Manicure y Pedicure</h4>
               <p className="text-gray-600">
-                Estilos modernos y de larga duración.
+                Uñas manos y pies.
               </p>
               <Link
                 to="/services"
@@ -143,7 +169,7 @@ export default function Home() {
                 Ver más →
               </Link>
             </div>
-          </div>
+          </motion.div>
         </div>
       </section>
 
@@ -153,12 +179,16 @@ export default function Home() {
           Productos Destacados
         </h3>
         <div className="grid grid-cols-1 md:grid-cols-3 gap-6 max-w-6xl mx-auto">
-          <div className="bg-white rounded-xl shadow hover:shadow-lg transition overflow-hidden">
+          <motion.div
+            className="bg-white rounded-xl shadow hover:shadow-lg transition overflow-hidden"
+            variants={cardVariants}
+            initial="hidden"
+            whileInView="visible"
+            viewport={{ once: true, amount: 0.5 }}
+          >
             <img src={Cremas} alt="Cremas" className="h-40 w-full object-cover" />
             <div className="p-6 flex flex-col gap-3">
-              <h4 className="text-lg font-semibold text-gray-800">
-                Exfoliante
-              </h4>
+              <h4 className="text-lg font-semibold text-gray-800">Exfoliante</h4>
               <p className="text-gray-600">Nutrición intensa para tu piel.</p>
               <Link
                 to="/products"
@@ -167,13 +197,17 @@ export default function Home() {
                 Ver más →
               </Link>
             </div>
-          </div>
-          <div className="bg-white rounded-xl shadow hover:shadow-lg transition overflow-hidden">
+          </motion.div>
+          <motion.div
+            className="bg-white rounded-xl shadow hover:shadow-lg transition overflow-hidden"
+            variants={cardVariants}
+            initial="hidden"
+            whileInView="visible"
+            viewport={{ once: true, amount: 0.5 }}
+          >
             <img src={Aceites} alt="Aceites" className="h-40 w-full object-cover" />
             <div className="p-6 flex flex-col gap-3">
-              <h4 className="text-lg font-semibold text-gray-800">
-                Aceites Naturales
-              </h4>
+              <h4 className="text-lg font-semibold text-gray-800">Aceites Naturales</h4>
               <p className="text-gray-600">Aromaterapia y cuidado natural.</p>
               <Link
                 to="/products"
@@ -182,13 +216,17 @@ export default function Home() {
                 Ver más →
               </Link>
             </div>
-          </div>
-          <div className="bg-white rounded-xl shadow hover:shadow-lg transition overflow-hidden">
+          </motion.div>
+          <motion.div
+            className="bg-white rounded-xl shadow hover:shadow-lg transition overflow-hidden"
+            variants={cardVariants}
+            initial="hidden"
+            whileInView="visible"
+            viewport={{ once: true, amount: 0.5 }}
+          >
             <img src={Shampoo} alt="Shampoo" className="h-40 w-full object-cover" />
             <div className="p-6 flex flex-col gap-3">
-              <h4 className="text-lg font-semibold text-gray-800">
-                Shampoo Orgánico
-              </h4>
+              <h4 className="text-lg font-semibold text-gray-800">Shampoo Orgánico</h4>
               <p className="text-gray-600">Frescura y brillo para tu cabello.</p>
               <Link
                 to="/products"
@@ -197,16 +235,18 @@ export default function Home() {
                 Ver más →
               </Link>
             </div>
-          </div>
+          </motion.div>
         </div>
       </section>
 
       {/* Footer */}
-      <footer className="text-center py-6 bg-rose-200 mt-auto">
-        <p className="text-sm text-gray-700">
-          © {new Date().getFullYear()} 셜리 로즈 · Estética & Spa
-        </p>
-      </footer>
-    </div>
+      <motion.footer
+        className="text-center py-6 bg-rose-200 mt-auto"
+        initial={{ y: 50, opacity: 0 }}
+        animate={{ y: 0, opacity: 1, transition: { duration: 0.5, delay: 0.8 } }}
+      >
+        <Footer />
+      </motion.footer>
+    </motion.div>
   );
 }

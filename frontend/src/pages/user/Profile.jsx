@@ -1,135 +1,302 @@
-import { motion } from "framer-motion";
-import { FiLogOut, FiUser } from "react-icons/fi";
-import { useEffect, useState } from "react";
-import { useNavigate, Link } from "react-router-dom";
-import axios from "axios"; 
-import Swal from "sweetalert2";
-import { Home } from "lucide-react";
+import { motion, AnimatePresence} from "framer-motion";
+import { useState, useEffect } from "react";
+import { useNavigate } from "react-router-dom";
+import Footer from "../../components/Footer";
+import {
+  FaHome,
+  FaCalendarAlt,
+  FaClock,
+  FaBars,
+  FaSignOutAlt,
+  FaUserCircle,
+  FaInfoCircle,
+  FaSpa,
+  FaTimes,
+} from "react-icons/fa";
 
-export default function Profile() {
+import paloRosa from "../../assets/images/paloRosa.png";
+
+
+// Tarjeta de contenido reutilizable
+const ContentCard = ({ title, children }) => (
+  <motion.div
+    className="bg-white p-6 rounded-xl shadow-lg border-t-4 border-rose-400/70"
+    initial={{ opacity: 0, y: 25 }}
+    animate={{ opacity: 1, y: 0 }}
+    transition={{ duration: 0.6, ease: "easeOut" }}
+  >
+    <h3 className="text-xl font-semibold text-rose-700 mb-4 border-b pb-2 border-rose-100">
+      {title}
+    </h3>
+    {children}
+  </motion.div>
+);
+
+// Sidebar
+const Sidebar = ({ isOpen, onClose, onLogout, user, setActiveTab }) => {
+  const sidebarVariants = {
+    hidden: { x: "100%" },
+    visible: { x: 0, transition: { type: "spring", stiffness: 80, damping: 18 } },
+    exit: { x: "100%", transition: { duration: 0.3 } },
+  };
+
+  const linkData = [
+    { name: "Menú Principal", tab: "dashboard", Icon: FaHome },
+    { name: "Mis Citas", tab: "appointments", Icon: FaCalendarAlt },
+    { name: "Historial", tab: "history", Icon: FaClock },
+    { name: "Servicios VIP", tab: "vip", Icon: FaSpa },
+    { name: "Ayuda", tab: "help", Icon: FaInfoCircle },
+  ];
+
+  const handleNavigation = (tab) => {
+    setActiveTab(tab);
+    onClose();
+  };
+
+  return (
+    <AnimatePresence>
+      {isOpen && (
+        <>
+          <motion.div
+            className="fixed inset-0 bg-black/40 z-40"
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            exit={{ opacity: 0 }}
+            onClick={onClose}
+          />
+          <motion.aside
+            className="fixed top-0 right-0 h-full w-72 bg-white shadow-2xl z-50 flex flex-col"
+            variants={sidebarVariants}
+            initial="hidden"
+            animate="visible"
+            exit="exit"
+          >
+            <div className="bg-rose-200 p-5 flex items-center justify-between">
+              <div className="flex items-center gap-3 text-rose-700">
+                <FaUserCircle className="w-8 h-8" />
+                <div>
+                  <h3 className="font-semibold">
+                    {user.name.split(" ")[0]}
+                  </h3>
+                  <p className="text-sm opacity-80 truncate">{user.email}</p>
+                </div>
+              </div>
+              <button onClick={onClose} className="text-white hover:opacity-80">
+                <FaTimes className="w-6 h-6" />
+              </button>
+            </div>
+
+            <nav className="flex-1 p-4 space-y-2">
+              {linkData.map((link) => (
+                <motion.button
+                  key={link.tab}
+                  onClick={() => handleNavigation(link.tab)}
+                  className="flex items-center gap-3 px-4 py-3 w-full rounded-lg text-gray-700 hover:bg-rose-100 hover:text-rose-800 transition"
+                  whileHover={{ x: -5 }}
+                >
+                  <link.Icon className="text-rose-600 w-5 h-5" />
+                  {link.name}
+                </motion.button>
+              ))}
+            </nav>
+
+            <div className="p-6 border-t">
+              <motion.button
+                onClick={onLogout}
+                className="w-full flex items-center justify-center gap-2 bg-rose-600 text-white py-2 rounded-lg hover:bg-rose-300 transition"
+                whileHover={{ scale: 1.03 }}
+                whileTap={{ scale: 0.97 }}
+              >
+                <FaSignOutAlt />
+                Cerrar Sesión
+              </motion.button>
+            </div>
+          </motion.aside>
+        </>
+      )}
+    </AnimatePresence>
+  );
+};
+
+// Vistas
+const DashboardView = ({ user }) => (
+  <motion.div
+    className="grid md:grid-cols-2 gap-6"
+    initial={{ opacity: 0, y: 20 }}
+    animate={{ opacity: 1, y: 0 }}
+    transition={{ duration: 0.5 }}
+  >
+    <ContentCard title="Información de Cuenta">
+      <div className="space-y-2 text-gray-700">
+        <p><strong>Nombre:</strong> {user.name}</p>
+        <p><strong>Correo:</strong> {user.email}</p>
+        <p><strong>Teléfono:</strong> {user.phone}</p>
+      </div>
+    </ContentCard>
+
+    <ContentCard title="Resumen de Actividad">
+      <div className="space-y-2 text-gray-700">
+        <p><strong>Próxima Cita:</strong> 10/10/2025</p>
+        <p><strong>Servicio:</strong> Facial Lifting Premium</p>
+        <p><strong>Última Visita:</strong> 15/09/2025</p>
+        <button className="mt-2 text-sm text-rose-300 hover:underline">
+          Ver detalles completos
+        </button>
+      </div>
+    </ContentCard>
+  </motion.div>
+);
+
+const AppointmentsView = () => (
+  <ContentCard title="Mis Citas Pendientes">
+    <p className="text-gray-500">Aquí verás tus citas confirmadas o pendientes.</p>
+    <div className="h-40 flex items-center justify-center text-rose-300 border border-dashed border-rose-200 mt-4 rounded-lg">
+      Lista de citas agendadas aquí.
+    </div>
+  </ContentCard>
+);
+
+const HistoryView = () => (
+  <ContentCard title="Historial de Servicios">
+    <p className="text-gray-500">Aquí se mostrará el historial completo de servicios.</p>
+    <div className="h-40 flex items-center justify-center text-rose-300 border border-dashed border-rose-200 mt-4 rounded-lg">
+      (Historial vacío)
+    </div>
+  </ContentCard>
+);
+
+// Principal
+const Profile = () => {
   const [user, setUser] = useState(null);
-  const [loading, setLoading] = useState(true);
+  const [activeTab, setActiveTab] = useState("dashboard");
+  const [isSidebarOpen, setIsSidebarOpen] = useState(false);
   const navigate = useNavigate();
 
   useEffect(() => {
-    const fetchProfile = async () => {
-      try {
-        const token = localStorage.getItem("token");
-        if (!token) {
-          throw new Error("No se encontró el token de autenticación.");
-        }
-        
-        const response = await axios.get("http://localhost:5000/api/users/profile", {
-          headers: {
-            Authorization: `Bearer ${token}`,
-          },
-        });
-
-        setUser(response.data.profile);
-      } catch (error) {
-        console.error("Error al obtener el perfil:", error);
-        Swal.fire({
-          icon: 'error',
-          title: 'Error de carga',
-          text: 'No se pudo cargar el perfil. Intenta iniciar sesión nuevamente.',
-        }).then(() => {
-          navigate("/login");
-        });
-      } finally {
-        setLoading(false);
-      }
-    };
-
-    fetchProfile();
-  }, [navigate]);
+    const storedUser = JSON.parse(localStorage.getItem("user"));
+    if (storedUser) setUser(storedUser);
+  }, []);
 
   const handleLogout = () => {
-    Swal.fire({
-      title: '¿Estás seguro?',
-      text: "¿Quieres cerrar tu sesión?",
-      icon: 'warning',
-      showCancelButton: true,
-      confirmButtonColor: '#d33',
-      cancelButtonColor: '#3085d6',
-      confirmButtonText: 'Sí, cerrar sesión',
-      cancelButtonText: 'Cancelar'
-    }).then((result) => {
-      if (result.isConfirmed) {
-        localStorage.clear();
-        navigate("/login");
-      }
-    });
+    localStorage.removeItem("user");
+    navigate("/");
   };
 
-  if (loading) {
-    return (
-      <div className="min-h-screen flex items-center justify-center bg-gray-100">
-        <div className="w-10 h-10 border-4 border-pink-500 border-t-transparent rounded-full animate-spin"></div>
-      </div>
-    );
-  }
+  if (!user) return <p className="text-center mt-20">No has iniciado sesión...</p>;
 
-  if (!user) {
-    return (
-      <div className="min-h-screen flex flex-col items-center justify-center bg-gray-100 p-4">
-        <h2 className="text-xl font-semibold text-gray-700">No se pudo cargar la información del usuario.</h2>
-        <button
-          onClick={handleLogout}
-          className="mt-4 bg-rose-500 hover:bg-rose-600 text-white px-4 py-2 rounded-lg font-bold transition"
-        >
-          Ir a iniciar sesión
-        </button>
-      </div>
-    );
-  }
+  const userInitials = user.name
+    .split(" ")
+    .map((n) => n[0])
+    .join("")
+    .toUpperCase();
 
   return (
-    <div className="relative flex flex-col items-center justify-center min-h-screen bg-gradient-to-br from-pink-50 via-white to-rose-50 p-4">
-      <Link
-        to="/dashboard"
-        title="Volver al dashboard"
-        className="absolute top-6 left-6 text-pink-600 hover:text-pink-800 transition-colors"
-      >
-        <Home size={32} />
-      </Link>
-      
-      <motion.div
-        initial={{ opacity: 0, scale: 0.95 }}
-        animate={{ opacity: 1, scale: 1 }}
-        transition={{ duration: 0.5 }}
-        className="bg-white p-8 md:p-10 rounded-3xl shadow-2xl w-full max-w-sm text-center"
-      >
-        <div className="flex justify-center mb-6">
-          <FiUser className="text-pink-500" size={80} />
-        </div>
+    <div className="min-h-screen bg-gray-50">
+      <Sidebar
+        isOpen={isSidebarOpen}
+        onClose={() => setIsSidebarOpen(false)}
+        onLogout={handleLogout}
+        user={user}
+        setActiveTab={setActiveTab}
+      />
 
-        <h2 className="text-3xl font-bold text-gray-800 mb-2">
-          Perfil del Usuario
-        </h2>
-        
-        <div className="space-y-3 text-left my-6">
-          <p className="font-semibold text-gray-700">
-            <span className="block text-sm text-gray-500">Nombre:</span>
-            {user.name}
-          </p>
-          <p className="font-semibold text-gray-700">
-            <span className="block text-sm text-gray-500">Correo:</span>
-            {user.email}
-          </p>
-          <p className="font-semibold text-gray-700">
-            <span className="block text-sm text-gray-500">Rol:</span>
-            <span className="font-medium capitalize">{user.role}</span>
-          </p>
-        </div>
-
-        <button
-          onClick={handleLogout}
-          className="w-full mt-6 bg-rose-500 hover:bg-rose-600 text-white px-4 py-3 rounded-xl font-bold transition shadow-lg flex items-center justify-center gap-2"
+      {/* Header */}
+      <motion.header
+        className="relative h-56 w-full shadow-xl overflow-hidden"
+        initial={{ opacity: 0, y: -40 }}
+        animate={{ opacity: 1, y: 0 }}
+        transition={{ duration: 0.8, ease: "easeOut" }}
+      >
+        {/* Imagen de fondo */}
+        <div
+          className="absolute inset-0 bg-cover bg-center"
+          style={{
+            backgroundImage:`url(${paloRosa})`,
+          }}
         >
-          <FiLogOut size={20} />
-          Cerrar sesión
-        </button>
-      </motion.div>
+          <div className="absolute inset-0 bg-black/30 backdrop-blur-sm"></div>
+        </div>
+
+        <div className="relative max-w-7xl mx-auto h-full px-6 flex items-center justify-between">
+          <div className="flex items-center gap-5">
+            <motion.div
+              initial={{ scale: 0 }}
+              animate={{ scale: 1 }}
+              transition={{ duration: 0.6 }}
+              className="w-20 h-20 rounded-full bg-rose-300 flex items-center justify-center text-white font-bold text-3xl shadow-lg"
+            >
+              {userInitials}
+            </motion.div>
+
+            <motion.div
+              initial={{ opacity: 0, x: -40 }}
+              animate={{ opacity: 1, x: 0 }}
+              transition={{ duration: 0.6, delay: 0.3 }}
+            >
+              <h1 className="text-4xl font-bold text-white drop-shadow">
+                Hola, {user.name.split(" ")[0]}
+              </h1>
+              <p className="text-rose-200">Bienvenida a Shirly Rose</p>
+            </motion.div>
+          </div>
+
+          <button
+            onClick={() => setIsSidebarOpen(true)}
+            className="p-4 bg-white/30 backdrop-blur-md rounded-full hover:bg-white/50 transition text-white shadow-md"
+          >
+            <FaBars className="w-6 h-6" />
+          </button>
+        </div>
+      </motion.header>
+
+      {/* Contenido */}
+      <main className="max-w-6xl mx-auto px-4 mt-[-3rem] pb-12">
+        <motion.div
+          className="bg-white rounded-2xl shadow-lg flex justify-around p-3 mt-16"
+          initial={{ opacity: 0, y: 30 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.6 }}
+        >
+          {[
+            { id: "dashboard", label: "Menú", Icon: FaHome },
+            { id: "appointments", label: "Mis Citas", Icon: FaCalendarAlt },
+            { id: "history", label: "Historial", Icon: FaClock },
+          ].map((tab) => (
+            <motion.button
+              key={tab.id}
+              onClick={() => setActiveTab(tab.id)}
+              className={`flex-1 flex items-center justify-center gap-2 py-3 rounded-lg font-semibold transition-all ${
+                activeTab === tab.id
+                  ? "bg-rose-400 text-white shadow-md"
+                  : "bg-white text-rose-400 hover:bg-rose-50"
+              }`}
+              whileHover={{ scale: 1.05 }}
+              whileTap={{ scale: 0.97 }}
+            >
+              <tab.Icon />
+              {tab.label}
+            </motion.button>
+          ))}
+        </motion.div>
+
+        <div className="mt-8">
+          <AnimatePresence mode="wait">
+            {activeTab === "dashboard" && <DashboardView user={user} />}
+            {activeTab === "appointments" && <AppointmentsView />}
+            {activeTab === "history" && <HistoryView />}
+          </AnimatePresence>
+        </div>
+
+      </main>
+      <motion.footer
+        className="text-center py-6 bg-rose-200"
+        initial={{ y: 50, opacity: 0 }}
+        animate={{ y: 0, opacity: 1, transition: { duration: 0.5, delay: 0.8 } }}
+      >
+        <Footer />
+      </motion.footer>
     </div>
   );
-}
+};
+
+export default Profile;
