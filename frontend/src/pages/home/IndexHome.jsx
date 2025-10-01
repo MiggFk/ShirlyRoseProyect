@@ -35,13 +35,8 @@ export default function Home() {
       >
         {/* Logo + nombre */}
         <div className="flex items-center gap-2">
-          <Link to="/">
-            <img
-              src={Logo}
-              alt="Logo Shirly Rose"
-              className="h-14 w-14 object-contain"
-            />
-          </Link>
+          {/* <Link to="/"> */}
+           <Logo size="h-24 w-24" />
           <h1 className="text-2xl text-gray-600" >Shirly Rose</h1>
         </div>
 
