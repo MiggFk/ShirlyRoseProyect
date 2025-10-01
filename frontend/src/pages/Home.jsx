@@ -1,10 +1,8 @@
 import { Link } from "react-router-dom";
 import { motion } from "framer-motion";
-import Logo from "../assets/logos/Logo-ShirlyRose.png";
+import Logo from "../components/Logo";
 import { FaUserCircle } from "react-icons/fa";
 import Modelo from "../assets/images/Fondo-Home.png"; 
-
-
 
 // imágenes de servicios
 import LimpiezaFac from "../assets/images/services/EsteticaFacial/LimpiezaFacialPremium.png";
@@ -36,16 +34,12 @@ export default function Home() {
         animate={{ y: 0, opacity: 1, transition: { duration: 0.5, delay: 0.2 } }}
       >
         {/* Logo + nombre */}
-        <div className="flex items-center gap-2">
-          <Link to="/">
-            <img
-              src={Logo}
-              alt="Logo Shirly Rose"
-              className="h-14 w-14 object-contain"
-            />
+        <div className="flex items-center gap-2 justify-center">
+          <Link to="/" className="flex items-center gap-2">
+          <Logo size="w-14 h-14" />
+          <h1 className="text-2xl text-gray-600">Shirly Rose</h1>
           </Link>
-          <h1 className="text-2xl text-gray-600" >Shirly Rose</h1>
-        </div>
+          </div>
 
         {/* Navegación header*/}
         <nav className="hidden md:flex gap-6">

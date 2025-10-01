@@ -6,7 +6,7 @@ import {
   FaEnvelope,
 } from "react-icons/fa";
 
-import logo from "../assets/logos/Logo-ShirlyRose.png";
+import Logo from "../components/Logo";
 
 export default function Footer() {
   return (
@@ -23,11 +23,7 @@ export default function Footer() {
           <h2 className="text-xl font-bold uppercase tracking-wide">
             Shirly Rose
           </h2>
-          <img
-            src={logo}
-            alt="Logo Shirly Rose"
-            className="w-20 h-20"
-          />
+          <Logo size="w-20 h-20" />
           <p className="text-sm text-rose-700">cr23 #10-19   Caucasia - Antioquia  Colombia</p>
         </div>
 

@@ -60,7 +60,7 @@ export default function Login() {
       animate="animate"
       exit="exit"
     >
-      {/* 🔹 Triángulo de fondo animado */}
+      {/* Triángulo de fondo animado */}
       <motion.div
         className="absolute right-0 top-0 bottom-0 w-2/3 bg-rose-200 z-0"
         style={{ clipPath: "polygon(25% 0%, 100% 0%, 100% 100%, 0% 100%)" }}
@@ -69,7 +69,7 @@ export default function Login() {
         animate="visible"
       />
 
-      {/* 🔹 Icono de Home animado */}
+      {/* Icono de Home animado */}
       <motion.div
         initial={{ x: -100 }}
         animate={{ x: 0 }}
@@ -81,9 +81,9 @@ export default function Login() {
         </Link>
       </motion.div>
 
-      {/* 🔹 Contenedor principal de login */}
+      {/* Contenedor principal de login */}
       <div className="relative flex flex-col md:flex-row items-center justify-around w-full max-w-7xl mx-auto p-4 md:p-8 z-10">
-        {/* 🔹 Sección del logo */}
+        {/* Sección del logo */}
         <motion.div
           className="flex justify-center items-center p-8 md:p-12 mb-8 md:mb-0"
           variants={logoContainerVariants}
@@ -93,7 +93,7 @@ export default function Login() {
           <Logo size="h-64 w-64 md:h-80 md:w-80 object-contain" />
         </motion.div>
 
-        {/* 🔹 Sección del formulario */}
+        {/* Sección del formulario */}
         <motion.div
           className="w-full max-w-md p-6 md:p-10 bg-white/90 backdrop-blur-sm rounded-3xl shadow-2xl"
           variants={formVariants}
