@@ -1,8 +1,7 @@
 import { Link } from "react-router-dom";
 import { motion } from "framer-motion";
-import Logo from "../../components/LogoShirly";
+import Logo from "../../components/LogoShirly"; // ✅ ruta corregida
 import { FaUserCircle } from "react-icons/fa";
-
 
 // imágenes de servicios
 import LimpiezaFac from "../../assets/images/services/EsteticaFacial/LimpiezaFacialPremium.png";
@@ -13,7 +12,9 @@ import Manicure from "../../assets/images/services/Uñas/Manicure.jpg";
 import Aceites from "../../assets/images/products/aceite.jpg";
 import Cremas from "../../assets/images/products/exfoliante.jpg";
 import Shampoo from "../../assets/images/products/shampoo.jpg";
-import Footer from "../../components/Footer";
+
+import Footer from "../../components/Footer"; // ✅ ruta corregida
+import Modelo from "../../assets/images/Fondo-Home.png"; // ✅ agregamos hero background
 
 const cardVariants = {
   hidden: { opacity: 0, scale: 0.9 },
@@ -34,13 +35,14 @@ export default function Home() {
         animate={{ y: 0, opacity: 1, transition: { duration: 0.5, delay: 0.2 } }}
       >
         {/* Logo + nombre */}
-        <div className="flex items-center gap-2">
-          {/* <Link to="/"> */}
-           <Logo size="h-24 w-24" />
-          <h1 className="text-2xl text-gray-600" >Shirly Rose</h1>
+        <div className="flex items-center gap-2 justify-center">
+          <Link to="/" className="flex items-center gap-2">
+            <Logo size="h-20 w-20" />
+            <h1 className="text-2xl text-gray-600">Shirly Rose</h1>
+          </Link>
         </div>
 
-        {/* Navegación header*/}
+        {/* Navegación header */}
         <nav className="hidden md:flex gap-6">
           <Link to="/services" className="text-gray-700 hover:text-rose-500 font-medium transition">Servicios</Link>
           <Link to="/products" className="text-gray-700 hover:text-rose-500 font-medium transition">Productos</Link>
@@ -64,36 +66,50 @@ export default function Home() {
             Registrarse
           </Link>
 
-          <Link
-           to="/Profile">
-          <FaUserCircle
-        className="text-rose-500 text-4xl cursor-pointer hover:text-rose-700 transition-colors duration-200"/>
+          <Link to="/Profile">
+            <FaUserCircle className="text-rose-400 text-4xl cursor-pointer hover:text-rose-700 transition-colors duration-200" />
           </Link>
         </div>
       </motion.header>
 
       {/* Hero principal */}
       <motion.section
-        className="flex flex-col items-center text-center py-16 px-6"
+        className="relative w-full h-[90vh] flex items-center justify-start bg-cover bg-center"
+        style={{
+          backgroundImage: `url(${Modelo})`,
+          backgroundPosition: "right center",
+        }}
         initial={{ opacity: 0, y: 50 }}
         animate={{ opacity: 1, y: 0, transition: { duration: 0.8, delay: 0.5 } }}
       >
-        <h2 className="text-4xl md:text-6xl text-rose-500 mb-4 italic" style={{ fontFamily: "'Great Vibes', cursive" }}>
-          Bienvenido a
-        </h2>
-        <h2 className="text-4xl md:text-7xl font-extrabold text-rose-500 mb-4 italic" style={{ fontFamily: "'Great Vibes', cursive" }}>
-          Shirly Rose...
-        </h2>
-        <p className="text-lg text-gray-700 max-w-2xl mb-8">
-          Relájate, cuida tu piel y luce espectacular con nuestros servicios de
-          estética, spa y peluqueria. Aquí podrás reservar tu cita fácilmente.
-        </p>
-        <Link
-          to="/appointment"
-          className="px-8 py-3 rounded-xl bg-rose-400 text-white font-semibold shadow hover:bg-rose-500 transition duration-200"
-        >
-          Agenda tu cita
-        </Link>
+        {/* Capa semi-transparente para mejor legibilidad */}
+        <div className="absolute inset-0 bg-gradient-to-r from-rose-100/50 via-rose-50/20 to-transparent"></div>
+
+        {/* Contenido del Hero */}
+        <div className="relative z-10 pl-10 md:pl-20 max-w-lg text-left">
+          <h2
+            className="text-4xl md:text-6xl text-rose-500 mb-4 italic drop-shadow-md"
+            style={{ fontFamily: "'Great Vibes', cursive" }}
+          >
+            Bienvenido a
+          </h2>
+          <h2
+            className="text-4xl md:text-7xl font-extrabold text-rose-500 mb-4 italic drop-shadow-md"
+            style={{ fontFamily: "'Great Vibes', cursive" }}
+          >
+            Shirly Rose...
+          </h2>
+          <p className="text-lg text-gray-700 max-w-md mb-8">
+            Relájate, cuida tu piel y luce espectacular con nuestros servicios
+            de estética, spa y peluquería. Aquí podrás reservar tu cita fácilmente.
+          </p>
+          <Link
+            to="/appointment"
+            className="px-8 py-3 rounded-xl bg-rose-400 text-white font-semibold shadow hover:bg-rose-500 transition duration-200"
+          >
+            Agenda tu cita
+          </Link>
+        </div>
       </motion.section>
 
       {/* Sección de Servicios */}
@@ -123,6 +139,7 @@ export default function Home() {
               </Link>
             </div>
           </motion.div>
+
           <motion.div
             className="bg-white rounded-xl shadow hover:shadow-lg transition overflow-hidden"
             variants={cardVariants}
@@ -133,9 +150,7 @@ export default function Home() {
             <img src={LimpiezaFac} alt="Limpieza Facial" className="h-40 w-full object-cover" />
             <div className="p-6 flex flex-col gap-3">
               <h4 className="text-lg font-semibold text-gray-800">Spa - Limpiezas Faciales</h4>
-              <p className="text-gray-600">
-                Relaja tu piel y luce impecable.
-              </p>
+              <p className="text-gray-600">Relaja tu piel y luce impecable.</p>
               <Link
                 to="/services"
                 className="text-sm text-rose-500 font-medium hover:underline self-start"
@@ -144,6 +159,7 @@ export default function Home() {
               </Link>
             </div>
           </motion.div>
+
           <motion.div
             className="bg-white rounded-xl shadow hover:shadow-lg transition overflow-hidden"
             variants={cardVariants}
@@ -154,9 +170,7 @@ export default function Home() {
             <img src={Manicure} alt="Manicure" className="h-40 w-full object-cover" />
             <div className="p-6 flex flex-col gap-3">
               <h4 className="text-lg font-semibold text-gray-800">Manicure y Pedicure</h4>
-              <p className="text-gray-600">
-                Uñas manos y pies.
-              </p>
+              <p className="text-gray-600">Uñas manos y pies.</p>
               <Link
                 to="/services"
                 className="text-sm text-rose-500 font-medium hover:underline self-start"
@@ -193,6 +207,7 @@ export default function Home() {
               </Link>
             </div>
           </motion.div>
+
           <motion.div
             className="bg-white rounded-xl shadow hover:shadow-lg transition overflow-hidden"
             variants={cardVariants}
@@ -212,6 +227,7 @@ export default function Home() {
               </Link>
             </div>
           </motion.div>
+
           <motion.div
             className="bg-white rounded-xl shadow hover:shadow-lg transition overflow-hidden"
             variants={cardVariants}

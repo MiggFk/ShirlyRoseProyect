@@ -1,13 +1,24 @@
 const express = require("express");
 const router = express.Router();
 
-// Importar los controladores
-const { createService, getServices } = require("../controllers/serviceController");
+const auth = require("../middleware/authMiddleware");
+const authorizeRoles = require("../middleware/roleMiddleware");
 
-// Ruta para crear un nuevo servicio
-router.post("/", createService);
+const {
+  getServices,
+  getServiceById,
+  createService,
+  updateService,
+  deleteService,
+} = require("../controllers/serviceController");
 
-// Ruta para obtener todos los servicios
+// Público (sin autenticación)
 router.get("/", getServices);
+router.get("/:id", getServiceById);
+
+// Protegido (solo admin y empleado)
+router.post("/", auth, authorizeRoles("admin", "empleado"), createService);
+router.put("/:id", auth, authorizeRoles("admin", "empleado"), updateService);
+router.delete("/:id", auth, authorizeRoles("admin", "empleado"), deleteService);
 
 module.exports = router;

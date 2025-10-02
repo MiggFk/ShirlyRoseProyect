@@ -1,6 +1,5 @@
 import React from "react";
 import { BrowserRouter, Routes, Route, Link } from "react-router-dom";
-// 💥 Importa el AuthProvider
 import { AuthProvider } from "./context/AuthContext"; 
 
 // Importaciones de Páginas y Componentes
@@ -20,9 +19,8 @@ import ServicesHome from "./pages/home/Services";
 import ProductsHome from "./pages/home/Products";
 import Terms from "./pages/home/Terms";
 import About from "./pages/home/About";
+import Privacy from "./pages/home/Privacy";
 
-
-// Componente para manejar las rutas no encontradas
 const NotFound = () => (
   <div className="flex flex-col items-center justify-center min-h-screen bg-gray-100">
     <h1 className="text-4xl font-bold text-gray-800">404</h1>
@@ -36,21 +34,21 @@ const NotFound = () => (
 function App() {
   return (
     <BrowserRouter>
-      {/* 💥 ENVUELVE las Rutas con el AuthProvider 💥 */}
       <AuthProvider>
         <Routes>
           {/* Rutas Públicas */}
           <Route path="/" element={<IndexHome />} />
-          <Route path="/servicesHome" element={<ServicesHome />} />
-          <Route path="/productsHome" element={<ProductsHome />} />
+          <Route path="/services" element={<ServicesHome />} />  {/* 🔹 CORREGIDO */}
+          <Route path="/products" element={<ProductsHome />} />  {/* 🔹 CORREGIDO */}
           <Route path="/about" element={<About />} />
           <Route path="/terms" element={<Terms />} />
+          <Route path="/privacy" element={<Privacy />} />
           
           {/* Rutas de Autenticación */}
           <Route path="/login" element={<Login />} />
           <Route path="/register" element={<Register />} />
 
-          {/* Ruta del perfil del usuario (clientes, empleados, admin) */}
+          {/* Perfil de usuario */}
           <Route
             path="/profile"
             element={
@@ -60,7 +58,7 @@ function App() {
             }
           />
 
-          {/* Rutas Privadas / Dashboard */}
+          {/* Dashboard (admin/empleado) */}
           <Route
             path="/dashboard"
             element={
@@ -69,13 +67,10 @@ function App() {
               </PrivateRoute>
             }
           >
-            {/* Rutas anidadas que se renderizan dentro de DashboardLayout */}
             <Route index element={<Home />} />
             <Route path="appointments" element={<Appointments />} />
             <Route path="products" element={<Products />} />
             <Route path="services" element={<Services />} />
-
-            {/* Ruta restringida por Rol (Solo Admin) */}
             <Route
               path="users"
               element={
@@ -86,7 +81,7 @@ function App() {
             />
           </Route>
 
-          {/* Ruta comodín para capturar URLs no válidas */}
+          {/* 404 */}
           <Route path="*" element={<NotFound />} />
         </Routes>
       </AuthProvider>
