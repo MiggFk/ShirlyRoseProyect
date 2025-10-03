@@ -1,7 +1,7 @@
 import { motion, AnimatePresence} from "framer-motion";
 import { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
-import Footer from "../components/Footer";
+import Footer from "../../components/Footer";
 import {
   FaHome,
   FaCalendarAlt,
@@ -14,7 +14,7 @@ import {
   FaTimes,
 } from "react-icons/fa";
 
-import paloRosa from "../assets/images/paloRosa.png";
+import paloRosa from "../../assets/images/paloRosa.png";
 
 
 // Tarjeta de contenido reutilizable

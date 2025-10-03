@@ -6,7 +6,7 @@ import {
   FaEnvelope,
 } from "react-icons/fa";
 
-import Logo from "../components/Logo";
+import Logo from "./LogoShirly";
 
 export default function Footer() {
   return (
@@ -80,9 +80,9 @@ export default function Footer() {
               { Icon: FaWhatsapp, link: "https://wa.me/573108317548" },
               { Icon: FaFacebookF, link: "https://www.facebook.com/share/14JHmkL5x58/?mibextid=wwXIfr" },
               { Icon: FaInstagram, link: "https://www.instagram.com/Shirly_montalvo" },
-              { Icon: FaEnvelope, link: "mailto:correo@gmail.com" },
+              { Icon: FaEnvelope, link: "mailto:bryan.giraldo.0906@gmail.com" },
             ].map(({ Icon, link }, i) => (
-              <motion.a
+              <motion.a 
                 key={i}
                 href={link}
                 whileHover={{ scale: 1.2 }}

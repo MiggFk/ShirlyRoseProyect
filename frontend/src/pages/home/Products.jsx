@@ -2,15 +2,15 @@ import { useState } from "react";
 import { Link } from "react-router-dom";
 import { motion, AnimatePresence } from "framer-motion";
 import { FiMenu, FiX } from "react-icons/fi";
-import Footer from "../components/Footer";
+import Footer from "../../components/Footer";
 
 
 // Rutas de las imagenes
-import shampoo from "../assets/images/products/shampoo.jpg";
-import exfoliante from "../assets/images/products/exfoliante.jpg";
-import aceite from "../assets/images/products/aceite.jpg";
-import Balsamo from "../assets/images/products/Balsamo.jpg";
-import SinNada from "../assets/images/SinFoto.jpg";
+import shampoo from "../../assets/images/products/shampoo.jpg";
+import exfoliante from "../../assets/images/products/exfoliante.jpg";
+import aceite from "../../assets/images/products/aceite.jpg";
+import Balsamo from "../../assets/images/products/Balsamo.jpg";
+import SinNada from "../../assets/images/SinFoto.jpg";
 
 
 
@@ -186,7 +186,7 @@ export default function Products() {
             <Link to="/about" className="text-rose-600 font-medium hover:text-rose-800" onClick={() => setMenuOpen(false)}>Nosotros</Link>
             <Link to="/contact" className="text-rose-600 font-medium hover:text-rose-800" onClick={() => setMenuOpen(false)}>Contacto</Link>
             <Link to="/appointment" className="text-rose-600 font-medium hover:text-rose-800" onClick={() => setMenuOpen(false)}>Agenda tu Cita</Link>
-            <Link to="" className="text-rose-600 font-medium hover:text-rose-800" onClick={() => setMenuOpen(false)}>셜리 로즈</Link>
+            <p className="text-rose-600">셜리 로즈</p>
           </motion.nav>
         )}
 

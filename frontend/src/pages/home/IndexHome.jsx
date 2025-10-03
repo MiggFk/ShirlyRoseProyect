@@ -1,26 +1,26 @@
 import { Link } from "react-router-dom";
 import { motion } from "framer-motion";
-import Logo from "../components/Logo";
+import Logo from "../../components/LogoShirly";
 import { FaUserCircle } from "react-icons/fa";
-import Modelo from "../assets/images/Fondo-Home.png"; 
+import Modelo from "../../assets/images/Fondo-Home.png"; 
 
 // imágenes de servicios
-import LimpiezaFac from "../assets/images/services/EsteticaFacial/LimpiezaFacialPremium.png";
-import Pestañas from "../assets/images/services/CejasyPestañas/PestañasHome.jpg";
-import Manicure from "../assets/images/services/Uñas/Manicure.jpg";
+import LimpiezaFac from "../../assets/images/services/EsteticaFacial/LimpiezaFacialPremium.png";
+import Pestañas from "../../assets/images/services/CejasyPestañas/PestañasHome.jpg";
+import Manicure from "../../assets/images/services/Uñas/Manicure.jpg";
 
 // imágenes de productos
-import Aceites from "../assets/images/products/aceite.jpg";
-import Cremas from "../assets/images/products/exfoliante.jpg";
-import Shampoo from "../assets/images/products/shampoo.jpg";
-import Footer from "../components/Footer";
+import Aceites from "../../assets/images/products/aceite.jpg";
+import Cremas from "../../assets/images/products/exfoliante.jpg";
+import Shampoo from "../../assets/images/products/shampoo.jpg";
+import Footer from "../../components/Footer";
 
 const cardVariants = {
   hidden: { opacity: 0, scale: 0.9 },
   visible: { opacity: 1, scale: 1, transition: { duration: 0.5, ease: "easeOut" } },
 };
 
-export default function Home() {
+export default function IndexHome() {
   return (
     <motion.div
       className="min-h-screen flex flex-col bg-rose-100"
@@ -37,8 +37,8 @@ export default function Home() {
         <div className="flex items-center gap-2 justify-center">
           <Link to="/" className="flex items-center gap-2">
           <Logo size="w-14 h-14" />
-          <h1 className="text-2xl text-gray-600">Shirly Rose</h1>
           </Link>
+          <h1 className="text-2xl text-gray-600">Shirly Rose</h1>
           </div>
 
         {/* Navegación header*/}

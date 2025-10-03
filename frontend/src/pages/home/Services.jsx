@@ -2,18 +2,18 @@ import { useState } from "react";
 import { Link } from "react-router-dom";
 import { FiMenu, FiX, FiSearch } from "react-icons/fi";
 import { motion, AnimatePresence } from "framer-motion";
-import Footer from "../components/Footer";
+import Footer from "../../components/Footer";
 
 // Imágenes
-import pressOn from "../assets/images/services/Uñas/pressOn.jpg";
-import RecubrimientoPoli from "../assets/images/services/Uñas/Recubrimiento-Poligel.jpg";
-import Hidralips from "../assets/images/services/EsteticaFacial/Hidralips.jpg";
-import Acrilico from "../assets/images/services/Uñas/Acrilico.jpg";
-import Pestañas from "../assets/images/services/CejasyPestañas/Pestañas.jpg";
-import Acriesculpido from "../assets/images/services/Uñas/Acrilico-esculpido.jpg";
-import PeloaPeloHibridas from "../assets/images/services/CejasyPestañas/pelo-hibridas.jpg";
-import Voltecnologico from "../assets/images/services/CejasyPestañas/volumen-Tecnologico.jpg";
-import SinNada from "../assets/images/SinFoto.jpg";
+import pressOn from "../../assets/images/services/Uñas/pressOn.jpg";
+import RecubrimientoPoli from "../../assets/images/services/Uñas/Recubrimiento-Poligel.jpg";
+import Hidralips from "../../assets/images/services/EsteticaFacial/Hidralips.jpg";
+import Acrilico from "../../assets/images/services/Uñas/Acrilico.jpg";
+import Pestañas from "../../assets/images/services/CejasyPestañas/Pestañas.jpg";
+import Acriesculpido from "../../assets/images/services/Uñas/Acrilico-esculpido.jpg";
+import PeloaPeloHibridas from "../../assets/images/services/CejasyPestañas/pelo-hibridas.jpg";
+import Voltecnologico from "../../assets/images/services/CejasyPestañas/volumen-Tecnologico.jpg";
+import SinNada from "../../assets/images/SinFoto.jpg";
 
 // Servicios por categoria
 const servicesByCategory = {
@@ -243,7 +243,7 @@ export default function Services() {
             <Link to="/about" className="text-rose-600 font-medium hover:text-rose-800" onClick={() => setMenuOpen(false)}>Nosotros</Link>
             <Link to="/contact" className="text-rose-600 font-medium hover:text-rose-800" onClick={() => setMenuOpen(false)}>Contacto</Link>
             <Link to="/appointment" className="text-rose-600 font-medium hover:text-rose-800" onClick={() => setMenuOpen(false)}>Agenda Cita</Link>
-            <Link to="/services" className="text-rose-600 font-medium hover:text-rose-800" onClick={() => setMenuOpen(false)}>셜리 로즈</Link>
+            <p className="text-rose-600">셜리 로즈</p>
           </motion.nav>
         )}
 

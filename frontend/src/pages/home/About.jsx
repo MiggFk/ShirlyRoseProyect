@@ -4,12 +4,12 @@ import { FiMenu, FiX } from "react-icons/fi";
 import { motion, AnimatePresence } from "framer-motion";
 
 // Imágenes
-import founderImg from "../assets/images/Fundadora.jpg";
-import trayectoriaImg from "../assets/images/Girl.jpg";
-import empresaImg from "../assets/images/SobreEmpresa.jpg";
-import ValoresImg from "../assets/images/manos.jpg";
-import VisionImg from "../assets/images/Empleada.jpg";
-import Footer from "../components/Footer";
+import founderImg from "../../assets/images/Fundadora.jpg";
+import trayectoriaImg from "../../assets/images/Girl.jpg";
+import empresaImg from "../../assets/images/SobreEmpresa.jpg";
+import ValoresImg from "../../assets/images/manos.jpg";
+import VisionImg from "../../assets/images/Empleada.jpg";
+import Footer from "../../components/Footer";
 
 export default function About() {
   const [menuOpen, setMenuOpen] = useState(false);
@@ -118,7 +118,7 @@ export default function About() {
             <Link to="/services" className="text-rose-600 hover:text-rose-800" onClick={() => setMenuOpen(false)}>Servicios</Link>
             <Link to="/contact" className="text-rose-600 hover:text-rose-800" onClick={() => setMenuOpen(false)}>Contacto</Link>
             <Link to="/appointment" className="text-rose-600 hover:text-rose-800" onClick={() => setMenuOpen(false)}>Agendar Cita</Link>
-            <Link to="" className="text-rose-600 hover:text-rose-800" onClick={() => setMenuOpen(false)}>셜리 로즈</Link>
+            <p className="text-rose-600">셜리 로즈</p>
           </motion.nav>
         )}
 
