@@ -37,7 +37,7 @@ export default function Home() {
         {/* Logo + nombre */}
         <div className="flex items-center gap-2 justify-center">
           <Link to="/" className="flex items-center gap-2">
-            <Logo size="h-20 w-20" />
+            <Logo />
             <h1 className="text-2xl text-gray-600">Shirly Rose</h1>
           </Link>
         </div>

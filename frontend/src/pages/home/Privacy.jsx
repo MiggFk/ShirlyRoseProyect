@@ -1,5 +1,5 @@
 import { motion } from "framer-motion";
-import PublicNavbar from "../../components/PublicNavbar";
+import SidebarPublic from "../../components/SidebarPublic";
 import Footer from "../../components/Footer";
 import bgImage from "../../assets/images/paloRosa.png";
 
@@ -10,7 +10,7 @@ export default function Privacy() {
       initial={{ opacity: 0 }}
       animate={{ opacity: 1, transition: { duration: 0.8 } }}
     >
-      <PublicNavbar />
+      <SidebarPublic />
 
       {/* Contenido */}
       <motion.main
