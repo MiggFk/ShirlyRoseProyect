@@ -8,7 +8,8 @@ const clientSchema = new mongoose.Schema({
   },
   telefono: {
     type: String,
-    required: true
+    required: false, // No es obligatorio
+    default: null // Permitir nulo inicialmente
   }
 }, {
   timestamps: true

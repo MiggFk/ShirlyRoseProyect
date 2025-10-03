@@ -1,15 +1,23 @@
 const express = require("express");
 const router = express.Router();
 const auth = require("../middleware/authMiddleware");
+const authorizeRoles = require("../middleware/roleMiddleware"); // <-- Importado
 
-const { createAppointment, getAppointments } = require("../controllers/appointmentController");
+const { createAppointment, getAppointments, updateAppointmentStatus, deleteAppointment, getAppointmentStats } = require("../controllers/appointmentController");
 
-// Ruta para crear una nueva cita
-router.post("/", createAppointment);
+// POST: para que un cliente o admin pueda crear una nueva cita
+router.post("/", auth, authorizeRoles("cliente", "admin"), createAppointment);
 
-// GET: Listar todas las citas
+// GET: Listar citas (ahora también debería tener un control de roles)
+router.get("/", auth, authorizeRoles("cliente", "admin"), getAppointments); // <-- Ejemplo para getAppointments
 
-router.get("/", auth, getAppointments);
+// PUT: Actualizar el estado de una cita (quizá solo para admins o empleados)
+router.put("/:id/status", auth, authorizeRoles("admin", "empleado"), updateAppointmentStatus);
 
+// DELETE: Eliminar una cita (solo admin)
+router.delete("/:id", auth, authorizeRoles("admin"), deleteAppointment);
+
+// GET: Obtener estadísticas de citas por estado ()
+router.get("/stats", auth, authorizeRoles("admin", "empleado"), getAppointmentStats);
 
 module.exports = router;

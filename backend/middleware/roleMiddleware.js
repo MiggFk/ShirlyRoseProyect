@@ -7,7 +7,7 @@ const authorizeRoles = (...allowedRoles) => {
         message: "Acceso denegado. Rol insuficiente."
       });
     }
-
+    console.log("Rol del usuario:", req.user.role);
     next(); // Tiene el rol correcto
   };
 };

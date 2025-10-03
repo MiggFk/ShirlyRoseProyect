@@ -27,6 +27,16 @@ const createClient = async (req, res) => {
   }
 };
 
+const getClients = async (req, res) => {
+  try {
+    const clients = await Client.find().populate('usuarioId', 'name email');
+    res.json(clients);
+  } catch (error) {
+    res.status(500).json({ message: "Error al obtener clientes", error });
+  }
+};
+
 module.exports = {
-  createClient
+  createClient,
+  getClients
 };

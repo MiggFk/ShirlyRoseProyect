@@ -1,22 +1,30 @@
+// backend/middleware/authMiddleware.js
 const jwt = require("jsonwebtoken");
+const User = require("../models/User");
 
-const authMiddleware = (req, res, next) => {
-  const authHeader = req.headers.authorization;
-
-  // Verificar si viene el token en el header
-  if (!authHeader || !authHeader.startsWith("Bearer ")) {
-    return res.status(401).json({ message: "Token no proporcionado o mal formado" });
-  }
-
-  const token = authHeader.split(" ")[1];
-
+const auth = async (req, res, next) => {
   try {
+    const token = req.header("Authorization")?.replace("Bearer ", "");
+    if (!token) return res.status(401).json({ message: "No token, autorización denegada" });
+
     const decoded = jwt.verify(token, process.env.JWT_SECRET);
-    req.user = decoded; // Ahora puedes acceder a req.user en controladores
+
+    // 🔹 buscar el usuario completo
+    const user = await User.findById(decoded.id).select("name email role");
+    if (!user) return res.status(404).json({ message: "Usuario no encontrado" });
+
+    req.user = {
+      id: user._id.toString(),
+      name: user.name,
+      email: user.email,
+      role: user.role,
+    };
+
+    console.log("✅ Usuario autenticado:", req.user);
     next();
   } catch (error) {
-    return res.status(401).json({ message: "Token inválido o expirado" });
+    res.status(401).json({ message: "Token inválido o expirado" });
   }
 };
 
-module.exports = authMiddleware;
+module.exports = auth;

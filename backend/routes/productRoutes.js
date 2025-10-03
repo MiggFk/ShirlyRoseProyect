@@ -1,19 +1,24 @@
 const express = require("express");
 const router = express.Router();
+
 const auth = require("../middleware/authMiddleware");
 const authorizeRoles = require("../middleware/roleMiddleware");
 
-//Importar controladores
-const { createProduct, getProducts, deleteProduct, updateProduct } = require("../controllers/productController");
+const {
+  getProducts,
+  getProductById,
+  createProduct,
+  updateProduct,
+  deleteProduct,
+} = require("../controllers/productController");
 
-//Rutas
-// GET: Público
+// Público
 router.get("/", getProducts);
-// POST: Solo empleados y admin
-router.post("/", auth, authorizeRoles("admin", "empleado"), createProduct);
+router.get("/:id", getProductById);
 
-// Nuevas rutas protegidas:
+// Protegido (solo admin y empleado)
+router.post("/", auth, authorizeRoles("admin", "empleado"), createProduct);
 router.put("/:id", auth, authorizeRoles("admin", "empleado"), updateProduct);
-router.delete("/:id", auth, authorizeRoles("admin"), deleteProduct);
+router.delete("/:id", auth, authorizeRoles("admin", "empleado"), deleteProduct);
 
 module.exports = router;
