@@ -1,141 +1,243 @@
+# 🌹 Shirly Rose Project
 
-# 💇‍♀️ Shirly Rose - Sistema de Agendamiento y Facturación
+Sistema de gestión completo para salón de belleza desarrollado con tecnologías modernas. Incluye gestión de citas, clientes, servicios, productos, facturación y panel administrativo.
 
-Proyecto académico SENA para automatizar la gestión de citas, clientes, productos y facturas de un local de peluquería y estética.
+## 🚀 Características
 
----
+### Frontend
+- ✨ Interfaz moderna y responsiva
+- 🎨 Diseño con Tailwind CSS
+- 📱 Optimizado para dispositivos móviles
+- 🔐 Sistema de autenticación de usuarios
+- 📊 Dashboard administrativo
 
-## 🚀 Tecnologías utilizadas
+### Backend
+- 🛡️ API RESTful con Express.js
+- 🗄️ Base de datos MongoDB
+- 🔒 Autenticación JWT
+- 📧 Sistema de notificaciones
+- 🧾 Generación de facturas
 
-- **Frontend:** React (HTML, CSS, JavaScript)
-- **Backend:** Node.js, Express
-- **Base de datos:** MongoDB + Mongoose
-- **Seguridad:** JWT, Bcrypt
-- **Control de versiones:** Git y GitHub
-- **Otros:** Dotenv, Cors, Nodemon
+### Funcionalidades Principales
+- 👥 **Gestión de Clientes**: Registro con validación de teléfono
+- 📅 **Sistema de Citas**: Programación y gestión de citas
+- 💇‍♀️ **Servicios**: Catálogo completo de servicios de belleza
+- 🛍️ **Productos**: Inventario y gestión de productos
+- 🧾 **Facturación**: Sistema completo de facturación
+- 👨‍💼 **Panel Admin**: Gestión completa desde el dashboard
 
----
+## 🛠️ Tecnologías Utilizadas
+
+### Frontend
+- React.js
+- Tailwind CSS
+- PostCSS
+- Responsive Design
+
+### Backend
+- Node.js
+- Express.js
+- MongoDB
+- Mongoose ODM
+- JWT Authentication
+- bcrypt (encriptación de contraseñas)
+- CORS
+- dotenv
+
+## 📋 Prerequisitos
+
+Antes de comenzar, asegúrate de tener instalado:
+
+- [Node.js](https://nodejs.org/) (v14 o superior)
+- [MongoDB](https://www.mongodb.com/) (local o Atlas)
+- [Git](https://git-scm.com/)
+
+## ⚡ Instalación y Configuración
+
+### 1. Clonar el repositorio
+```bash
+git clone [URL_DEL_REPOSITORIO]
+cd ShirlyRoseProyect
+```
+
+### 2. Configurar el Backend
+
+```bash
+cd backend
+npm install
+```
+
+Crear archivo `.env` en la carpeta backend:
+```env
+# Base de datos
+MONGODB_URI=mongodb://localhost:27017/shirlyrose
+# o para MongoDB Atlas:
+# MONGODB_URI=mongodb+srv://usuario:password@cluster.mongodb.net/shirlyrose
+
+# JWT
+JWT_SECRET=tu_jwt_secret_aqui
+JWT_EXPIRES_IN=7d
+
+# Servidor
+PORT=5000
+NODE_ENV=development
+
+# Otros servicios (opcional)
+EMAIL_SERVICE=gmail
+EMAIL_USER=tu_email@gmail.com
+EMAIL_PASS=tu_password_de_app
+```
+
+### 3. Configurar el Frontend
+
+```bash
+cd ../frontend
+npm install
+```
+
+### 4. Iniciar el proyecto
+
+#### Desarrollo (Backend y Frontend por separado)
+
+**Terminal 1 - Backend:**
+```bash
+cd backend
+npm run dev
+# o
+npm start
+```
+
+**Terminal 2 - Frontend:**
+```bash
+cd frontend
+npm start
+```
+
+#### Producción
+```bash
+# En la carpeta frontend
+npm run build
+
+# Luego iniciar solo el backend (servirá los archivos estáticos)
+cd ../backend
+npm start
+```
 
 ## 📁 Estructura del Proyecto
 
 ```
-ShirlyRose/
+ShirlyRoseProyect/
 ├── backend/
-│   ├── controllers/
-│   ├── routes/
-│   ├── models/
-│   ├── middleware/
 │   ├── config/
-│   ├── index.js
-│   └── .env
+│   │   └── db.js                 # Configuración de base de datos
+│   ├── controllers/
+│   │   ├── appointmentController.js  # Lógica de citas
+│   │   ├── authController.js         # Autenticación
+│   │   ├── clientController.js       # Gestión de clientes
+│   │   ├── invoiceController.js      # Facturación
+│   │   ├── productController.js      # Productos
+│   │   ├── serviceController.js      # Servicios
+│   │   └── userController.js         # Usuarios (Admin)
+│   ├── middleware/              # Middlewares personalizados
+│   ├── models/                  # Modelos de MongoDB
+│   ├── routes/                  # Rutas de la API
+│   ├── .env                     # Variables de entorno
+│   ├── index.js                 # Punto de entrada del servidor
+│   └── package.json
 ├── frontend/
-│   ├── src/
-│   ├── public/
+│   ├── public/                  # Archivos públicos
+│   ├── src/                     # Código fuente React
+│   ├── build/                   # Archivos compilados
+│   ├── tailwind.config.js       # Configuración Tailwind
+│   ├── postcss.config.js        # Configuración PostCSS
 │   └── package.json
 └── README.md
 ```
 
----
+## 🔌 API Endpoints
 
-## 🧩 Módulos del Backend
+### Autenticación
+- `POST /api/auth/register` - Registro de usuarios
+- `POST /api/auth/login` - Inicio de sesión
+- `GET /api/auth/profile` - Perfil del usuario
 
-### ✅ Autenticación
-- Registro con contraseña encriptada (bcrypt)
-- Login con token JWT
-- Protección de rutas con middleware `authMiddleware`
-- Protección por rol con `roleMiddleware`
-- Ruta `/api/users/profile`
+### Clientes
+- `GET /api/clients` - Listar clientes
+- `POST /api/clients` - Crear cliente
+- `PUT /api/clients/:id` - Actualizar cliente
+- `DELETE /api/clients/:id` - Eliminar cliente
 
-### ✅ Usuarios y Clientes
-- Modelo `User`: nombre, email, password, role
-- Modelo `Client`: teléfono, usuarioId
-- Roles disponibles: `admin`, `empleado`, `cliente`
+### Citas
+- `GET /api/appointments` - Listar citas
+- `POST /api/appointments` - Crear cita
+- `PUT /api/appointments/:id` - Actualizar cita
+- `DELETE /api/appointments/:id` - Cancelar cita
 
-### ✅ Servicios
-- Crear y listar servicios
-- Campos: nombre, precio, duración
+### Servicios
+- `GET /api/services` - Listar servicios
+- `POST /api/services` - Crear servicio
+- `PUT /api/services/:id` - Actualizar servicio
+- `DELETE /api/services/:id` - Eliminar servicio
 
-### ✅ Citas (`/api/appointments`)
-- Crear y listar citas
-- Validación de disponibilidad
-- Clientes ven solo sus citas
-- Admin y empleados ven todas
+### Productos
+- `GET /api/products` - Listar productos
+- `POST /api/products` - Crear producto
+- `PUT /api/products/:id` - Actualizar producto
+- `DELETE /api/products/:id` - Eliminar producto
 
-### ✅ Productos (`/api/products`)
-- CRUD completo
-- Ver todos (público)
-- Crear, editar (empleado/admin)
-- Eliminar (solo admin)
+### Facturación
+- `GET /api/invoice` - Listar facturas
+- `POST /api/invoice` - Crear factura
+- `GET /api/invoice/:id` - Obtener factura específica
 
-### ✅ Facturas (`/api/invoice`)
-- Registrar ventas con productos y citas
-- Descuenta stock automáticamente
-- Clientes ven solo sus facturas
+### Usuarios (Admin)
+- `GET /api/users` - Listar usuarios
+- `POST /api/users` - Crear usuario
+- `PUT /api/users/:id` - Actualizar usuario
+- `DELETE /api/users/:id` - Eliminar usuario
 
----
+## 🔒 Seguridad
 
-## 🔐 Seguridad
+- ✅ Contraseñas encriptadas con bcrypt
+- ✅ Autenticación JWT
+- ✅ Validación de datos de entrada
+- ✅ Configuración CORS
+- ✅ Variables de entorno para datos sensibles
 
-- Contraseñas cifradas
-- Tokens JWT
-- Protección de rutas
-- Control de roles
+## 🚀 Despliegue
 
----
+### Frontend (Netlify/Vercel)
+1. Construir el proyecto: `npm run build`
+2. Subir la carpeta `build/` a tu servicio de hosting
 
-## 📦 Instalación y ejecución
+### Backend (Heroku/Railway/DigitalOcean)
+1. Configurar variables de entorno en tu plataforma
+2. Asegurar que MongoDB Atlas esté configurado
+3. Desplegar desde el directorio `backend/`
 
-1. Clona el proyecto:
-   ```bash
-   git clone https://github.com/MiggFk/ShirlyRoseProyect.git
-   ```
+## 🤝 Contribución
 
-2. Instala dependencias:
-   ```bash
-   cd backend
-   npm install
+1. Fork el proyecto
+2. Crear una rama feature (`git checkout -b feature/AmazingFeature`)
+3. Commit tus cambios (`git commit -m 'Add some AmazingFeature'`)
+4. Push a la rama (`git push origin feature/AmazingFeature`)
+5. Abrir un Pull Request
 
-   cd ../frontend
-   npm install
-   ```
+## 📝 Notas de Desarrollo
 
-3. Crea un archivo `.env` en `backend/`:
-   ```env
-   MONGO_URI=tu_uri_de_mongodb
-   JWT_SECRET=tu_secreto
-   ```
+- El servidor backend corre en puerto 5000 por defecto
+- El frontend se conecta automáticamente al backend
+- Usar `npm run dev` en backend para desarrollo con nodemon
+- Las rutas de la API están prefijadas con `/api`
 
-4. Inicia el backend:
-   ```bash
-   npm run dev
-   ```
+## 📧 Contacto
 
-5. Inicia el frontend:
-   ```bash
-   npm start
-   ```
+Para más información sobre el proyecto, contacta al equipo de desarrollo.
 
----
+## 📄 Licencia
 
-## ✅ Estado actual del backend
-
-- [x] Usuarios
-- [x] Autenticación con roles
-- [x] CRUD de citas
-- [x] CRUD de productos
-- [x] Facturación con control de stock
-- [x] Seguridad con JWT
-- [x] Rutas protegidas por rol
+Este proyecto es privado y pertenece a Shirly Rose Beauty Salon.
 
 ---
 
-## 👥 Equipo de Trabajo
-
-- **Miguel Padilla. (Scrum Master - Dev)**  
-  [GitHub - MiggFk](https://github.com/MiggFk)
-
-- **Bryan Giraldo. (Product Owner - Dev)**  
-  [GitHub - Bryan Camilo](https://github.com/camilO-ccp)
-
-
----
+⭐ **¡Dale una estrella si te gusta el proyecto!**
