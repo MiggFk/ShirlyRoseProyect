@@ -1,4 +1,4 @@
-import LogoShirly from "../../assets/logos/Logo-ShirlyRose.png";
+import LogoShirly from "../assets/logos/Logo-ShirlyRose.png";
 
 export default function Logo({ size = "h-14 w-14" }) {
   return (

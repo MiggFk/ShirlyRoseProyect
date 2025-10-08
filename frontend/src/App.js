@@ -20,6 +20,7 @@ import ProductsHome from "./pages/home/Products";
 import Terms from "./pages/home/Terms";
 import About from "./pages/home/About";
 import Privacy from "./pages/home/Privacy";
+import Appointment from "./pages/home/Appointment"
 
 const NotFound = () => (
   <div className="flex flex-col items-center justify-center min-h-screen bg-gray-100">
@@ -43,6 +44,8 @@ function App() {
           <Route path="/about" element={<About />} />
           <Route path="/terms" element={<Terms />} />
           <Route path="/privacy" element={<Privacy />} />
+          <Route path="/Appointment" element={<Appointment />} />
+
           
           {/* Rutas de Autenticación */}
           <Route path="/login" element={<Login />} />

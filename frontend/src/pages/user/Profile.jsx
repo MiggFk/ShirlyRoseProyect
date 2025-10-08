@@ -286,8 +286,8 @@ const Profile = () => {
             {activeTab === "history" && <HistoryView />}
           </AnimatePresence>
         </div>
-
       </main>
+      
       <motion.footer
         className="text-center py-6 bg-rose-200"
         initial={{ y: 50, opacity: 0 }}

@@ -6,6 +6,7 @@ import {
   FaEnvelope,
 } from "react-icons/fa";
 
+import { Link } from "react-router-dom";
 import Logo from "./LogoShirly";
 
 export default function Footer() {
@@ -46,29 +47,28 @@ export default function Footer() {
             )}
           </ul>
         </div>
-
-        {/* Columna 3: Información */}
-        <div>
-          <h3 className="text-lg font-bold uppercase tracking-wide mb-4">
-            Información
-          </h3>
-          <ul className="space-y-2">
-            {[
-              "Sobre Nosotros",
-              "Política de Privacidad",
-              "Términos de Uso",
-              "Preguntas Frecuentes",
-            ].map((item, i) => (
-              <motion.li
-                key={i}
-                whileHover={{ x: 5, scale: 1.05 }}
-                className="cursor-pointer hover:text-rose-500 transition-colors"
-              >
-                {item}
-              </motion.li>
-            ))}
-          </ul>
-        </div>
+        
+<div>
+  <h3 className="text-lg font-bold uppercase tracking-wide mb-4">
+    Información
+  </h3>
+  <ul className="space-y-2">
+    {[
+      { label: "Sobre Nosotros", path: "/about" },
+      { label: "Política de Privacidad", path: "/privacy" },
+      { label: "Términos de Uso", path: "/terms" },
+      { label: "Preguntas Frecuentes", path: "/faq" },
+    ].map((item, i) => (
+      <motion.li
+        key={i}
+        whileHover={{ x: 5, scale: 1.05 }}
+        className="cursor-pointer hover:text-rose-500 transition-colors"
+      >
+        <Link to={item.path}>{item.label}</Link>
+      </motion.li>
+    ))}
+  </ul>
+</div>
 
         {/* Columna 4: Contacto */}
         <div className="flex flex-col items-center md:items-start gap-4">
@@ -80,7 +80,7 @@ export default function Footer() {
               { Icon: FaWhatsapp, link: "https://wa.me/573108317548" },
               { Icon: FaFacebookF, link: "https://www.facebook.com/share/14JHmkL5x58/?mibextid=wwXIfr" },
               { Icon: FaInstagram, link: "https://www.instagram.com/Shirly_montalvo" },
-              { Icon: FaEnvelope, link: "mailto:bryan.giraldo.0906@gmail.com" },
+              { Icon: FaEnvelope, link: "https://mail.google.com/mail/?view=cm&fs=1&to=Shirlypao25@gmail.com" },
             ].map(({ Icon, link }, i) => (
               <motion.a 
                 key={i}

@@ -86,7 +86,7 @@ export default function Users() {
       confirmButtonText: "Sí, eliminar",
       cancelButtonText: "Cancelar",
       confirmButtonColor: "#d33",
-      cancelButtonColor: "#3085d6",
+      cancelButtonColor: "#858585ff",
     });
 
     if (result.isConfirmed) {
@@ -105,10 +105,10 @@ export default function Users() {
   return (
     <div className="container mx-auto p-4 md:p-8">
       <div className="flex justify-between items-center mb-6">
-        <h2 className="text-3xl font-bold text-pink-600">Gestión de Usuarios</h2>
+        <h2 className="text-3xl font-bold text-rose-600">Gestión de Usuarios</h2>
         <button
           onClick={handleCreate}
-          className="bg-pink-500 text-white px-4 py-2 rounded-lg shadow hover:bg-pink-600 transition flex items-center gap-2"
+          className="bg-rose-300 text-rose-600 font-bold px-4 py-2 rounded-lg shadow hover:bg-rose-600 hover:text-white transition flex items-center gap-2"
         >
           <UserPlus size={20} />
           Crear Nuevo Usuario
@@ -118,7 +118,7 @@ export default function Users() {
       <div className="bg-white rounded-2xl shadow-lg overflow-hidden">
         <div className="overflow-x-auto">
           <table className="min-w-full text-sm text-left">
-            <thead className="bg-gradient-to-r from-pink-400 to-pink-600 text-white">
+            <thead className="bg-rose-400 text-white">
               <tr>
                 <th className="py-3 px-6 text-left">Nombre</th>
                 <th className="py-3 px-6 text-left">Email</th>
@@ -136,7 +136,7 @@ export default function Users() {
                       animate={{ opacity: 1, y: 0 }}
                       exit={{ opacity: 0, x: -50 }}
                       transition={{ duration: 0.3 }}
-                      className={`border-b ${i % 2 === 0 ? "bg-pink-50" : "bg-white"}`}
+                      className={`border-b ${i % 2 === 0 ? "bg-rose-50" : "bg-white"}`}
                     >
                       <td className="py-2 px-6 font-medium">{u.name}</td>
                       <td className="py-2 px-6 text-gray-600">{u.email}</td>
@@ -144,14 +144,14 @@ export default function Users() {
                       <td className="py-2 px-6 text-center space-x-3">
                         <button
                           onClick={() => handleEdit(u)}
-                          className="bg-yellow-500 text-white px-3 py-1 rounded-full shadow-sm hover:bg-yellow-600 transition"
+                          className="text-rose-700 px-4 py-2 hover:text-rose-300"
                           aria-label="Editar"
                         >
                           <Pencil size={16} />
                         </button>
                         <button
                           onClick={() => handleDelete(u._id)}
-                          className="bg-red-500 text-white px-3 py-1 rounded-full shadow-sm hover:bg-red-600 transition"
+                          className="bg-rose-700 text-white px-3 py-1 rounded-full shadow-sm hover:bg-rose-500 transition"
                           aria-label="Eliminar"
                         >
                           <Trash2 size={16} />

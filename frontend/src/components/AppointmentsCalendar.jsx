@@ -78,12 +78,12 @@ const AppointmentsCalendar = ({ appointments }) => {
                         key={index}
                         className={`p-2 rounded-lg cursor-pointer transition
                             ${day ? 'bg-gray-100 hover:bg-gray-200' : 'bg-transparent cursor-default'}
-                            ${hasAppointmentOnDay(day) ? 'bg-pink-100 hover:bg-pink-200' : ''}`}
+                            ${hasAppointmentOnDay(day) ? 'bg-rose-200 hover:bg-rose-400' : ''}`}
                         onClick={() => handleDayClick(day)}
                     >
                         {day}
                         {hasAppointmentOnDay(day) && (
-                            <div className="h-2 w-2 bg-pink-500 rounded-full mx-auto mt-1"></div>
+                            <div className="h-2 w-2 bg-rose-600 rounded-full mx-auto mt-1"></div>
                         )}
                     </div>
                 ))}

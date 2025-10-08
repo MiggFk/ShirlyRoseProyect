@@ -2,7 +2,7 @@ import { Link } from "react-router-dom";
 import { motion } from "framer-motion";
 import Logo from "../../components/LogoShirly";
 import { FaUserCircle } from "react-icons/fa";
-import Modelo from "../../assets/images/Fondo-Home.png"; 
+import Modelo from "../../assets/images/Fondo-HomeChica2.png"; 
 
 // imágenes de servicios
 import LimpiezaFac from "../../assets/images/services/EsteticaFacial/LimpiezaFacialPremium.png";
@@ -75,7 +75,7 @@ export default function IndexHome() {
 
       {/* Hero principal */}
       <motion.section
-        className="relative w-full h-[90vh] flex items-center justify-start bg-cover bg-center"
+        className="relative w-full h-[95vh] flex items-center justify-start bg-cover bg-center"
         style={{
           backgroundImage: `url(${Modelo})`,
           backgroundPosition: "right center",
@@ -119,7 +119,7 @@ export default function IndexHome() {
         <h3 className="text-2xl font-bold text-rose-500 text-center mb-8">
           Servicios Destacados
         </h3>
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-6 max-w-6xl mx-auto">
+        <div className="grid grid-cols-1 md:grid-cols-4 gap-6 max-w-8xl mx-auto">
           <motion.div
             className="bg-white rounded-xl shadow hover:shadow-lg transition overflow-hidden"
             variants={cardVariants}
@@ -128,7 +128,7 @@ export default function IndexHome() {
             viewport={{ once: true, amount: 0.5 }}
           >
             <img src={Pestañas} alt="Cejas y Pestañas" className="h-40 w-full object-cover" />
-            <div className="p-6 flex flex-col gap-3">
+            <div className="p-6 flex flex-col gap-4">
               <h4 className="text-lg font-semibold text-gray-800">Cejas y Pestañas</h4>
               <p className="text-gray-600">
                 Cejas y pestañas con el estilo que desees y el mejor procedimiento.
@@ -141,6 +141,7 @@ export default function IndexHome() {
               </Link>
             </div>
           </motion.div>
+
           <motion.div
             className="bg-white rounded-xl shadow hover:shadow-lg transition overflow-hidden"
             variants={cardVariants}
@@ -149,7 +150,7 @@ export default function IndexHome() {
             viewport={{ once: true, amount: 0.5 }}
           >
             <img src={LimpiezaFac} alt="Limpieza Facial" className="h-40 w-full object-cover" />
-            <div className="p-6 flex flex-col gap-3">
+            <div className="p-6 flex flex-col gap-4">
               <h4 className="text-lg font-semibold text-gray-800">Spa - Limpiezas Faciales</h4>
               <p className="text-gray-600">
                 Relaja tu piel y luce impecable.
@@ -162,6 +163,7 @@ export default function IndexHome() {
               </Link>
             </div>
           </motion.div>
+
           <motion.div
             className="bg-white rounded-xl shadow hover:shadow-lg transition overflow-hidden"
             variants={cardVariants}
@@ -170,7 +172,7 @@ export default function IndexHome() {
             viewport={{ once: true, amount: 0.5 }}
           >
             <img src={Manicure} alt="Manicure" className="h-40 w-full object-cover" />
-            <div className="p-6 flex flex-col gap-3">
+            <div className="p-6 flex flex-col gap-4">
               <h4 className="text-lg font-semibold text-gray-800">Manicure y Pedicure</h4>
               <p className="text-gray-600">
                 Uñas manos y pies.
@@ -183,15 +185,38 @@ export default function IndexHome() {
               </Link>
             </div>
           </motion.div>
+          
+          <motion.div
+            className="bg-white rounded-xl shadow hover:shadow-lg transition overflow-hidden"
+            variants={cardVariants}
+            initial="hidden"
+            whileInView="visible"
+            viewport={{ once: true, amount: 0.5 }}
+          >
+            <img src={Pestañas} alt="Cejas y Pestañas" className="h-40 w-full object-cover" />
+            <div className="p-6 flex flex-col gap-4">
+              <h4 className="text-lg font-semibold text-gray-800">Cejas y Pestañas</h4>
+              <p className="text-gray-600">
+                Cejas y pestañas con el estilo que desees y el mejor procedimiento.
+              </p>
+              <Link
+                to="/services"
+                className="text-sm text-rose-500 font-medium hover:underline self-start"
+              >
+                Ver más →
+              </Link>
+            </div>
+          </motion.div>
         </div>
       </section>
+
 
       {/* Sección de Productos */}
       <section className="py-12 px-6">
         <h3 className="text-2xl font-bold text-rose-500 text-center mb-8">
           Productos Destacados
         </h3>
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-6 max-w-6xl mx-auto">
+        <div className="grid grid-cols-1 md:grid-cols-4 gap-6 max-w-8xl mx-auto">
           <motion.div
             className="bg-white rounded-xl shadow hover:shadow-lg transition overflow-hidden"
             variants={cardVariants}
@@ -211,6 +236,7 @@ export default function IndexHome() {
               </Link>
             </div>
           </motion.div>
+
           <motion.div
             className="bg-white rounded-xl shadow hover:shadow-lg transition overflow-hidden"
             variants={cardVariants}
@@ -230,6 +256,27 @@ export default function IndexHome() {
               </Link>
             </div>
           </motion.div>
+
+          <motion.div
+            className="bg-white rounded-xl shadow hover:shadow-lg transition overflow-hidden"
+            variants={cardVariants}
+            initial="hidden"
+            whileInView="visible"
+            viewport={{ once: true, amount: 0.5 }}
+          >
+            <img src={Shampoo} alt="Shampoo" className="h-40 w-full object-cover" />
+            <div className="p-6 flex flex-col gap-3">
+              <h4 className="text-lg font-semibold text-gray-800">Shampoo Orgánico</h4>
+              <p className="text-gray-600">Frescura y brillo para tu cabello.</p>
+              <Link
+                to="/products"
+                className="text-sm text-rose-500 font-medium hover:underline self-start"
+              >
+                Ver más →
+              </Link>
+            </div>
+          </motion.div>
+
           <motion.div
             className="bg-white rounded-xl shadow hover:shadow-lg transition overflow-hidden"
             variants={cardVariants}

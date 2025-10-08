@@ -79,7 +79,7 @@ export default function Terms() {
         <div className="flex justify-center mt-6">
           <Link
             to="/register"
-            className="bg-rose-500/80 hover:bg-rose-600 text-white px-6 py-2 rounded-lg shadow-md hover:shadow-lg transition-all duration-300"
+            className="bg-rose-400 hover:bg-rose-600 text-white px-6 py-2 rounded-lg shadow-md hover:shadow-lg transition-all duration-300"
           >
             Volver al Registro
           </Link>

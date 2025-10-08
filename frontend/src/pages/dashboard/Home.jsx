@@ -11,19 +11,12 @@ import {
   Cell,
   Legend,
 } from "recharts";
-import {
-  CalendarDays,
-  CheckCircle,
-  XCircle,
-  Clock,
-} from "lucide-react";
-
+import { CalendarDays, CheckCircle, XCircle, Clock } from "lucide-react";
 import { useStats } from "../../hooks/useStats";
 
 export default function Home() {
   const { stats, loading } = useStats();
 
-  // 🔹 Validar que stats tenga la estructura correcta
   const safeStats = {
     totalAppointments: stats?.totalAppointments || 0,
     status: {
@@ -36,28 +29,28 @@ export default function Home() {
   };
 
   const statusData = [
-    { name: "Pendientes", value: safeStats.status.pending, color: "#facc15" },
-    { name: "Completadas", value: safeStats.status.completed, color: "#22c55e" },
-    { name: "Canceladas", value: safeStats.status.cancelled, color: "#ef4444" },
+    { name: "Pendientes", value: safeStats.status.pending, color: "#e4476eff" },
+    { name: "Completadas", value: safeStats.status.completed, color: "#ff5c84ff" },
+    { name: "Canceladas", value: safeStats.status.cancelled, color: "#ff98b2ff" },
   ];
-  
-  const serviceColors = ["#ec4899", "#3b82f6", "#22c55e", "#f97316", "#a855f7"];
+
+  const serviceColors = ["#c0395aff", "#ff295fff", "#ff7d99ff", "#ff006aff", "#ffabd1ff"];
 
   return (
-    <div className="space-y-8">
-      <h1 className="text-3xl font-bold text-pink-600">
+    <div className="space-y-8 animate-fadeIn">
+      <h1 className="text-4xl font-bold text-rose-600 animate-slideDown">
         Bienvenido al panel de administración
       </h1>
 
       {loading ? (
         <div className="flex items-center justify-center py-20">
-          <div className="w-10 h-10 border-4 border-pink-500 border-t-transparent rounded-full animate-spin"></div>
+          <div className="w-10 h-10 border-4 border-rose-500 border-t-transparent rounded-full animate-spin"></div>
         </div>
       ) : (
         <>
           {/* Tarjetas métricas */}
           <div className="grid grid-cols-1 md:grid-cols-4 gap-6">
-            <div className="bg-gradient-to-r from-pink-400 to-pink-600 text-white p-6 rounded-2xl shadow-lg flex items-center justify-between">
+            <div className="bg-rose-400 text-white p-6 rounded-xl shadow-md flex items-center justify-between transform transition-transform hover:scale-105 hover:shadow-xl">
               <div>
                 <h3 className="text-lg font-semibold">Total Citas</h3>
                 <p className="text-3xl font-bold">{safeStats.totalAppointments}</p>
@@ -65,7 +58,7 @@ export default function Home() {
               <CalendarDays size={40} />
             </div>
 
-            <div className="bg-yellow-100 text-yellow-800 p-6 rounded-2xl shadow-lg flex items-center justify-between">
+            <div className="bg-rose-200 text-rose-800 p-6 rounded-xl shadow-md flex items-center justify-between transform transition-transform hover:scale-105 hover:shadow-xl">
               <div>
                 <h3 className="text-lg font-semibold">Pendientes</h3>
                 <p className="text-3xl font-bold">{safeStats.status.pending}</p>
@@ -73,7 +66,7 @@ export default function Home() {
               <Clock size={40} />
             </div>
 
-            <div className="bg-green-100 text-green-800 p-6 rounded-2xl shadow-lg flex items-center justify-between">
+            <div className="bg-rose-200 text-rose-800 p-6 rounded-xl shadow-md flex items-center justify-between transform transition-transform hover:scale-105 hover:shadow-xl">
               <div>
                 <h3 className="text-lg font-semibold">Completadas</h3>
                 <p className="text-3xl font-bold">{safeStats.status.completed}</p>
@@ -81,7 +74,7 @@ export default function Home() {
               <CheckCircle size={40} />
             </div>
 
-            <div className="bg-red-100 text-red-800 p-6 rounded-2xl shadow-lg flex items-center justify-between">
+            <div className="bg-rose-300 text-rose-900 p-6 rounded-xl shadow-md flex items-center justify-between transform transition-transform hover:scale-105 hover:shadow-xl">
               <div>
                 <h3 className="text-lg font-semibold">Canceladas</h3>
                 <p className="text-3xl font-bold">{safeStats.status.cancelled}</p>
@@ -91,8 +84,8 @@ export default function Home() {
           </div>
 
           {/* Citas por estado */}
-          <div className="bg-white p-6 rounded-2xl shadow-lg">
-            <h2 className="text-xl font-semibold mb-4 text-pink-600">
+          <div className="bg-rose-50 p-6 rounded-xl shadow-md animate-fadeIn">
+            <h2 className="text-xl font-semibold mb-4 text-rose-600">
               Citas por estado
             </h2>
             <ResponsiveContainer width="100%" height={300}>
@@ -112,8 +105,8 @@ export default function Home() {
 
           {/* Citas por mes + Servicios más solicitados */}
           <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-            <div className="bg-white p-6 rounded-2xl shadow-lg">
-              <h2 className="text-xl font-semibold mb-4 text-pink-600">
+            <div className="bg-rose-100 p-6 rounded-xl shadow-md animate-fadeIn">
+              <h2 className="text-xl font-semibold mb-4 text-rose-600">
                 Citas por mes
               </h2>
               {safeStats.monthly.length === 0 ? (
@@ -127,7 +120,7 @@ export default function Home() {
                     <Tooltip />
                     <Bar
                       dataKey="count"
-                      fill="#3b82f6"
+                      fill="#ff7b9cff"
                       radius={[10, 10, 0, 0]}
                     />
                   </BarChart>
@@ -135,8 +128,8 @@ export default function Home() {
               )}
             </div>
 
-            <div className="bg-white p-6 rounded-2xl shadow-lg">
-              <h2 className="text-xl font-semibold mb-4 text-pink-600">
+            <div className="bg-rose-100 p-6 rounded-xl shadow-md animate-fadeIn">
+              <h2 className="text-xl font-semibold mb-4 text-rose-600">
                 Servicios más solicitados
               </h2>
               {safeStats.services.length === 0 ? (

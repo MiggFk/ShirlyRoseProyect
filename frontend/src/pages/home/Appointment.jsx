@@ -2,7 +2,7 @@ import { useState } from "react";
 import { Link } from "react-router-dom";
 import { FiHome } from "react-icons/fi";
 import { motion } from "framer-motion";
-import fondo from "../assets/images/arbolOscuro.png";
+import fondo from "../../assets/images/arbolOscuro.png";
 
 export default function Appointment() {
   const [nombre, setNombre] = useState("");
