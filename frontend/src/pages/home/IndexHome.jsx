@@ -47,7 +47,7 @@ export default function Home() {
           <Link to="/services" className="text-gray-700 hover:text-rose-500 font-medium transition">Servicios</Link>
           <Link to="/products" className="text-gray-700 hover:text-rose-500 font-medium transition">Productos</Link>
           <Link to="/about" className="text-gray-700 hover:text-rose-500 font-medium transition">Nosotros</Link>
-          <Link to="/appointment" className="text-gray-700 hover:text-rose-500 font-medium transition">Agendar Cita</Link>
+          <Link to="/appointmentsHome" className="text-gray-700 hover:text-rose-500 font-medium transition">Agendar Cita</Link>
         </nav>
 
         {/* Botones */}
@@ -104,7 +104,7 @@ export default function Home() {
             de estética, spa y peluquería. Aquí podrás reservar tu cita fácilmente.
           </p>
           <Link
-            to="/appointment"
+            to="/appointmentsHome"
             className="px-8 py-3 rounded-xl bg-rose-400 text-white font-semibold shadow hover:bg-rose-500 transition duration-200"
           >
             Agenda tu cita
