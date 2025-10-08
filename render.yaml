@@ -1,0 +1,11 @@
+services:
+  - type: web
+    name: shirlyrose-backend
+    env: node
+    buildCommand: cd backend && npm install
+    startCommand: node backend/index.js
+    envVars:
+      - key: MONGO_URI
+        sync: false
+      - key: PORT
+        value: 10000

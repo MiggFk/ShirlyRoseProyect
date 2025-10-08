@@ -13,7 +13,14 @@ const userRoutes = require("./routes/userRoutes");
 dotenv.config();
 
 const app = express();
-app.use(cors());
+app.use(cors({
+  origin: [
+    "https://shirlyrose.netlify.app", //  tu dominio del frontend
+    "http://localhost:5000" //  para seguir probando en local si usas Vite
+  ],
+  methods: ["GET", "POST", "PUT", "DELETE"],
+  credentials: true
+}))
 app.use(express.json());
 
 // Conexión a la base de datos
