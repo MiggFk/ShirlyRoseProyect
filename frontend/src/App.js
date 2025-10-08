@@ -39,8 +39,8 @@ function App() {
         <Routes>
           {/* Rutas Públicas */}
           <Route path="/" element={<IndexHome />} />
-          <Route path="/services" element={<ServicesHome />} />  {/* 🔹 CORREGIDO */}
-          <Route path="/products" element={<ProductsHome />} />  {/* 🔹 CORREGIDO */}
+          <Route path="/services" element={<ServicesHome />} />  
+          <Route path="/products" element={<ProductsHome />} />
           <Route path="/about" element={<About />} />
           <Route path="/terms" element={<Terms />} />
           <Route path="/privacy" element={<Privacy />} />
