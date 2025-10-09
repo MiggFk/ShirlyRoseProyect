@@ -20,19 +20,23 @@ export default function Sidebar() {
 
   const links = [
     { to: "/dashboard", label: "Inicio", icon: <Home size={ICON_SIZE} className="text-rose-700" /> },
-    { to: "/dashboard/appointments", label: "Citas", icon: <Calendar size={ICON_SIZE} className="text-rose-700"/> },
-    { to: "/dashboard/products", label: "Productos", icon: <Package size={ICON_SIZE} className="text-rose-700"/> },
-
+    { to: "/dashboard/appointments", label: "Citas", icon: <Calendar size={ICON_SIZE} className="text-rose-700" /> },
+    { to: "/dashboard/services", label: "Servicios", icon: <Calendar size={ICON_SIZE} className="text-rose-700" /> },
+    { to: "/dashboard/products", label: "Productos", icon: <Package size={ICON_SIZE} className="text-rose-700" /> },
     ...(userRole === "admin"
-      ? [{ to: "/dashboard/users", label: "Usuarios", icon: <Users size={ICON_SIZE} className="text-rose-700"/> }]
+      ? [{ to: "/dashboard/users", label: "Usuarios", icon: <Users size={ICON_SIZE} className="text-rose-700" /> }]
       : []),
-
-    { to: "/profile", label: "Perfil", icon: <UserCircle size={ICON_SIZE} className="text-rose-700"/> },
-    { to: "/", label: "Volver al sitio", icon: <ArrowLeft size={ICON_SIZE} className="text-rose-700"/> },
+    { to: "/profile", label: "Perfil", icon: <UserCircle size={ICON_SIZE} className="text-rose-700" /> },
+    { to: "/", label: "Volver al sitio", icon: <ArrowLeft size={ICON_SIZE} className="text-rose-700" /> },
   ];
 
   return (
-    <div className="w-64 bg-rose-300 text-white min-h-screen p-6 shadow-xl flex flex-col justify-between animate-slideIn">
+    <div
+      className="w-64 min-h-screen p-6 flex flex-col justify-between
+                 bg-gradient-to-b from-rose-300 to-rose-400
+                 text-white shadow-[4px_0_15px_rgba(0,0,0,0.15)]
+                 backdrop-blur-sm animate-slideIn"
+    >
       <div>
         {/* Logo */}
         <div className="flex justify-center mb-10 animate-fadeIn">
@@ -65,7 +69,10 @@ export default function Sidebar() {
       {user && (
         <button
           onClick={() => logout()}
-          className="w-full flex items-center gap-4 px-4 py-3 rounded-lg bg-rose-500 text-white font-medium hover:bg-rose-700 hover:scale-105 transition-all duration-300"
+          className="w-full flex items-center justify-center gap-3 px-4 py-3 rounded-lg
+                     bg-rose-500 text-white font-medium
+                     hover:bg-rose-600 hover:scale-105
+                     shadow-md transition-all duration-300"
         >
           <LogOut size={ICON_SIZE} />
           <span>Cerrar Sesión</span>

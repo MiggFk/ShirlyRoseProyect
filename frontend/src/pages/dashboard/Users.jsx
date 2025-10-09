@@ -28,7 +28,7 @@ export default function Users() {
         const email = document.getElementById("swal-input-email").value;
         const password = document.getElementById("swal-input-password").value;
         const role = document.getElementById("swal-input-role").value;
-        
+
         if (!name || !email || !password || !role) {
           Swal.showValidationMessage("Todos los campos son obligatorios");
           return false;
@@ -104,73 +104,90 @@ export default function Users() {
 
   return (
     <div className="container mx-auto p-4 md:p-8">
+      {/* Título y botón */}
       <div className="flex justify-between items-center mb-6">
-        <h2 className="text-3xl font-bold text-rose-600">Gestión de Usuarios</h2>
-        <button
+        <h2 className="text-3xl font-bold text-rose-300 drop-shadow-md">
+          Gestión de Usuarios
+        </h2>
+        <motion.button
           onClick={handleCreate}
-          className="bg-rose-300 text-rose-600 font-bold px-4 py-2 rounded-lg shadow hover:bg-rose-600 hover:text-white transition flex items-center gap-2"
+          whileHover={{ scale: 1.05 }}
+          whileTap={{ scale: 0.95 }}
+          className="px-4 py-2 rounded-lg flex items-center gap-2 
+                     bg-white/10 backdrop-blur-xl border border-white/30 
+                     text-rose-300 hover:bg-white/20 hover:text-rose-200 
+                     transition shadow-lg"
         >
           <UserPlus size={20} />
           Crear Nuevo Usuario
-        </button>
+        </motion.button>
       </div>
-      
-      <div className="bg-white rounded-2xl shadow-lg overflow-hidden">
-        <div className="overflow-x-auto">
-          <table className="min-w-full text-sm text-left">
-            <thead className="bg-rose-400 text-white">
-              <tr>
-                <th className="py-3 px-6 text-left">Nombre</th>
-                <th className="py-3 px-6 text-left">Email</th>
-                <th className="py-3 px-6 text-left">Rol</th>
-                <th className="py-3 px-6 text-center">Acciones</th>
-              </tr>
-            </thead>
-            <tbody>
-              <AnimatePresence>
-                {users.length > 0 ? (
-                  users.map((u, i) => (
-                    <motion.tr
-                      key={u._id}
-                      initial={{ opacity: 0, y: -10 }}
-                      animate={{ opacity: 1, y: 0 }}
-                      exit={{ opacity: 0, x: -50 }}
-                      transition={{ duration: 0.3 }}
-                      className={`border-b ${i % 2 === 0 ? "bg-rose-50" : "bg-white"}`}
-                    >
-                      <td className="py-2 px-6 font-medium">{u.name}</td>
-                      <td className="py-2 px-6 text-gray-600">{u.email}</td>
-                      <td className="py-2 px-6">{u.role}</td>
-                      <td className="py-2 px-6 text-center space-x-3">
-                        <button
-                          onClick={() => handleEdit(u)}
-                          className="text-rose-700 px-4 py-2 hover:text-rose-300"
-                          aria-label="Editar"
-                        >
-                          <Pencil size={16} />
-                        </button>
-                        <button
-                          onClick={() => handleDelete(u._id)}
-                          className="bg-rose-700 text-white px-3 py-1 rounded-full shadow-sm hover:bg-rose-500 transition"
-                          aria-label="Eliminar"
-                        >
-                          <Trash2 size={16} />
-                        </button>
-                      </td>
-                    </motion.tr>
-                  ))
-                ) : (
-                  <tr>
-                    <td colSpan="4" className="text-center py-8 text-gray-500 text-lg">
-                      No hay usuarios registrados
+
+      {/* Tabla glass */}
+      <motion.div
+        className="rounded-3xl overflow-hidden bg-white/10 backdrop-blur-2xl border border-white/30 shadow-lg"
+        initial={{ opacity: 0, y: 20 }}
+        animate={{ opacity: 1, y: 0 }}
+        transition={{ duration: 0.6 }}
+      >
+        <table className="min-w-full text-sm text-left text-gray-100 rounded-3xl overflow-hidden">
+          <thead className="bg-white/10 backdrop-blur-xl border-b border-white/10 rounded-t-3xl">
+            <tr className="text-rose-300">
+              <th className="py-3 px-4 font-semibold">Nombre</th>
+              <th className="py-3 px-4 font-semibold">Email</th>
+              <th className="py-3 px-4 font-semibold">Rol</th>
+              <th className="py-3 px-4 text-center font-semibold">Acciones</th>
+            </tr>
+          </thead>
+
+          <tbody className="rounded-b-3xl overflow-hidden">
+            <AnimatePresence>
+              {users.length > 0 ? (
+                users.map((u) => (
+                  <motion.tr
+                    key={u._id}
+                    initial={{ opacity: 0, y: -10 }}
+                    animate={{ opacity: 1, y: 0 }}
+                    exit={{ opacity: 0, x: -50 }}
+                    transition={{ duration: 0.3 }}
+                    className="border-b border-white/10 
+                               bg-white/10 backdrop-blur-xl 
+                               hover:bg-white/20 transition-all last:rounded-b-3xl"
+                  >
+                    <td className="py-3 px-4 font-medium text-gray-100">{u.name}</td>
+                    <td className="py-3 px-4 text-gray-200">{u.email}</td>
+                    <td className="py-3 px-4 text-gray-100">{u.role}</td>
+                    <td className="py-3 px-4 text-center space-x-2">
+                      <motion.button
+                        onClick={() => handleEdit(u)}
+                        whileHover={{ scale: 1.1 }}
+                        className="inline-flex items-center justify-center w-9 h-9 text-white transition"
+                        aria-label="Editar"
+                      >
+                        <Pencil size={16} />
+                      </motion.button>
+                      <motion.button
+                        onClick={() => handleDelete(u._id)}
+                        whileHover={{ scale: 1.1 }}
+                        className="inline-flex items-center justify-center w-9 h-9 text-red-400 hover:text-red-400 transition"
+                        aria-label="Eliminar"
+                      >
+                        <Trash2 size={16} />
+                      </motion.button>
                     </td>
-                  </tr>
-                )}
-              </AnimatePresence>
-            </tbody>
-          </table>
-        </div>
-      </div>
+                  </motion.tr>
+                ))
+              ) : (
+                <tr>
+                  <td colSpan="4" className="text-center py-8 text-gray-300 text-lg">
+                    No hay usuarios registrados
+                  </td>
+                </tr>
+              )}
+            </AnimatePresence>
+          </tbody>
+        </table>
+      </motion.div>
     </div>
   );
 }

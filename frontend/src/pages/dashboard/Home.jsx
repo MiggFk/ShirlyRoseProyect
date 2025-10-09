@@ -38,6 +38,7 @@ export default function Home() {
 
   return (
     <div className="space-y-8 animate-fadeIn">
+      
       <h1 className="text-4xl font-bold text-rose-600 animate-slideDown">
         Bienvenido al panel de administración
       </h1>

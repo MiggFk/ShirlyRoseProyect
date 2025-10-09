@@ -57,7 +57,7 @@ export default function Footer() {
       { label: "Sobre Nosotros", path: "/about" },
       { label: "Política de Privacidad", path: "/privacy" },
       { label: "Términos de Uso", path: "/terms" },
-      { label: "Preguntas Frecuentes", path: "/faq" },
+      { label: "Contacto", path: "/" },
     ].map((item, i) => (
       <motion.li
         key={i}
