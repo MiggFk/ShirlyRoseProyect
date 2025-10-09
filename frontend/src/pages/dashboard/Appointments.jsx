@@ -164,10 +164,10 @@ export default function Appointments() {
           initial={{ opacity: 0, y: 30 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.4 }}
-          className="overflow-x-auto rounded-3xl backdrop-blur-2xl bg-white/10 border border-white/20 shadow-lg"
+          className="overflow-x-auto rounded-3xl backdrop-blur-3xl bg-white/5 border border-white/20 shadow-lg"
         >
           <table className="min-w-full text-sm text-white rounded-3xl overflow-hidden">
-            <thead className="bg-white/10 backdrop-blur-xl border-b border-white/10">
+            <thead className="bg-white/5 backdrop-blur-xl border-b border-white/10">
               <tr>
                 <th className="py-4 px-6 text-left font-bold uppercase">Cliente</th>
                 <th className="py-4 px-6 text-left font-bold uppercase">Servicio</th>
@@ -186,18 +186,18 @@ export default function Appointments() {
                     initial={{ opacity: 0, y: 10 }}
                     animate={{ opacity: 1, y: 0 }}
                     transition={{ delay: i * 0.05 }}
-                    className="border-b border-white/10 bg-white/5 hover:bg-white/10 transition-all"
+                    className="border-b border-white/5 bg-white/5 transition-all"
                   >
-                    <td className="py-3 px-6 font-medium text-gray-100">
+                    <td className="py-3 px-6 font-medium text-white">
                       {cita.clientId?.name || "Sin nombre"}
                     </td>
-                    <td className="py-3 px-6 text-gray-100">
+                    <td className="py-3 px-6 text-white">
                       {cita.serviceId?.name || "Sin servicio"}
                     </td>
-                    <td className="py-3 px-6 text-gray-100">
+                    <td className="py-3 px-6 text-white">
                       {cita.employeeId?.name || "Sin empleado"}
                     </td>
-                    <td className="py-3 px-6 text-gray-300">
+                    <td className="py-3 px-6 text-white">
                       {new Date(cita.dateTime).toLocaleString()}
                     </td>
                     <td className="py-3 px-6">
@@ -209,7 +209,7 @@ export default function Appointments() {
                       <select
                         value={cita.status}
                         onChange={(e) => updateStatus(cita._id, e.target.value)}
-                        className="border border-white/20 bg-white/10 text-white px-3 py-1 rounded-lg backdrop-blur-md focus:ring-2 focus:ring-white/30 text-sm font-semibold"
+                        className="border border-white/20 bg-white/5 text-white px-3 py-1 rounded-lg backdrop-blur-md focus:ring-2 focus:ring-white/20 text-sm font-semibold"
                       >
                         <option value="pendiente" className="text-black">
                           Pendiente
@@ -224,7 +224,7 @@ export default function Appointments() {
                       <motion.button
                         whileHover={{ scale: 1.1 }}
                         onClick={() => deleteAppointment(cita._id)}
-                        className="bg-red-500/80 hover:bg-red-600/90 text-white px-4 py-1 rounded-lg shadow-md transition text-sm flex items-center gap-1"
+                        className="inline-flex items-center justify-center w-9 h-9 text-rose-400 hover:text-red-500 transition"
                       >
                         <FaTrashAlt />
                       </motion.button>

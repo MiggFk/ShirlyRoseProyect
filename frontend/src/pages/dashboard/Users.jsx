@@ -1,3 +1,4 @@
+import { useState } from 'react';
 import Swal from 'sweetalert2';
 import { motion, AnimatePresence } from "framer-motion";
 import { useUsers } from '../../hooks/useUsers';
@@ -6,75 +7,60 @@ import { UserPlus, Pencil, Trash2 } from 'lucide-react';
 export default function Users() {
   const { users, loading, createUser, editUser, deleteUser } = useUsers();
 
-  const handleCreate = async () => {
-    const { value: formValues } = await Swal.fire({
-      title: "Crear Nuevo Usuario",
-      html: `
-        <input id="swal-input-name" class="swal2-input" placeholder="Nombre completo" required />
-        <input id="swal-input-email" class="swal2-input" placeholder="Email" type="email" required />
-        <input id="swal-input-password" type="password" class="swal2-input" placeholder="Contraseña" required />
-        <select id="swal-input-role" class="swal2-input">
-          <option value="admin">Admin</option>
-          <option value="empleado">Empleado</option>
-          <option value="cliente">Cliente</option>
-        </select>
-      `,
-      focusConfirm: false,
-      showCancelButton: true,
-      confirmButtonText: "Crear",
-      cancelButtonText: "Cancelar",
-      preConfirm: () => {
-        const name = document.getElementById("swal-input-name").value;
-        const email = document.getElementById("swal-input-email").value;
-        const password = document.getElementById("swal-input-password").value;
-        const role = document.getElementById("swal-input-role").value;
+  const [showModal, setShowModal] = useState(false);
+  const [editMode, setEditMode] = useState(false);
+  const [currentUser, setCurrentUser] = useState(null);
+  const [formData, setFormData] = useState({
+    name: "",
+    email: "",
+    password: "",
+    role: "cliente",
+  });
 
-        if (!name || !email || !password || !role) {
-          Swal.showValidationMessage("Todos los campos son obligatorios");
-          return false;
-        }
-
-        return { name, email, password, role };
-      },
+  const handleCreate = () => {
+    setEditMode(false);
+    setFormData({
+      name: "",
+      email: "",
+      password: "",
+      role: "cliente",
     });
-
-    if (formValues) {
-      createUser(formValues);
-    }
+    setShowModal(true);
   };
 
-  const handleEdit = async (user) => {
-    const { value: formValues } = await Swal.fire({
-      title: "Editar usuario",
-      html: `
-        <input id="swal-input-name" class="swal2-input" placeholder="Nombre" value="${user.name}" required />
-        <input id="swal-input-email" class="swal2-input" placeholder="Email" value="${user.email}" type="email" required />
-        <select id="swal-input-role" class="swal2-input">
-          <option value="admin" ${user.role === "admin" ? "selected" : ""}>Admin</option>
-          <option value="empleado" ${user.role === "empleado" ? "selected" : ""}>Empleado</option>
-          <option value="cliente" ${user.role === "cliente" ? "selected" : ""}>Cliente</option>
-        </select>
-      `,
-      focusConfirm: false,
-      showCancelButton: true,
-      confirmButtonText: "Guardar",
-      cancelButtonText: "Cancelar",
-      preConfirm: () => {
-        const name = document.getElementById("swal-input-name").value;
-        const email = document.getElementById("swal-input-email").value;
-        const role = document.getElementById("swal-input-role").value;
-
-        if (!name || !email || !role) {
-          Swal.showValidationMessage("Todos los campos son obligatorios");
-          return false;
-        }
-        return { name, email, role };
-      },
+  const handleEdit = (user) => {
+    setEditMode(true);
+    setCurrentUser(user);
+    setFormData({
+      name: user.name,
+      email: user.email,
+      password: "",
+      role: user.role,
     });
+    setShowModal(true);
+  };
 
-    if (formValues) {
-      editUser(user._id, formValues);
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+    
+    if (editMode) {
+      const userData = {
+        name: formData.name,
+        email: formData.email,
+        role: formData.role,
+      };
+      await editUser(currentUser._id, userData);
+    } else {
+      const userData = {
+        name: formData.name,
+        email: formData.email,
+        password: formData.password,
+        role: formData.role,
+      };
+      await createUser(userData);
     }
+    
+    setShowModal(false);
   };
 
   const handleDelete = async (id) => {
@@ -103,40 +89,50 @@ export default function Users() {
   }
 
   return (
-    <div className="container mx-auto p-4 md:p-8">
+    <motion.div
+      className="container mx-auto p-4 md:p-8"
+      initial={{ opacity: 0 }}
+      animate={{ opacity: 1 }}
+      transition={{ duration: 0.8 }}
+    >
       {/* Título y botón */}
       <div className="flex justify-between items-center mb-6">
-        <h2 className="text-3xl font-bold text-rose-300 drop-shadow-md">
+        <motion.h2
+          className="text-4xl font-bold text-white drop-shadow-lg"
+          initial={{ y: -20, opacity: 0 }}
+          animate={{ y: 0, opacity: 1 }}
+          transition={{ duration: 0.5 }}
+        >
           Gestión de Usuarios
-        </h2>
+        </motion.h2>
+
         <motion.button
           onClick={handleCreate}
           whileHover={{ scale: 1.05 }}
           whileTap={{ scale: 0.95 }}
-          className="px-4 py-2 rounded-lg flex items-center gap-2 
-                     bg-white/10 backdrop-blur-xl border border-white/30 
-                     text-rose-300 hover:bg-white/20 hover:text-rose-200 
-                     transition shadow-lg"
+          className="bg-white/10 backdrop-blur-xl border border-white/20 text-white px-6 py-3 rounded-2xl shadow-lg hover:bg-white/20 transition-all font-semibold flex items-center gap-2"
         >
-          <UserPlus size={20} />
-          Crear Nuevo Usuario
+          <UserPlus size={18} />
+          Crear Usuario
         </motion.button>
       </div>
 
       {/* Tabla glass */}
       <motion.div
-        className="rounded-3xl overflow-hidden bg-white/10 backdrop-blur-2xl border border-white/30 shadow-lg"
+        className="rounded-3xl overflow-hidden
+                   bg-white/10 backdrop-blur-2xl
+                   border border-white/30 shadow-lg"
         initial={{ opacity: 0, y: 20 }}
         animate={{ opacity: 1, y: 0 }}
         transition={{ duration: 0.6 }}
       >
-        <table className="min-w-full text-sm text-left text-gray-100 rounded-3xl overflow-hidden">
-          <thead className="bg-white/10 backdrop-blur-xl border-b border-white/10 rounded-t-3xl">
-            <tr className="text-rose-300">
-              <th className="py-3 px-4 font-semibold">Nombre</th>
-              <th className="py-3 px-4 font-semibold">Email</th>
-              <th className="py-3 px-4 font-semibold">Rol</th>
-              <th className="py-3 px-4 text-center font-semibold">Acciones</th>
+        <table className="min-w-full text-sm text-left text-white rounded-3xl overflow-hidden">
+          <thead className="bg-white/5 backdrop-blur-xl border-b border-white/20 rounded-t-3xl">
+            <tr className="text-white">
+              <th className="py-3 px-4 font-semibold">NOMBRE</th>
+              <th className="py-3 px-4 font-semibold">EMAIL</th>
+              <th className="py-3 px-4 font-semibold">ROL</th>
+              <th className="py-3 px-4 text-center font-semibold">ACCIONES</th>
             </tr>
           </thead>
 
@@ -150,9 +146,9 @@ export default function Users() {
                     animate={{ opacity: 1, y: 0 }}
                     exit={{ opacity: 0, x: -50 }}
                     transition={{ duration: 0.3 }}
-                    className="border-b border-white/10 
-                               bg-white/10 backdrop-blur-xl 
-                               hover:bg-white/20 transition-all last:rounded-b-3xl"
+                    className="border-b border-white/5
+                               bg-white/5 backdrop-blur-1xl
+                               transition-all last:rounded-b-3xl"
                   >
                     <td className="py-3 px-4 font-medium text-gray-100">{u.name}</td>
                     <td className="py-3 px-4 text-gray-200">{u.email}</td>
@@ -169,7 +165,7 @@ export default function Users() {
                       <motion.button
                         onClick={() => handleDelete(u._id)}
                         whileHover={{ scale: 1.1 }}
-                        className="inline-flex items-center justify-center w-9 h-9 text-red-400 hover:text-red-400 transition"
+                        className="inline-flex items-center justify-center w-9 h-9 text-red-400 hover:text-red-500 transition"
                         aria-label="Eliminar"
                       >
                         <Trash2 size={16} />
@@ -188,6 +184,88 @@ export default function Users() {
           </tbody>
         </table>
       </motion.div>
-    </div>
+
+      {/* Modal con diseño glass */}
+      <AnimatePresence>
+        {showModal && (
+          <motion.div
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            exit={{ opacity: 0 }}
+            className="fixed inset-0 bg-black/60 backdrop-blur-md flex justify-center items-center z-50"
+          >
+            <motion.div
+              initial={{ scale: 0.9 }}
+              animate={{ scale: 1 }}
+              exit={{ scale: 0.9 }}
+              className="bg-white/10 backdrop-blur-2xl border border-white/20 p-8 rounded-3xl shadow-2xl text-white w-full max-w-md"
+            >
+              <h3 className="text-2xl font-bold mb-6 text-center">
+                {editMode ? "Editar Usuario" : "Crear Nuevo Usuario"}
+              </h3>
+
+              <form onSubmit={handleSubmit} className="space-y-4">
+                <input
+                  type="text"
+                  placeholder="Nombre completo"
+                  required
+                  value={formData.name}
+                  onChange={(e) => setFormData({ ...formData, name: e.target.value })}
+                  className="w-full bg-white/10 border border-white/20 rounded-xl px-4 py-3 text-white placeholder-gray-300 focus:ring-2 focus:ring-white/30"
+                />
+
+                <input
+                  type="email"
+                  placeholder="Email"
+                  required
+                  value={formData.email}
+                  onChange={(e) => setFormData({ ...formData, email: e.target.value })}
+                  className="w-full bg-white/10 border border-white/20 rounded-xl px-4 py-3 text-white placeholder-gray-300 focus:ring-2 focus:ring-white/30"
+                />
+
+                {!editMode && (
+                  <input
+                    type="password"
+                    placeholder="Contraseña"
+                    required
+                    value={formData.password}
+                    onChange={(e) => setFormData({ ...formData, password: e.target.value })}
+                    className="w-full bg-white/10 border border-white/20 rounded-xl px-4 py-3 text-white placeholder-gray-300 focus:ring-2 focus:ring-white/30"
+                  />
+                )}
+
+                <select
+                  value={formData.role}
+                  onChange={(e) => setFormData({ ...formData, role: e.target.value })}
+                  className="w-full bg-white/10 border border-white/20 rounded-xl px-4 py-3 text-white focus:ring-2 focus:ring-white/30"
+                >
+                  <option value="admin" className="text-black">Admin</option>
+                  <option value="empleado" className="text-black">Empleado</option>
+                  <option value="cliente" className="text-black">Cliente</option>
+                </select>
+
+                <div className="flex justify-between gap-4 pt-4">
+                  <motion.button
+                    whileHover={{ scale: 1.05 }}
+                    type="submit"
+                    className="flex-1 bg-rose-400 hover:bg-rose-500 border border-white/20 text-white py-3 rounded-xl font-semibold shadow-md transition-all"
+                  >
+                    {editMode ? "Guardar" : "Crear"}
+                  </motion.button>
+                  <motion.button
+                    whileHover={{ scale: 1.05 }}
+                    type="button"
+                    onClick={() => setShowModal(false)}
+                    className="flex-1 bg-rose-600 hover:bg-rose-700 text-white py-3 rounded-xl font-semibold shadow-md transition-all"
+                  >
+                    Cancelar
+                  </motion.button>
+                </div>
+              </form>
+            </motion.div>
+          </motion.div>
+        )}
+      </AnimatePresence>
+    </motion.div>
   );
 }

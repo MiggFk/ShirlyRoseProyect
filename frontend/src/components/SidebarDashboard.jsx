@@ -7,6 +7,7 @@ import {
   UserCircle,
   ArrowLeft,
   LogOut,
+  Scissors,
 } from "lucide-react";
 import LogoShirly from "./LogoShirly";
 import { useAuth } from "../context/AuthContext";
@@ -19,27 +20,26 @@ export default function Sidebar() {
   const ICON_SIZE = 22;
 
   const links = [
-    { to: "/dashboard", label: "Inicio", icon: <Home size={ICON_SIZE} className="text-rose-700" /> },
-    { to: "/dashboard/appointments", label: "Citas", icon: <Calendar size={ICON_SIZE} className="text-rose-700" /> },
-    { to: "/dashboard/services", label: "Servicios", icon: <Calendar size={ICON_SIZE} className="text-rose-700" /> },
-    { to: "/dashboard/products", label: "Productos", icon: <Package size={ICON_SIZE} className="text-rose-700" /> },
+    { to: "/dashboard", label: "Inicio", icon: <Home size={ICON_SIZE} className="text-rose-300 hover:text-white" /> },
+    { to: "/dashboard/appointments", label: "Citas", icon: <Calendar size={ICON_SIZE} className="text-rose-300 hover:text-white" /> },
+    { to: "/dashboard/services", label: "Servicios", icon: <Scissors size={ICON_SIZE} className="text-rose-300 hover:text-white" /> },
+    { to: "/dashboard/products", label: "Productos", icon: <Package size={ICON_SIZE} className="text-rose-300 hover:text-white" /> },
     ...(userRole === "admin"
-      ? [{ to: "/dashboard/users", label: "Usuarios", icon: <Users size={ICON_SIZE} className="text-rose-700" /> }]
+      ? [{ to: "/dashboard/users", label: "Usuarios", icon: <Users size={ICON_SIZE} className="text-rose-300 hover:text-white" /> }]
       : []),
-    { to: "/profile", label: "Perfil", icon: <UserCircle size={ICON_SIZE} className="text-rose-700" /> },
-    { to: "/", label: "Volver al sitio", icon: <ArrowLeft size={ICON_SIZE} className="text-rose-700" /> },
+    { to: "/profile", label: "Perfil", icon: <UserCircle size={ICON_SIZE} className="text-rose-300 hover:text-white" /> },
+    { to: "/", label: "Volver al sitio", icon: <ArrowLeft size={ICON_SIZE} className="text-rose-300 hover:text-white" /> },
   ];
 
   return (
     <div
       className="w-64 min-h-screen p-6 flex flex-col justify-between
-                 bg-gradient-to-b from-rose-300 to-rose-400
-                 text-white shadow-[4px_0_15px_rgba(0,0,0,0.15)]
-                 backdrop-blur-sm animate-slideIn"
+                 bg-white/10 backdrop-blur-2xl border-r border-white/20
+                 text-white shadow-lg"
     >
       <div>
         {/* Logo */}
-        <div className="flex justify-center mb-10 animate-fadeIn">
+        <div className="flex justify-center mb-10">
           <LogoShirly size="h-24 w-24" />
         </div>
 
@@ -51,10 +51,10 @@ export default function Sidebar() {
               <Link
                 key={link.to}
                 to={link.to}
-                className={`flex items-center gap-4 px-4 py-3 rounded-lg font-medium transition-all duration-300 transform ${
+                className={`flex items-center gap-4 px-4 py-3 rounded-2xl font-medium transition-all duration-300 transform ${
                   isActive
-                    ? "bg-white text-rose-700 shadow-md scale-105"
-                    : "hover:bg-rose-200 hover:scale-105 hover:shadow-lg"
+                    ? "bg-white/20 backdrop-blur-xl border border-white/30 shadow-lg scale-105"
+                    : "hover:bg-white/10 hover:backdrop-blur-xl hover:scale-105 hover:shadow-md"
                 }`}
               >
                 {link.icon}
@@ -69,10 +69,10 @@ export default function Sidebar() {
       {user && (
         <button
           onClick={() => logout()}
-          className="w-full flex items-center justify-center gap-3 px-4 py-3 rounded-lg
-                     bg-rose-500 text-white font-medium
-                     hover:bg-rose-600 hover:scale-105
-                     shadow-md transition-all duration-300"
+          className="w-full flex items-center justify-center gap-3 px-4 py-3 rounded-2xl
+                     bg-rose-400 backdrop-blur-xl border border-white/20 text-rose-800 font-medium
+                     hover:bg-rose-600 hover:scale-105 hover:text-white hover:font-bold
+                     shadow-lg transition-all duration-300"
         >
           <LogOut size={ICON_SIZE} />
           <span>Cerrar Sesión</span>
