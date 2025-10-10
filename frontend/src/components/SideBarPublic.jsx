@@ -61,14 +61,14 @@ export default function SideBarPublic({ title = "Shirly Rose" }) {
             transition={{ duration: 0.3 }}
             className="fixed top-0 left-0 h-full w-64 bg-white shadow-lg z-40 p-6 flex flex-col gap-6"
           >
-            <Link to="/" className="text-rose-600 hover:text-rose-800" onClick={() => setMenuOpen(false)}>Sidebar</Link>
-            <Link to="/" className="text-rose-600 hover:text-rose-800" onClick={() => setMenuOpen(false)}>Inicio</Link>
-            <Link to="/products" className="text-rose-600 hover:text-rose-800" onClick={() => setMenuOpen(false)}>Productos</Link>
-            <Link to="/services" className="text-rose-600 hover:text-rose-800" onClick={() => setMenuOpen(false)}>Servicios</Link>
-            <Link to="/about" className="text-rose-600 hover:text-rose-800" onClick={() => setMenuOpen(false)}>Sobre Nosotros</Link>
-            <Link to="/contact" className="text-rose-600 hover:text-rose-800" onClick={() => setMenuOpen(false)}>Contacto</Link>
-            <Link to="/appointment" className="text-rose-600 hover:text-rose-800" onClick={() => setMenuOpen(false)}>Agendar Cita</Link>
-            <p className="text-rose-600">셜리 로즈</p>
+            <Link to="/" className="text-white" onClick={() => setMenuOpen(false)}>Sidebar</Link>
+            <Link to="/" className="text-gray-600 hover:text-rose-500" onClick={() => setMenuOpen(false)}>Inicio</Link>
+            <Link to="/products" className="text-gray-600 hover:text-rose-500" onClick={() => setMenuOpen(false)}>Productos</Link>
+            <Link to="/services" className="ttext-gray-600 hover:text-rose-500" onClick={() => setMenuOpen(false)}>Servicios</Link>
+            <Link to="/about" className="text-gray-600 hover:text-rose-500" onClick={() => setMenuOpen(false)}>Sobre Nosotros</Link>
+            <Link to="/contact" className="text-gray-600 hover:text-rose-500" onClick={() => setMenuOpen(false)}>Contacto</Link>
+            <Link to="/appointment" className="text-gray-600 hover:text-rose-500" onClick={() => setMenuOpen(false)}>Agendar Cita</Link>
+            <p className="text-rose-500">셜리 로즈</p>
           </motion.nav>
         )}
 

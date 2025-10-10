@@ -103,7 +103,7 @@ const Sidebar = ({ isOpen, onClose, onLogout, user, setActiveTab }) => {
             <div className="p-6 border-t">
               <motion.button
                 onClick={onLogout}
-                className="w-full flex items-center justify-center gap-2 bg-rose-600 text-white py-2 rounded-lg hover:bg-rose-300 transition"
+                className="w-full flex items-center justify-center gap-2 bg-rose-400 text-white py-2 rounded-lg hover:bg-rose-600 hover:font-bold transition"
                 whileHover={{ scale: 1.03 }}
                 whileTap={{ scale: 0.97 }}
               >
