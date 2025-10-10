@@ -4,8 +4,8 @@ const productSchema = new mongoose.Schema({
     name: {
         type: String,
         required: [true, "El nombre del producto es obligatorio"],
-        trim: true, // Elimina espacios en blanco al inicio y final
-        unique: true, // Asegura que no haya productos con el mismo nombre
+        trim: true,
+        unique: true,
         maxlength: [100, "El nombre no puede tener más de 100 caracteres"]
     },
     description: {
@@ -23,19 +23,36 @@ const productSchema = new mongoose.Schema({
         min: [0, "El stock no puede ser un valor negativo"],
         default: 0
     },
-    image: {
-        type: String,
-        default: "https://via.placeholder.com/150",
-        // Aquí podrías agregar un validador personalizado para URL
-        // Por ejemplo: validate: { validator: (v) => /regex/.test(v), message: 'URL de imagen no válida' }
-    },
+    // 🔄 CAMBIO: De una imagen a múltiples imágenes con Cloudinary
+    images: [{
+        url: {
+            type: String,
+            required: true
+        },
+        public_id: {
+            type: String,
+            required: true
+        }
+    }],
     category: {
         type: String,
-        trim: true,
-        default: "General"
+        required: true,
+        enum: [
+            'maquillaje', 
+            'cuidado_facial', 
+            'cuidado_cabello', 
+            'cuidado_unas',
+            'cuidado_piel',
+            'accesorios'
+        ],
+        default: "maquillaje"
+    },
+    isActive: {
+        type: Boolean,
+        default: true
     }
 }, {
-    timestamps: true // Agrega createdAt y updatedAt
+    timestamps: true
 });
 
 module.exports = mongoose.model("Product", productSchema);

@@ -49,23 +49,20 @@ const registerUser = async (req, res) => {
     const { name, email, password, role } = req.body;
 
     // Verificar si el usuario ya existe
-  const existingUser = await User.findOne({ email });
-  if (existingUser) {
-  return res.status(400).json({ message: "El correo ya está registrado" });
- }
+    const existingUser = await User.findOne({ email });
+    if (existingUser) {
+      return res.status(400).json({ message: "El correo ya está registrado" });
+    }
 
-// Encriptar la contraseña antes de guardarla
-  const salt = await bcrypt.genSalt(10);
-  const hashedPassword = await bcrypt.hash(password, salt);
-
-  // Rol por defecto "cliente", pero permite admin/empleado si viene en el body
+    // Rol por defecto "cliente", pero permite admin/empleado si viene en el body
     const allowedRoles = ["admin", "empleado", "cliente"];
     const finalRole = allowedRoles.includes(role) ? role : "cliente";
 
+    // YA NO encriptamos aquí - lo hace el middleware automáticamente
     const newUser = new User({
       name,
       email,
-      password: hashedPassword,
+      password, // ← Contraseña sin encriptar, el middleware se encarga
       role: finalRole,
     });
 

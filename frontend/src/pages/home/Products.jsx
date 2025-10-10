@@ -1,118 +1,27 @@
+import React from 'react';
 import { motion } from "framer-motion";
 import Footer from "../../components/Footer";
 import SideBarPublic from "../../components/SideBarPublic";
-
-
-// Rutas de las imagenes
-import shampoo from "../../assets/images/products/shampoo.jpg";
-import exfoliante from "../../assets/images/products/exfoliante.jpg";
-import aceite from "../../assets/images/products/aceite.jpg";
-import Balsamo from "../../assets/images/products/Balsamo.jpg";
-import SinNada from "../../assets/images/SinFoto.jpg";
-
-
+import { usePublicProducts } from '../../hooks/usePublicProducts'; // Hook público
 
 export default function Products() {
+  const { products, loading, error } = usePublicProducts(); // Sin autenticación
 
-// Productos
-  const productos = [
-    {
-      id: 1,
-      nombre: "Shampoo Nutritivo",
-      descripcion: "Limpieza suave y nutrición profunda para tu cabello.",
-      precio: "$60.000",
-      duracion: "500 ml",
-      img: shampoo,
-    },
-    {
-      id: 2,
-      nombre: "Acondicionador Hidratante",
-      descripcion: "Hidratación intensa y brillo natural.",
-      precio: "$50.000",
-      duracion: "500 ml",
-      img: exfoliante,
-    },
-    {
-      id: 3,
-      nombre: "Aceite Esencial",
-      descripcion: "Aromaterapia y nutrición para piel y cabello.",
-      precio: "$35.000",
-      duracion: "120 ml",
-      img: aceite,
-    },
-    {
-      id: 4,
-      nombre: "Balsamo",
-      descripcion: "Balsamo alisador de contorno de ojos.",
-      precio: "$40.000",
-      duracion: "500 ml",
-      img: Balsamo,
-    },
-    {
-      id:5,
-      nombre: "Nombre producto",
-      descripcion: "Descripcion",
-      precio: "Precio",
-      duracion: "ml del producto",
-      img: SinNada,
-    },
-    {
-      id:6,
-      nombre: "Nombre producto",
-      descripcion: "Descripcion",
-      precio: "Precio",
-      duracion: "ml del producto",
-      img: SinNada,
-    },
-    {
-      id:7,
-      nombre: "Nombre producto",
-      descripcion: "Descripcion",
-      precio: "Precio",
-      duracion: "ml del producto",
-      img: SinNada,
-    },
-    {
-      id:8,
-      nombre: "Nombre producto",
-      descripcion: "Descripcion",
-      precio: "Precio",
-      duracion: "ml del producto",
-      img: SinNada,
-    },
-    {
-      id:9,
-      nombre: "Nombre producto",
-      descripcion: "Descripcion",
-      precio: "Precio",
-      duracion: "ml del producto",
-      img: SinNada,
-    },
-    {
-      id:10,
-      nombre: "Nombre producto",
-      descripcion: "Descripcion",
-      precio: "Precio",
-      duracion: "ml del producto",
-      img: SinNada,
-    },
-    {
-      id:11,
-      nombre: "Nombre producto",
-      descripcion: "Descripcion",
-      precio: "Precio",
-      duracion: "ml del producto",
-      img: SinNada,
-    },
-    {
-      id:12,
-      nombre: "Nombre producto",
-      descripcion: "Descripcion",
-      precio: "Precio",
-      duracion: "ml del producto",
-      img:SinNada,
-    }
-  ];
+  if (loading) {
+    return (
+      <div className="min-h-screen bg-rose-100 flex items-center justify-center">
+        <div className="w-10 h-10 border-4 border-rose-500 border-t-transparent rounded-full animate-spin"></div>
+      </div>
+    );
+  }
+
+  if (error) {
+    return (
+      <div className="min-h-screen bg-rose-100 flex items-center justify-center">
+        <p className="text-red-500">{error}</p>
+      </div>
+    );
+  }
 
   const gridVariants = {
     hidden: { opacity: 0 },
@@ -153,51 +62,67 @@ export default function Products() {
           whileInView="visible"
           viewport={{ once: true, amount: 0.2 }}
         >
-          {productos.map((prod) => (
-            <motion.div
-              key={prod.id}
-              className="bg-white rounded-2xl shadow-lg flex flex-col md:flex-row overflow-hidden"
-              variants={cardVariants}
-              whileHover="hover"
-            >
-              {/* Imagen */}
-              <img
-                src={prod.img}
-                alt={prod.nombre}
-                className="w-full md:w-1/3 h-48 md:h-auto object-cover"
-              />
+          {products.length === 0 ? (
+            <div className="text-center py-12">
+              <h3 className="text-xl text-gray-500">No hay productos disponibles</h3>
+            </div>
+          ) : (
+            products.map((product) => (
+              <motion.div
+                key={product._id}
+                className="bg-white rounded-2xl shadow-lg flex flex-col md:flex-row overflow-hidden"
+                variants={cardVariants}
+                whileHover="hover"
+              >
+                {/* Imagen */}
+                <img
+                  src={product.images && product.images.length > 0 ? product.images[0].url : '/placeholder-product.jpg'}
+                  alt={product.name}
+                  className="w-full md:w-1/3 h-48 md:h-auto object-cover"
+                />
 
-              {/* Texto */}
-              <div className="p-6 flex flex-col justify-center md:w-2/3">
-                <h3 className="text-xl font-bold text-rose-500 mb-2">
-                  {prod.nombre}
-                </h3>
-                <p className="text-gray-600 mb-2">{prod.descripcion}</p>
-                <p className="text-sm text-gray-500">
-                  Contenido: {prod.duracion}
-                </p>
-                <p className="text-sm text-gray-500 mb-4">
-                  Precio: {prod.precio}
-                </p>
-                <div className="flex gap-3">
-                  <motion.button 
-                    whileHover={{ scale: 1.05 }} 
-                    whileTap={{ scale: 0.95 }}
-                    className="w-full md:w-auto bg-rose-400 hover:bg-rose-500 text-white py-2 px-6 rounded-lg font-medium transition"
-                  >
-                    Encargar
-                  </motion.button>
-                  <motion.button 
-                    whileHover={{ scale: 1.05 }} 
-                    whileTap={{ scale: 0.95 }}
-                    className="w-full md:w-auto border border-rose-300 text-rose-600 py-2 px-6 rounded-lg transition hover:bg-rose-100"
-                  >
-                    Añadir al carrito
-                  </motion.button>
+                {/* Texto */}
+                <div className="p-6 flex flex-col justify-center md:w-2/3">
+                  <h3 className="text-xl font-bold text-rose-500 mb-2">
+                    {product.name}
+                  </h3>
+                  {product.description && (
+                    <p className="text-gray-600 mb-2">
+                      {product.description}
+                    </p>
+                  )}
+                  <p className="text-sm text-gray-500">
+                    Contenido: {product.duracion}
+                  </p>
+                  <p className="text-sm text-gray-500 mb-4">
+                    Precio: ${product.price?.toLocaleString()}
+                  </p>
+                  <div className="flex gap-3">
+                    <motion.button 
+                      whileHover={{ scale: 1.05 }} 
+                      whileTap={{ scale: 0.95 }}
+                      className="w-full md:w-auto bg-rose-400 hover:bg-rose-500 text-white py-2 px-6 rounded-lg font-medium transition"
+                    >
+                      Encargar
+                    </motion.button>
+                    <motion.button 
+                      whileHover={{ scale: 1.05 }} 
+                      whileTap={{ scale: 0.95 }}
+                      className="w-full md:w-auto border border-rose-300 text-rose-600 py-2 px-6 rounded-lg transition hover:bg-rose-100"
+                    >
+                      Añadir al carrito
+                    </motion.button>
+                  </div>
+
+                  {product.stock === 0 && (
+                    <div className="absolute inset-0 bg-black bg-opacity-50 flex items-center justify-center">
+                      <span className="text-white font-semibold">Agotado</span>
+                    </div>
+                  )}
                 </div>
-              </div>
-            </motion.div>
-          ))}
+              </motion.div>
+            ))
+          )}
         </motion.div>
       </main>
 
