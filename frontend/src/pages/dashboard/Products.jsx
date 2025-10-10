@@ -1,8 +1,4 @@
-<<<<<<< HEAD
 import React, { useState } from "react";
-=======
-import { useState } from "react";
->>>>>>> 44e6a0bf447bd891f4a6265faa60eb85339bc747
 import { motion, AnimatePresence } from "framer-motion";
 import { useProducts } from "../../hooks/useProducts";
 import { 
@@ -17,7 +13,6 @@ import {
 } from "lucide-react";
 
 export default function Products() {
-<<<<<<< HEAD
   const { 
     products, 
     loading, 
@@ -32,73 +27,12 @@ export default function Products() {
 
   const handleCreate = () => {
     setEditingProduct(null);
-=======
-  const { products, loading, createProduct, updateProduct, deleteProduct } = useProducts();
-  
-  const [showModal, setShowModal] = useState(false);
-  const [editMode, setEditMode] = useState(false);
-  const [currentProduct, setCurrentProduct] = useState(null);
-  const [formData, setFormData] = useState({
-    name: "",
-    description: "",
-    price: "",
-    stock: "",
-    image: "",
-    category: "",
-  });
-
-  const handleCreate = () => {
-    setEditMode(false);
-    setFormData({
-      name: "",
-      description: "",
-      price: "",
-      stock: "",
-      image: "",
-      category: "",
-    });
->>>>>>> 44e6a0bf447bd891f4a6265faa60eb85339bc747
     setShowModal(true);
   };
 
   const handleEdit = (product) => {
-<<<<<<< HEAD
     setEditingProduct(product);
     setShowModal(true);
-=======
-    setEditMode(true);
-    setCurrentProduct(product);
-    setFormData({
-      name: product.name,
-      description: product.description,
-      price: product.price,
-      stock: product.stock,
-      image: product.image,
-      category: product.category,
-    });
-    setShowModal(true);
-  };
-
-  const handleSubmit = async (e) => {
-    e.preventDefault();
-    
-    const productData = {
-      name: formData.name,
-      description: formData.description,
-      price: Number(formData.price),
-      stock: Number(formData.stock),
-      image: formData.image,
-      category: formData.category,
-    };
-
-    if (editMode) {
-      await updateProduct(currentProduct._id, productData);
-    } else {
-      await createProduct(productData);
-    }
-    
-    setShowModal(false);
->>>>>>> 44e6a0bf447bd891f4a6265faa60eb85339bc747
   };
 
   if (loading) {
@@ -138,11 +72,10 @@ export default function Products() {
         </motion.button>
       </div>
 
-<<<<<<< HEAD
       {/* Estadísticas rápidas */}
       <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mb-6">
         <motion.div 
-          className="bg-white/10 backdrop-blur-2xl border border-white/30 rounded-2xl p-4"
+          className="bg-white/10 backdrop-blur-xl border border-white/20 rounded-2xl p-4"
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ delay: 0.1 }}
@@ -161,7 +94,7 @@ export default function Products() {
         </motion.div>
 
         <motion.div 
-          className="bg-white/10 backdrop-blur-2xl border border-white/30 rounded-2xl p-4"
+          className="bg-white/10 backdrop-blur-xl border border-white/20 rounded-2xl p-4"
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ delay: 0.2 }}
@@ -180,7 +113,7 @@ export default function Products() {
         </motion.div>
 
         <motion.div 
-          className="bg-white/10 backdrop-blur-2xl border border-white/30 rounded-2xl p-4"
+          className="bg-white/10 backdrop-blur-xl border border-white/20 rounded-2xl p-4"
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ delay: 0.3 }}
@@ -201,7 +134,7 @@ export default function Products() {
 
       {/* Tabla */}
       <motion.div
-        className="rounded-3xl overflow-hidden bg-white/10 backdrop-blur-2xl border border-white/30 shadow-lg"
+        className="rounded-3xl overflow-hidden bg-white/10 backdrop-blur-xl border border-white/20 shadow-lg"
         initial={{ opacity: 0, y: 20 }}
         animate={{ opacity: 1, y: 0 }}
         transition={{ duration: 0.6 }}
@@ -393,7 +326,6 @@ export default function Products() {
   );
 }
 
-// Componente Modal actualizado con nuevas categorías
 function ProductModal({ product, isOpen, onClose, onSave }) {
   const [formData, setFormData] = useState({
     name: product?.name || '',
@@ -462,15 +394,15 @@ function ProductModal({ product, isOpen, onClose, onSave }) {
         initial={{ opacity: 0, scale: 0.95 }}
         animate={{ opacity: 1, scale: 1 }}
         exit={{ opacity: 0, scale: 0.95 }}
-        className="bg-white rounded-2xl p-6 w-full max-w-lg max-h-[90vh] overflow-y-auto shadow-2xl"
+        className="bg-white/10 backdrop-blur-xl border border-white/20 rounded-3xl p-6 w-full max-w-lg max-h-[90vh] overflow-y-auto shadow-2xl text-white"
       >
         <div className="flex items-center justify-between mb-6">
-          <h3 className="text-2xl font-bold text-gray-800">
+          <h3 className="text-2xl font-bold">
             {product ? 'Editar Producto' : 'Crear Producto'}
           </h3>
           <button
             onClick={onClose}
-            className="text-gray-500 hover:text-gray-700 text-2xl font-bold"
+            className="text-gray-400 hover:text-gray-200 text-2xl font-bold"
           >
             ×
           </button>
@@ -479,7 +411,7 @@ function ProductModal({ product, isOpen, onClose, onSave }) {
         <form onSubmit={handleSubmit} className="space-y-5">
           {/* Nombre */}
           <div>
-            <label className="block text-sm font-medium text-gray-700 mb-2">
+            <label className="block text-sm font-medium mb-2">
               Nombre del producto *
             </label>
             <input
@@ -487,14 +419,14 @@ function ProductModal({ product, isOpen, onClose, onSave }) {
               placeholder="Ej: Labial Rosa Elegante"
               value={formData.name}
               onChange={(e) => setFormData({...formData, name: e.target.value})}
-              className="w-full p-3 border border-gray-300 rounded-xl focus:outline-none focus:ring-2 focus:ring-rose-500 focus:border-transparent transition"
+              className="w-full p-3 bg-white/5 border border-white/20 rounded-xl focus:outline-none focus:ring-2 focus:ring-rose-500 focus:border-transparent transition"
               required
             />
           </div>
 
           {/* Descripción */}
           <div>
-            <label className="block text-sm font-medium text-gray-700 mb-2">
+            <label className="block text-sm font-medium mb-2">
               Descripción
             </label>
             <textarea
@@ -502,14 +434,14 @@ function ProductModal({ product, isOpen, onClose, onSave }) {
               value={formData.description}
               onChange={(e) => setFormData({...formData, description: e.target.value})}
               rows={3}
-              className="w-full p-3 border border-gray-300 rounded-xl h-20 resize-none focus:outline-none focus:ring-2 focus:ring-rose-500 focus:border-transparent transition"
+              className="w-full p-3 bg-white/5 border border-white/20 rounded-xl h-20 resize-none focus:outline-none focus:ring-2 focus:ring-rose-500 focus:border-transparent transition"
             />
           </div>
 
           {/* Precio y Stock */}
           <div className="grid grid-cols-2 gap-4">
             <div>
-              <label className="block text-sm font-medium text-gray-700 mb-2">
+              <label className="block text-sm font-medium mb-2">
                 Precio *
               </label>
               <input
@@ -517,14 +449,14 @@ function ProductModal({ product, isOpen, onClose, onSave }) {
                 placeholder="25000"
                 value={formData.price}
                 onChange={(e) => setFormData({...formData, price: e.target.value})}
-                className="w-full p-3 border border-gray-300 rounded-xl focus:outline-none focus:ring-2 focus:ring-rose-500 focus:border-transparent transition"
+                className="w-full p-3 bg-white/5 border border-white/20 rounded-xl focus:outline-none focus:ring-2 focus:ring-rose-500 focus:border-transparent transition"
                 required
                 min="0"
                 step="1000"
               />
             </div>
             <div>
-              <label className="block text-sm font-medium text-gray-700 mb-2">
+              <label className="block text-sm font-medium mb-2">
                 Stock *
               </label>
               <input
@@ -532,22 +464,22 @@ function ProductModal({ product, isOpen, onClose, onSave }) {
                 placeholder="10"
                 value={formData.stock}
                 onChange={(e) => setFormData({...formData, stock: e.target.value})}
-                className="w-full p-3 border border-gray-300 rounded-xl focus:outline-none focus:ring-2 focus:ring-rose-500 focus:border-transparent transition"
+                className="w-full p-3 bg-white/5 border border-white/20 rounded-xl focus:outline-none focus:ring-2 focus:ring-rose-500 focus:border-transparent transition"
                 required
                 min="0"
               />
             </div>
           </div>
 
-          {/* Categoría actualizada */}
+          {/* Categoría */}
           <div>
-            <label className="block text-sm font-medium text-gray-700 mb-2">
+            <label className="block text-sm font-medium mb-2">
               Categoría *
             </label>
             <select
               value={formData.category}
               onChange={(e) => setFormData({...formData, category: e.target.value})}
-              className="w-full p-3 border border-gray-300 rounded-xl focus:outline-none focus:ring-2 focus:ring-rose-500 focus:border-transparent transition"
+              className="w-full p-3 bg-white/5 border border-white/20 rounded-xl focus:outline-none focus:ring-2 focus:ring-rose-500 focus:border-transparent transition"
               required
             >
               {categories.map((cat) => (
@@ -560,7 +492,7 @@ function ProductModal({ product, isOpen, onClose, onSave }) {
 
           {/* Imágenes */}
           <div>
-            <label className="block text-sm font-medium text-gray-700 mb-2">
+            <label className="block text-sm font-medium mb-2">
               Imágenes del producto {!product && '(máximo 5)'}
             </label>
             <input
@@ -568,14 +500,14 @@ function ProductModal({ product, isOpen, onClose, onSave }) {
               multiple
               accept="image/*"
               onChange={handleFileChange}
-              className="w-full p-3 border border-gray-300 rounded-xl focus:outline-none focus:ring-2 focus:ring-rose-500 focus:border-transparent transition file:mr-4 file:py-2 file:px-4 file:rounded-lg file:border-0 file:text-sm file:font-medium file:bg-rose-50 file:text-rose-700 hover:file:bg-rose-100"
+              className="w-full p-3 bg-white/5 border border-white/20 rounded-xl focus:outline-none focus:ring-2 focus:ring-rose-500 focus:border-transparent transition file:mr-4 file:py-2 file:px-4 file:rounded-lg file:border-0 file:text-sm file:font-medium file:bg-rose-50 file:text-rose-700 hover:file:bg-rose-100"
             />
             {selectedFiles.length > 0 && (
-              <div className="mt-2 p-3 bg-gray-50 rounded-lg">
-                <p className="text-sm text-gray-600 font-medium mb-2">
+              <div className="mt-2 p-3 bg-white/5 rounded-lg border border-white/10">
+                <p className="text-sm text-gray-200 font-medium mb-2">
                   {selectedFiles.length} archivo(s) seleccionado(s):
                 </p>
-                <ul className="text-xs text-gray-500 space-y-1">
+                <ul className="text-xs text-gray-400 space-y-1">
                   {Array.from(selectedFiles).map((file, index) => (
                     <li key={index} className="truncate">
                       • {file.name} ({(file.size / 1024 / 1024).toFixed(2)} MB)
@@ -585,8 +517,8 @@ function ProductModal({ product, isOpen, onClose, onSave }) {
               </div>
             )}
             {product && product.images && product.images.length > 0 && (
-              <div className="mt-2 p-3 bg-blue-50 rounded-lg">
-                <p className="text-sm text-blue-600 font-medium mb-2">
+              <div className="mt-2 p-3 bg-white/5 rounded-lg border border-white/10">
+                <p className="text-sm text-gray-200 font-medium mb-2">
                   Imágenes actuales ({product.images.length}):
                 </p>
                 <div className="flex gap-2 flex-wrap">
@@ -599,7 +531,7 @@ function ProductModal({ product, isOpen, onClose, onSave }) {
                     />
                   ))}
                 </div>
-                <p className="text-xs text-blue-500 mt-2">
+                <p className="text-xs text-gray-400 mt-2">
                   Las nuevas imágenes se agregarán a las existentes
                 </p>
               </div>
@@ -611,7 +543,7 @@ function ProductModal({ product, isOpen, onClose, onSave }) {
             <button
               type="button"
               onClick={onClose}
-              className="flex-1 px-4 py-3 border border-gray-300 text-gray-700 rounded-xl hover:bg-gray-50 transition font-medium"
+              className="flex-1 px-4 py-3 border border-white/20 text-gray-200 rounded-xl hover:bg-white/10 transition font-medium"
             >
               Cancelar
             </button>
@@ -635,175 +567,3 @@ function ProductModal({ product, isOpen, onClose, onSave }) {
     </div>
   );
 }
-=======
-      {/* Tabla con efecto glass/liquid */}
-      <motion.div
-        className="rounded-3xl overflow-hidden
-                   bg-white/10 backdrop-blur-2xl
-                   border border-white/30 shadow-lg"
-        initial={{ opacity: 0, y: 20 }}
-        animate={{ opacity: 1, y: 0 }}
-        transition={{ duration: 0.6 }}
-      >
-        <table className="min-w-full text-sm text-left text-white rounded-3xl overflow-hidden">
-          {/* Encabezado */}
-          <thead className="bg-white/5 backdrop-blur-xl border-b border-white/20 rounded-t-3xl">
-            <tr className="text-white">
-              <th className="py-3 px-4 font-semibold">NOMBRE</th>
-              <th className="py-3 px-4 hidden sm:table-cell font-semibold">DESCRIPCION</th>
-              <th className="py-3 px-4 font-semibold">PRECIO</th>
-              <th className="py-3 px-4 font-semibold">STOCK</th>
-              <th className="py-3 px-4 text-center font-semibold">ACCIONES</th>
-            </tr>
-          </thead>
-
-          {/* Cuerpo */}
-          <tbody className="rounded-b-3xl overflow-hidden">
-            <AnimatePresence>
-              {products.length > 0 ? (
-                products.map((p) => (
-                  <motion.tr
-                    key={p._id}
-                    initial={{ opacity: 0, y: -10 }}
-                    animate={{ opacity: 1, y: 0 }}
-                    exit={{ opacity: 0, x: -50 }}
-                    transition={{ duration: 0.3 }}
-                    className="border-b border-white/5
-                               bg-white/10 backdrop-blur-1xl
-                               transition-all last:rounded-b-3xl"
-                  >
-                    <td className="py-3 px-4 font-medium text-gray-100">{p.name}</td>
-                    <td className="py-3 px-4 text-gray-200 hidden sm:table-cell">{p.description}</td>
-                    <td className="py-3 px-4 text-gray-100 font-semibold">${p.price}</td>
-                    <td className="py-3 px-4 text-gray-100">{p.stock}</td>
-                    <td className="py-3 px-4 text-center space-x-2">
-                      <motion.button
-                        onClick={() => handleEdit(p)}
-                        whileHover={{ scale: 1.1 }}
-                        className="inline-flex items-center justify-center w-9 h-9 text-white transition"
-                        aria-label="Editar"
-                      >
-                        <Edit size={16} />
-                      </motion.button>
-                      <motion.button
-                        onClick={() => deleteProduct(p._id)}
-                        whileHover={{ scale: 1.1 }}
-                        className="inline-flex items-center justify-center w-9 h-9 text-rose-400 hover:text-red-500 transition"
-                        aria-label="Eliminar"
-                      >
-                        <Trash2 size={16} />
-                      </motion.button>
-                    </td>
-                  </motion.tr>
-                ))
-              ) : (
-                <tr>
-                  <td colSpan="5" className="text-center py-8 text-gray-300 text-lg">
-                    No hay productos registrados
-                  </td>
-                </tr>
-              )}
-            </AnimatePresence>
-          </tbody>
-        </table>
-      </motion.div>
-
-      {/* Modal con el mismo diseño de Appointments */}
-      <AnimatePresence>
-        {showModal && (
-          <motion.div
-            initial={{ opacity: 0 }}
-            animate={{ opacity: 1 }}
-            exit={{ opacity: 0 }}
-            className="fixed inset-0 bg-black/60 backdrop-blur-md flex justify-center items-center z-50"
-          >
-            <motion.div
-              initial={{ scale: 0.9 }}
-              animate={{ scale: 1 }}
-              exit={{ scale: 0.9 }}
-              className="bg-white/10 backdrop-blur-2xl border border-white/20 p-8 rounded-3xl shadow-2xl text-white w-full max-w-md"
-            >
-              <h3 className="text-2xl font-bold mb-6 text-center">
-                {editMode ? "Editar Producto" : "Agregar Producto"}
-              </h3>
-
-              <form onSubmit={handleSubmit} className="space-y-4">
-                <input
-                  type="text"
-                  placeholder="Nombre"
-                  required
-                  value={formData.name}
-                  onChange={(e) => setFormData({ ...formData, name: e.target.value })}
-                  className="w-full bg-white/10 border border-white/20 rounded-xl px-4 py-3 text-white placeholder-gray-300 focus:ring-2 focus:ring-white/30"
-                />
-
-                <textarea
-                  placeholder="Descripción"
-                  required
-                  value={formData.description}
-                  onChange={(e) => setFormData({ ...formData, description: e.target.value })}
-                  className="w-full bg-white/10 border border-white/20 rounded-xl px-4 py-3 text-white placeholder-gray-300 focus:ring-2 focus:ring-white/30 min-h-[100px]"
-                />
-
-                <input
-                  type="number"
-                  placeholder="Precio"
-                  required
-                  value={formData.price}
-                  onChange={(e) => setFormData({ ...formData, price: e.target.value })}
-                  className="w-full bg-white/10 border border-white/20 rounded-xl px-4 py-3 text-white placeholder-gray-300 focus:ring-2 focus:ring-white/30"
-                />
-
-                <input
-                  type="number"
-                  placeholder="Stock"
-                  required
-                  value={formData.stock}
-                  onChange={(e) => setFormData({ ...formData, stock: e.target.value })}
-                  className="w-full bg-white/10 border border-white/20 rounded-xl px-4 py-3 text-white placeholder-gray-300 focus:ring-2 focus:ring-white/30"
-                />
-
-                <input
-                  type="text"
-                  placeholder="URL de imagen"
-                  required
-                  value={formData.image}
-                  onChange={(e) => setFormData({ ...formData, image: e.target.value })}
-                  className="w-full bg-white/10 border border-white/20 rounded-xl px-4 py-3 text-white placeholder-gray-300 focus:ring-2 focus:ring-white/30"
-                />
-
-                <input
-                  type="text"
-                  placeholder="Categoría"
-                  required
-                  value={formData.category}
-                  onChange={(e) => setFormData({ ...formData, category: e.target.value })}
-                  className="w-full bg-white/10 border border-white/20 rounded-xl px-4 py-3 text-white placeholder-gray-300 focus:ring-2 focus:ring-white/30"
-                />
-
-                <div className="flex justify-between gap-4 pt-4">
-                  <motion.button
-                    whileHover={{ scale: 1.05 }}
-                    type="submit"
-                    className="flex-1 bg-rose-400 hover:bg-rose-500 border border-white/20 text-white py-3 rounded-xl font-semibold shadow-md transition-all"
-                  >
-                    Guardar
-                  </motion.button>
-                  <motion.button
-                    whileHover={{ scale: 1.05 }}
-                    type="button"
-                    onClick={() => setShowModal(false)}
-                    className="flex-1 bg-rose-600 hover:bg-rose-700 text-white py-3 rounded-xl font-semibold shadow-md transition-all"
-                  >
-                    Cancelar
-                  </motion.button>
-                </div>
-              </form>
-            </motion.div>
-          </motion.div>
-        )}
-      </AnimatePresence>
-    </motion.div>
-  );
-}
->>>>>>> 44e6a0bf447bd891f4a6265faa60eb85339bc747
