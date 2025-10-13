@@ -47,7 +47,7 @@ export default function Privacy() {
             transition={{ duration: 0.8, delay: 0.9 }}
           >
             <section>
-              <h2 className="text-2xl font-bold text-rose-600 mb-3">
+              <h2 className="text-2xl font-bold text-gray-800 mb-3">
                 1. Información que Recopilamos
               </h2>
               <p className="text-gray-700 leading-relaxed">
@@ -58,7 +58,7 @@ export default function Privacy() {
             </section>
 
             <section>
-              <h2 className="text-2xl font-bold text-rose-600 mb-3">
+              <h2 className="text-2xl font-bold text-gray-800 mb-3">
                 2. Uso de la Información
               </h2>
               <p className="text-gray-700 leading-relaxed">
@@ -73,7 +73,7 @@ export default function Privacy() {
             </section>
 
             <section>
-              <h2 className="text-2xl font-bold text-rose-600 mb-3">
+              <h2 className="text-2xl font-bold text-gray-800 mb-3">
                 3. Protección de Datos
               </h2>
               <p className="text-gray-700 leading-relaxed">
@@ -84,7 +84,7 @@ export default function Privacy() {
             </section>
 
             <section>
-              <h2 className="text-2xl font-bold text-rose-600 mb-3">
+              <h2 className="text-2xl font-bold text-gray-800 mb-3">
                 4. Compartir Información
               </h2>
               <p className="text-gray-700 leading-relaxed">
@@ -94,7 +94,7 @@ export default function Privacy() {
             </section>
 
             <section>
-              <h2 className="text-2xl font-bold text-rose-600 mb-3">
+              <h2 className="text-2xl font-bold text-gray-800 mb-3">
                 5. Tus Derechos
               </h2>
               <p className="text-gray-700 leading-relaxed">
@@ -105,7 +105,7 @@ export default function Privacy() {
             </section>
 
             <section>
-              <h2 className="text-2xl font-bold text-rose-600 mb-3">
+              <h2 className="text-2xl font-bold text-gray-800 mb-3">
                 6. Cookies
               </h2>
               <p className="text-gray-700 leading-relaxed">
@@ -116,7 +116,7 @@ export default function Privacy() {
             </section>
 
             <section>
-              <h2 className="text-2xl font-bold text-rose-600 mb-3">
+              <h2 className="text-2xl font-bold text-gray-800 mb-3">
                 7. Cambios a esta Política
               </h2>
               <p className="text-gray-700 leading-relaxed">
@@ -140,7 +140,6 @@ export default function Privacy() {
 
       {/* Footer */}
       <motion.footer
-        className="text-center py-6 bg-rose-200 mt-10"
         initial={{ y: 50, opacity: 0 }}
         animate={{ y: 0, opacity: 1, transition: { duration: 0.5, delay: 1.1 } }}
       >

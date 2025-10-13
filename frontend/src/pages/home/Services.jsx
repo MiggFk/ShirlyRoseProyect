@@ -1,9 +1,9 @@
 import React, { useState } from 'react';
 import { motion } from "framer-motion";
 import Footer from "../../components/Footer";
-import SideBarPublic from "../../components/SideBarPublic";
+import PublicNavbar from "../../components/PublicNavbar";
 import { usePublicServices } from '../../hooks/usePublicServices';
-import { Clock, Scissors, Star, Image as ImageIcon } from 'lucide-react';
+import { Clock, Scissors, Star } from 'lucide-react';
 
 export default function Services() {
   const { services, loading, error } = usePublicServices();
@@ -69,13 +69,13 @@ export default function Services() {
   }
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-rose-50 via-pink-50 to-purple-50">
-      <SideBarPublic />
+    <div className="min-h-screen bg-rose-50 pt-28">
+      <PublicNavbar title="Shirly Rose"/>
       
       <div className="container mx-auto px-4 py-12">
-        {/* Header */}
+        {/* Header con más espacio */}
         <motion.div 
-          className="text-center mb-16"
+          className="text-center mb-20"
           initial={{ opacity: 0, y: -20 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.8 }}
@@ -87,7 +87,7 @@ export default function Services() {
             </h1>
           </div>
           <p className="text-lg text-gray-600 max-w-3xl mx-auto leading-relaxed">
-            Descubre nuestra amplia gama de servicios de belleza y bienestar, 
+            Descubre nuestra amplia variedad de servicios de belleza y bienestar, 
             diseñados para realzar tu belleza natural y hacerte sentir increíble.
           </p>
         </motion.div>
@@ -106,7 +106,7 @@ export default function Services() {
               onChange={(e) => setSearch(e.target.value)}
               className="flex-grow outline-none bg-transparent text-gray-700 px-2"
             />
-            <fetchServices className="text-gray-500 text-xl" />
+            <Scissors className="text-gray-500 text-xl" />
           </div>
         </motion.div>
 
@@ -175,8 +175,8 @@ function ServiceCard({ service, index, formatDuration, formatCategory }) {
             )}
           </>
         ) : (
-          // 🎨 Imagen por defecto más bonita (sin placeholder.com)
-          <div className="w-full h-full bg-gradient-to-br from-rose-100 to-pink-200 flex items-center justify-center">
+          // Imagen por defecto
+          <div className="w-full h-full bg-rose-200 flex items-center justify-center">
             <div className="text-center">
               <Scissors size={48} className="text-rose-400 mx-auto mb-2" />
               <p className="text-rose-600 font-medium text-sm">
@@ -185,14 +185,6 @@ function ServiceCard({ service, index, formatDuration, formatCategory }) {
             </div>
           </div>
         )}
-        
-        {/* Overlay con duración */}
-        <div className="absolute top-4 right-4 bg-white/90 backdrop-blur-sm rounded-full px-3 py-1 flex items-center gap-1">
-          <Clock size={14} className="text-rose-500" />
-          <span className="text-sm font-medium text-gray-700">
-            {formatDuration(service.duration)}
-          </span>
-        </div>
 
         {/* Overlay con categoría */}
         <div className="absolute bottom-4 left-4 bg-rose-500/90 backdrop-blur-sm rounded-full px-3 py-1">
@@ -231,7 +223,7 @@ function ServiceCard({ service, index, formatDuration, formatCategory }) {
           <motion.button
             whileHover={{ scale: 1.05 }}
             whileTap={{ scale: 0.95 }}
-            className="bg-gradient-to-r from-rose-500 to-pink-500 hover:from-rose-600 hover:to-pink-600 text-white font-semibold px-6 py-3 rounded-xl shadow-lg transition-all duration-300"
+            className="bg-rose-400 hover:bg-rose-600 text-white font-semibold px-6 py-3 rounded-xl shadow-lg transition-all duration-300"
           >
             Reservar
           </motion.button>

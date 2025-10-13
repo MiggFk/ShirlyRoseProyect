@@ -3,9 +3,7 @@ import { motion, AnimatePresence } from "framer-motion";
 import { useServices } from "../../hooks/useServices";
 import {
   Edit,
-  Trash2,
   Plus,
-  Image as ImageIcon,
   Eye,
   EyeOff,
   RotateCcw,
@@ -98,7 +96,7 @@ export default function Services() {
           onClick={handleCreate}
           whileHover={{ scale: 1.05 }}
           whileTap={{ scale: 0.95 }}
-          className="flex items-center gap-2 bg-rose-300 text-rose-600 font-bold px-5 py-2 rounded-full shadow-md hover:bg-rose-500 hover:text-white transition"
+          className="bg-white/10 backdrop-blur-xl border border-white/20 text-white px-6 py-3 rounded-2xl shadow-lg hover:bg-white/20 transition-all font-semibold flex items-center gap-2"
         >
           <Plus size={18} />
           Agregar Servicio
@@ -118,7 +116,7 @@ export default function Services() {
               <Eye className="text-green-400" size={20} />
             </div>
             <div>
-              <p className="text-green-300 font-semibold">Servicios Activos</p>
+              <p className="text-white font-semibold">Servicios Activos</p>
               <p className="text-2xl font-bold text-white">
                 {services.filter((s) => s.isActive).length}
               </p>
@@ -137,7 +135,7 @@ export default function Services() {
               <EyeOff className="text-red-400" size={20} />
             </div>
             <div>
-              <p className="text-red-300 font-semibold">Servicios Inactivos</p>
+              <p className="text-white font-semibold">Servicios Inactivos</p>
               <p className="text-2xl font-bold text-white">
                 {services.filter((s) => !s.isActive).length}
               </p>
@@ -156,7 +154,7 @@ export default function Services() {
               <Scissors className="text-blue-400" size={20} />
             </div>
             <div>
-              <p className="text-blue-300 font-semibold">Total Servicios</p>
+              <p className="text-white font-semibold">Total Servicios</p>
               <p className="text-2xl font-bold text-white">
                 {services.length}
               </p>
@@ -175,24 +173,22 @@ export default function Services() {
         {/* SIN overflow-x-auto para evitar scroll horizontal */}
         <div className="w-full">
           <table className="w-full text-sm text-left text-gray-100">
-            <thead className="bg-gradient-to-r from-rose-500/20 to-pink-500/20 backdrop-blur-xl border-b border-white/20">
-              <tr className="text-rose-200">
+            <thead className="bg-gradient-to-r from-white-10 to-pink-500/20 backdrop-blur-xl border-b border-white/20">
+              <tr className="text-white">
                 <th className="py-4 px-2 sm:px-4 font-semibold">
                   <div className="flex items-center gap-1 sm:gap-2">
-                    <ImageIcon size={14} className="hidden sm:block" />
-                    <span className="hidden sm:inline">Imagen</span>
+                    <span className="hidden sm:inline">IMAGEN</span>
                     <span className="sm:hidden">Img</span>
                   </div>
                 </th>
-                <th className="py-4 px-2 sm:px-4 font-semibold">Servicio</th>
+                <th className="py-4 px-2 sm:px-4 font-semibold">SERVICIO</th>
                 <th className="py-4 px-2 sm:px-4 hidden lg:table-cell font-semibold">
                   Descripción
                 </th>
-                <th className="py-4 px-2 sm:px-4 font-semibold">Precio</th>
+                <th className="py-4 px-2 sm:px-4 font-semibold">PRECIO</th>
                 <th className="py-4 px-2 sm:px-4 hidden md:table-cell font-semibold">
                   <div className="flex items-center gap-1">
-                    <Clock size={14} />
-                    <span className="hidden lg:inline">Duración</span>
+                    <span className="hidden lg:inline">DURACION</span>
                   </div>
                 </th>
                 <th className="py-4 px-2 sm:px-4 hidden xl:table-cell font-semibold">
@@ -200,12 +196,11 @@ export default function Services() {
                 </th>
                 <th className="py-4 px-2 sm:px-4 font-semibold">
                   <div className="flex items-center gap-1">
-                    <Eye size={14} />
-                    <span className="hidden sm:inline">Estado</span>
+                    <span className="hidden sm:inline">ESTADO</span>
                   </div>
                 </th>
                 <th className="py-4 px-2 sm:px-4 text-center font-semibold">
-                  Acciones
+                  ACCIONES
                 </th>
               </tr>
             </thead>
@@ -220,8 +215,8 @@ export default function Services() {
                       exit={{ opacity: 0, x: -50 }}
                       className={`border-b border-white/10 transition-all ${
                         service.isActive
-                          ? "bg-white/5 hover:bg-white/10"
-                          : "bg-red-500/10 hover:bg-red-500/20"
+                          ? "bg-white/5"
+                          : "bg-red-500/10"
                       }`}
                     >
                       {/* Imagen - más compacta */}
@@ -336,7 +331,7 @@ export default function Services() {
                             onClick={() => handleEdit(service)}
                             whileHover={{ scale: 1.1 }}
                             whileTap={{ scale: 0.95 }}
-                            className="p-1 sm:p-2 text-blue-400 hover:text-blue-300 hover:bg-blue-500/10 rounded-lg transition-all"
+                            className="p-1 sm:p-2 text-white hover:text-rose-300 rounded-lg transition-all"
                             title="Editar servicio"
                           >
                             <Edit size={14} />
@@ -348,7 +343,7 @@ export default function Services() {
                               onClick={() => deleteService(service._id)}
                               whileHover={{ scale: 1.1 }}
                               whileTap={{ scale: 0.95 }}
-                              className="p-1 sm:p-2 text-yellow-400 hover:text-yellow-300 hover:bg-yellow-500/10 rounded-lg transition-all"
+                              className="p-1 sm:p-2 text-white hover:text-rose-300 rounded-lg transition-all"
                               title="Desactivar servicio"
                             >
                               <EyeOff size={14} />
@@ -358,7 +353,7 @@ export default function Services() {
                               onClick={() => reactivateService(service._id)}
                               whileHover={{ scale: 1.1 }}
                               whileTap={{ scale: 0.95 }}
-                              className="p-1 sm:p-2 text-green-400 hover:text-green-300 hover:bg-green-500/10 rounded-lg transition-all"
+                              className="p-1 sm:p-2 text-white hover:text-rose-300 rounded-lg transition-all"
                               title="Reactivar servicio"
                             >
                               <RotateCcw size={14} />
@@ -370,7 +365,7 @@ export default function Services() {
                             onClick={() => permanentDeleteService(service._id)}
                             whileHover={{ scale: 1.1 }}
                             whileTap={{ scale: 0.95 }}
-                            className="p-1 sm:p-2 text-red-400 hover:text-red-300 hover:bg-red-500/10 rounded-lg transition-all"
+                            className="p-1 sm:p-2 text-red-400 hover:text-red-300 rounded-lg transition-all"
                             title="ELIMINAR PERMANENTEMENTE"
                           >
                             <AlertTriangle size={14} />
@@ -661,14 +656,14 @@ function ServiceModal({ service, isOpen, onClose, onSave }) {
           <button
             type="button"
             onClick={onClose}
-            className="flex-1 px-4 py-3 bg-white/10 backdrop-blur-xl border border-white/30 text-white/90 rounded-xl hover:bg-white/20 transition font-medium"
+            className="flex-1 px-4 py-3 bg-rose-500 backdrop-blur-xl text-white/90 rounded-xl hover:bg-rose-700 transition font-medium"
           >
             Cancelar
           </button>
           <button
             type="submit"
             disabled={loading}
-            className="flex-1 px-4 py-3 bg-gradient-to-r from-rose-500 to-pink-500 hover:from-rose-600 hover:to-pink-600 text-white rounded-xl disabled:opacity-50 disabled:cursor-not-allowed transition font-medium shadow-lg"
+            className="flex-1 px-4 py-3 bg-rose-400 hover:from-rose-600 hover:bg-rose-500 text-white rounded-xl disabled:opacity-50 disabled:cursor-not-allowed transition font-medium shadow-lg"
             onClick={handleSubmit}
           >
             {loading ? (

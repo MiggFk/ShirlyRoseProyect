@@ -329,17 +329,17 @@ export default function Appointments() {
                 <div className="flex justify-between gap-4 pt-4">
                   <motion.button
                     whileHover={{ scale: 1.05 }}
-                    type="submit"
-                    className="flex-1 bg-white/10 hover:bg-white/20 border border-white/20 text-white py-3 rounded-xl font-semibold shadow-md transition-all"
+                    onClick={() => setShowModal(false)}
+                    className="flex-1 bg-rose-500 hover:bg-rose-600 text-white py-3 rounded-xl font-semibold shadow-md transition-all"
                   >
-                    Guardar
+                    Cancelar
                   </motion.button>
                   <motion.button
                     whileHover={{ scale: 1.05 }}
-                    onClick={() => setShowModal(false)}
-                    className="flex-1 bg-red-500/80 hover:bg-red-600/90 text-white py-3 rounded-xl font-semibold shadow-md transition-all"
+                    type="submit"
+                    className="flex-1 bg-rose-400 hover:bg-rose-500 text-white py-3 rounded-xl font-semibold shadow-md transition-all"
                   >
-                    Cancelar
+                    Guardar
                   </motion.button>
                 </div>
               </form>

@@ -1,5 +1,4 @@
 import { motion } from "framer-motion";
-import SideBarPublic from "../../components/SideBarPublic";
 
 // Imágenes
 import founderImg from "../../assets/images/Fundadora.jpg";
@@ -8,6 +7,7 @@ import empresaImg from "../../assets/images/SobreEmpresa.jpg";
 import ValoresImg from "../../assets/images/manos.jpg";
 import VisionImg from "../../assets/images/Empleada.jpg";
 import Footer from "../../components/Footer";
+import PublicNavbar from "../../components/PublicNavbar";
 
 export default function About() {
   const sections = [
@@ -56,7 +56,7 @@ export default function About() {
     >
       
       {/* SideBar */}
-      <SideBarPublic title="Shirly Rose" />
+      <PublicNavbar title="Shirly Rose" />
 
       {/* Contenido */}
       <motion.main
@@ -69,7 +69,7 @@ export default function About() {
           initial={{ scale: 0.8, opacity: 0 }}
           animate={{ scale: 1, opacity: 1 }}
           transition={{ type: "spring", stiffness: 100, delay: 0.7 }}
-          className="text-5xl font-bold text-rose-500 text-center mb-12"
+          className="text-5xl font-bold text-gray-800 text-center mb-12"
         >
           Sobre Shirly Rose
         </motion.h1>
@@ -112,7 +112,7 @@ export default function About() {
       {/* Footer */}
       <div className="mt-20">
       <motion.footer
-        className="text-center py-6 bg-rose-200 mt-auto mt-10"
+        className="text-center py-8 mt-auto mt-10"
         initial={{ y: 50, opacity: 0 }}
         animate={{ y: 0, opacity: 1, transition: { duration: 0.5, delay: 0.8 } }}
       >

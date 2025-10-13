@@ -1,7 +1,7 @@
 import React from 'react';
 import { motion } from "framer-motion";
 import Footer from "../../components/Footer";
-import SideBarPublic from "../../components/SideBarPublic";
+import PublicNavbar from "../../components/PublicNavbar";
 import { usePublicProducts } from '../../hooks/usePublicProducts'; // Hook público
 
 export default function Products() {
@@ -41,18 +41,27 @@ export default function Products() {
 
   return (
     <motion.div
-      className="min-h-screen bg-rose-100"
+      className="min-h-screen bg-rose-50"
       initial={{ opacity: 0 }}
       animate={{ opacity: 1, transition: { duration: 0.8 } }}
     >
 
-      {/* SideBar */}
-      <SideBarPublic title="Shirly Rose" />
+      <PublicNavbar title="Shirly Rose" />
 
-      <main className="flex-grow pt-24 pb-12 px-6 max-w-6xl mx-auto">
-        <h2 className="text-3xl font-bold text-rose-600 text-center mb-10">
-          Nuestros Productos
-        </h2>
+      <main className="flex-grow pt-24 pb-12 px-6 max-w-7xl mx-auto">
+
+        <div className="text-center mb-20">
+          <div className="flex justify-center items-center gap-2 mb-3">
+            <span className="text-rose-500 text-3xl">🛍️</span>
+            <h2 className="text-5xl font-extrabold text-gray-800">
+              Nuestros Productos
+              </h2>
+              </div>
+    <p className="text-gray-600 text-lg max-w-2xl mx-auto leading-relaxed">
+      Explora nuestra selección de productos pensados para cuidar tu belleza y bienestar,
+      creados con amor y calidad para ti.
+    </p>
+  </div>
 
         {/* Grid animado */}
         <motion.div
@@ -128,7 +137,6 @@ export default function Products() {
 
       {/* Footer */}
       <motion.footer
-        className="text-center py-6 bg-rose-200"
         initial={{ y: 50, opacity: 0 }}
         animate={{ y: 0, opacity: 1, transition: { duration: 0.5, delay: 0.8 } }}
       >

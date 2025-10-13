@@ -9,8 +9,6 @@ import {
   FaBars,
   FaSignOutAlt,
   FaUserCircle,
-  FaInfoCircle,
-  FaSpa,
   FaTimes,
 } from "react-icons/fa";
 
@@ -44,8 +42,6 @@ const Sidebar = ({ isOpen, onClose, onLogout, user, setActiveTab }) => {
     { name: "Menú Principal", tab: "dashboard", Icon: FaHome },
     { name: "Mis Citas", tab: "appointments", Icon: FaCalendarAlt },
     { name: "Historial", tab: "history", Icon: FaClock },
-    { name: "Servicios VIP", tab: "vip", Icon: FaSpa },
-    { name: "Ayuda", tab: "help", Icon: FaInfoCircle },
   ];
 
   const handleNavigation = (tab) => {

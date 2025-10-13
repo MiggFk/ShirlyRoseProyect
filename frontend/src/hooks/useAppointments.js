@@ -14,7 +14,7 @@ export function useAppointments() {
         headers: { Authorization: `Bearer ${token}` },
       });
       
-      // 🔍 DEBUG: Ver qué trae el GET
+      // DEBUG: Ver qué trae el GET
       console.log("Citas traídas del backend:", response.data.data);
       console.log("Primera cita:", response.data.data[0]);
       
@@ -34,7 +34,7 @@ export function useAppointments() {
         headers: { Authorization: `Bearer ${token}` },
       });
       
-      // 🔍 DEBUG: Ver qué devuelve el backend
+      // DEBUG: Ver qué devuelve el backend
       console.log("Respuesta del backend al crear:", res.data);
       console.log("Cita creada:", res.data.data);
       console.log("ClientId:", res.data.data?.clientId);

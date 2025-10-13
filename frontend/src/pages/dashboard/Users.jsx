@@ -247,18 +247,18 @@ export default function Users() {
                 <div className="flex justify-between gap-4 pt-4">
                   <motion.button
                     whileHover={{ scale: 1.05 }}
-                    type="submit"
-                    className="flex-1 bg-rose-400 hover:bg-rose-500 border border-white/20 text-white py-3 rounded-xl font-semibold shadow-md transition-all"
+                    type="button"
+                    onClick={() => setShowModal(false)}
+                    className="flex-1 bg-rose-500 hover:bg-rose-600 text-white py-3 rounded-xl font-semibold shadow-md transition-all"
                   >
-                    {editMode ? "Guardar" : "Crear"}
+                    Cancelar
                   </motion.button>
                   <motion.button
                     whileHover={{ scale: 1.05 }}
-                    type="button"
-                    onClick={() => setShowModal(false)}
-                    className="flex-1 bg-rose-600 hover:bg-rose-700 text-white py-3 rounded-xl font-semibold shadow-md transition-all"
+                    type="submit"
+                    className="flex-1 bg-rose-400 hover:bg-rose-500 text-white py-3 rounded-xl font-semibold shadow-md transition-all"
                   >
-                    Cancelar
+                    {editMode ? "Guardar" : "Crear"}
                   </motion.button>
                 </div>
               </form>

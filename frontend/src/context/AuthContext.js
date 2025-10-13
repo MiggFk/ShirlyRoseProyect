@@ -60,7 +60,7 @@ export const AuthProvider = ({ children }) => {
 
       // Redirigir DENTRO del Contexto después de ESTABLECER el estado
       if (data.user.role === "admin" || data.user.role === "empleado") {
-        navigate("/dashboard");
+        navigate("/");
       } else {
         navigate("/");
       }

@@ -8,8 +8,6 @@
   import { 
     ShoppingBag, 
     Scissors, 
-    Star, 
-    Clock, 
     User,
     Settings
   } from "lucide-react";
@@ -30,22 +28,6 @@
     // Tomar solo los primeros productos y servicios para destacados
     const featuredProducts = products.slice(0, 6);
     const featuredServices = services.slice(0, 4);
-
-    const formatDuration = (duration) => {
-      const durationMap = {
-        '30_min': '30m',
-        '45_min': '45m', 
-        '1_hora': '1h',
-        '1_hora_30_min': '1h 30m',
-        '2_horas': '2h',
-        '2_horas_30_min': '2h 30m',
-        '3_horas': '3h',
-        '3_horas_30_min': '3h 30m',
-        '4_horas': '4h',
-        'mas_4_horas': '+4h'
-      };
-      return durationMap[duration] || duration;
-    };
 
     return (
       <div className="min-h-screen bg-gradient-to-br from-rose-50 via-pink-50 to-purple-50">
@@ -127,9 +109,9 @@
         
         {/* Hero Section con imagen de fondo */}
         <motion.section
-          className="relative w-full h-[95vh] flex items-center justify-start bg-cover bg-center"
+          className="relative w-full h-[100vh] flex items-center justify-start bg-cover bg-center"
           style={{
-            backgroundImage: `url(${require("../../assets/images/Fondo-HomeChica2.png")})`,
+            backgroundImage: `url(${require("../../assets/images/Fondo-HOME.png")})`,
             backgroundPosition: "right center",
           }}
           initial={{ opacity: 0, y: 50 }}
@@ -141,7 +123,7 @@
           {/* Contenido del Hero */}
           <div className="relative z-10 pl-10 md:pl-20 max-w-lg text-left">
             <motion.h2
-              className="text-4xl md:text-6xl text-rose-500 mb-4 italic drop-shadow-md"
+              className="text-4xl md:text-6xl text-rose-400 mb-4 italic drop-shadow-md"
               style={{ fontFamily: "'Great Vibes', cursive" }}
               initial={{ opacity: 0, x: -50 }}
               animate={{ opacity: 1, x: 0 }}
@@ -150,7 +132,7 @@
               Bienvenido a
             </motion.h2>
             <motion.h2
-              className="text-4xl md:text-7xl font-extrabold text-rose-500 mb-4 italic drop-shadow-md"
+              className="text-4xl md:text-7xl font-extrabold text-rose-400 mb-4 italic drop-shadow-md"
               style={{ fontFamily: "'Great Vibes', cursive" }}
               initial={{ opacity: 0, x: -50 }}
               animate={{ opacity: 1, x: 0 }}
@@ -184,7 +166,7 @@
         </motion.section>
 
         {/* Productos Destacados */}
-        <section className="py-20 px-6">
+        <section className="py-20 px-6 bg-rose-50">
           <div className="container mx-auto max-w-7xl">
             <motion.div
               className="flex items-center justify-between mb-16"
@@ -264,7 +246,7 @@
                           <span className="text-sm text-gray-500 block">Precio especial</span>
                         </div>
                         <button className="bg-rose-500 hover:bg-rose-600 text-white font-semibold px-6 py-2 rounded-xl transition-all duration-300 shadow-lg hover:shadow-rose-500/25">
-                          Agregar
+                          Encargar
                         </button>
                       </div>
                     </div>
@@ -304,32 +286,33 @@
         </section>
 
         {/* Servicios Destacados */}
-          <section className="py-20 px-6">
+          <section className="py-20 px-6 bg-rose-100">
           <div className="container mx-auto max-w-7xl">
             <motion.div
-              className="flex items-center justify-between mb-16"
-              initial={{ opacity: 0, y: 30 }}
-              whileInView={{ opacity: 1, y: 0 }}
-              transition={{ duration: 0.8 }}
-              viewport={{ once: true }}
+            className="flex items-center justify-between mb-16 flex-row-reverse"
+            initial={{ opacity: 0, y: 30 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.8 }}
+            viewport={{ once: true }}
             >
-              <div>
-                <h2 className="text-5xl font-black text-gray-800 mb-4">
-                  Servicios
-                  <span className="block text-transparent bg-clip-text bg-rose-400">
-                    Destacados
-                  </span>
-                </h2>
-                <p className="text-xl text-gray-600">Descubre los servicios mas solicitados</p>
-              </div>
-              <Link
-                to="/services"
-                className="hidden md:flex items-center gap-2 bg-rose-500 hover:bg-rose-400 hover:text-rose-700 text-white font-semibold px-8 py-3 rounded-full transition-all duration-300 shadow-lg hover:shadow-xl"
-              >
-                Ver Todo
-              </Link>
-            </motion.div>
-
+  <div className="text-right">
+    <h2 className="text-5xl font-black text-gray-800 mb-4">
+      Servicios
+      <span className="block text-transparent bg-clip-text bg-rose-400">
+        Destacados
+      </span>
+    </h2>
+    <p className="text-xl text-gray-600">
+      Descubre los servicios más solicitados
+    </p>
+  </div>
+  <Link
+    to="/services"
+    className="hidden md:flex items-center gap-2 bg-rose-500 hover:bg-rose-400 hover:text-rose-700 text-white font-semibold px-8 py-3 rounded-full transition-all duration-300 shadow-lg hover:shadow-xl"
+  >
+    Ver Todo
+  </Link>
+</motion.div>
             {servicesLoading ? (
               <div className="flex justify-center py-20">
                 <div className="w-8 h-8 border-4 border-purple-500 border-t-transparent rounded-full animate-spin"></div>
@@ -357,13 +340,6 @@
                           <Scissors size={48} className="text-purple-400" />
                         </div>
                       )}
-                      
-                      <div className="absolute top-4 right-4 bg-white/90 backdrop-blur-sm rounded-full px-3 py-1 flex items-center gap-1">
-                        <Clock size={14} className="text-rose-500" />
-                        <span className="text-sm font-medium text-gray-700">
-                          {formatDuration(service.duration)}
-                        </span>
-                      </div>
                     </div>
                     
                     <div className="p-6">
@@ -378,7 +354,7 @@
                           ${service.price?.toLocaleString()}
                         </span>
                         <button className="bg-rose-500 hover:bg-rose-700 text-white font-semibold px-6 py-2 rounded-full transition-all duration-300">
-                          Reservar
+                          Agendar
                         </button>
                       </div>
                     </div>
@@ -409,7 +385,7 @@
             >
               <Link
                 to="/services"
-                className="inline-flex items-center gap-2 bg-rose-500 hover:bg-rose-400 hover:text-rose-700 text-white font-semibold px-8 py-3 rounded-full transition-all duration-300 shadow-lg hover:shadow-xl"
+                className="inline-flex items-center gap-2 bg-rose-400 hover:bg-rose-400 hover:text-rose-700 text-white font-semibold px-8 py-3 rounded-full transition-all duration-300 shadow-lg hover:shadow-xl"
               >
                 <Scissors size={20} />
                 Ver Todos los Servicios
@@ -419,7 +395,7 @@
         </section>
 
         {/* Por qué elegirnos */}
-        <section className="py-20 px-6">
+        <section className="py-20 px-6 bg-rose-50">
           <div className="container mx-auto max-w-7xl">
             <motion.div
               className="text-center mb-16"

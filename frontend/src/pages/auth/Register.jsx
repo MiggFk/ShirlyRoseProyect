@@ -186,6 +186,8 @@ export default function Register() {
                     <Link
                       to="/terms"
                       className="text-rose-500 hover:underline cursor-pointer"
+                       target="_blank"
+                       rel="noopener noreferrer"
                     >
                       términos y condiciones
                     </Link>
@@ -193,6 +195,32 @@ export default function Register() {
                 </div>
                 <ErrorMessage
                   name="acceptedTerms"
+                  component="div"
+                  className="bg-rose-200 text-rose-700 p-2 rounded-lg text-sm font-medium"
+                />
+
+                {/* Casilla de Politicas de privacidad */}
+                <div className="flex items-start space-x-2 mt-2">
+                  <Field
+                    type="checkbox"
+                    name="acceptePoliticPrivacy"
+                    id="privacy"
+                    className="h-4 w-4 mt-1 text-rose-500 border-rose-300 rounded focus:ring-rose-400"
+                  />
+                  <label htmlFor="privacy" className="text-sm text-gray-600">
+                    He leído y acepto la{" "}
+                    <Link
+                      to="/Privacy"
+                      className="text-rose-500 hover:underline cursor-pointer"
+                       target="_blank"
+                       rel="noopener noreferrer"
+                    >
+                      Politica de privacidad
+                    </Link>
+                  </label>
+                </div>
+                <ErrorMessage
+                  name="acceptedPoliticadePrivacy"
                   component="div"
                   className="bg-rose-200 text-rose-700 p-2 rounded-lg text-sm font-medium"
                 />

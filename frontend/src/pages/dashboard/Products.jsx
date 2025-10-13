@@ -3,7 +3,6 @@ import { motion, AnimatePresence } from "framer-motion";
 import { useProducts } from "../../hooks/useProducts";
 import { 
   Edit, 
-  Trash2, 
   Plus, 
   Image as ImageIcon, 
   Eye, 
@@ -85,7 +84,7 @@ export default function Products() {
               <Eye className="text-green-400" size={20} />
             </div>
             <div>
-              <p className="text-green-300 font-semibold">Productos Activos</p>
+              <p className="text-white font-semibold">Productos Activos</p>
               <p className="text-2xl font-bold text-white">
                 {products.filter(p => p.isActive).length}
               </p>
@@ -104,7 +103,7 @@ export default function Products() {
               <EyeOff className="text-red-400" size={20} />
             </div>
             <div>
-              <p className="text-red-300 font-semibold">Productos Inactivos</p>
+              <p className="text-white font-semibold">Productos Inactivos</p>
               <p className="text-2xl font-bold text-white">
                 {products.filter(p => !p.isActive).length}
               </p>
@@ -123,7 +122,7 @@ export default function Products() {
               <ImageIcon className="text-blue-400" size={20} />
             </div>
             <div>
-              <p className="text-blue-300 font-semibold">Total Productos</p>
+              <p className="text-white font-semibold">Total Productos</p>
               <p className="text-2xl font-bold text-white">
                 {products.length}
               </p>
@@ -142,14 +141,14 @@ export default function Products() {
         <div className="overflow-x-auto">
           <table className="min-w-full text-sm text-left text-gray-100">
             <thead className="bg-white/10 backdrop-blur-xl border-b border-white/10">
-              <tr className="text-rose-300">
-                <th className="py-3 px-4">Imagen</th>
-                <th className="py-3 px-4">Producto</th>
-                <th className="py-3 px-4 hidden md:table-cell">Descripción</th>
-                <th className="py-3 px-4">Precio</th>
-                <th className="py-3 px-4 hidden sm:table-cell">Stock</th>
-                <th className="py-3 px-4">Estado</th>
-                <th className="py-3 px-4 text-center">Acciones</th>
+              <tr className="text-white">
+                <th className="py-3 px-4">IMAGEN</th>
+                <th className="py-3 px-4">PRODUCTO</th>
+                <th className="py-3 px-4 hidden md:table-cell">DESCRIPCION</th>
+                <th className="py-3 px-4">PRECIO</th>
+                <th className="py-3 px-4 hidden sm:table-cell">STOCK</th>
+                <th className="py-3 px-4">ESTADO</th>
+                <th className="py-3 px-4 text-center">ACCIONES</th>
               </tr>
             </thead>
             <tbody>
@@ -248,7 +247,7 @@ export default function Products() {
                             onClick={() => handleEdit(product)}
                             whileHover={{ scale: 1.1 }}
                             whileTap={{ scale: 0.95 }}
-                            className="p-2 text-blue-400 hover:text-blue-300 hover:bg-blue-500/10 rounded-lg transition-all"
+                            className="p-2 text-white hover:text-rose-300 rounded-lg transition-all"
                             title="Editar producto"
                           >
                             <Edit size={16} />
@@ -260,7 +259,7 @@ export default function Products() {
                               onClick={() => deleteProduct(product._id)}
                               whileHover={{ scale: 1.1 }}
                               whileTap={{ scale: 0.95 }}
-                              className="p-2 text-yellow-400 hover:text-yellow-300 hover:bg-yellow-500/10 rounded-lg transition-all"
+                              className="p-2 text-white hover:text-rose-300 rounded-lg transition-all"
                               title="Desactivar producto"
                             >
                               <EyeOff size={16} />
@@ -270,7 +269,7 @@ export default function Products() {
                               onClick={() => reactivateProduct(product._id)}
                               whileHover={{ scale: 1.1 }}
                               whileTap={{ scale: 0.95 }}
-                              className="p-2 text-green-400 hover:text-green-300 hover:bg-green-500/10 rounded-lg transition-all"
+                              className="p-2 text-white hover:text-green-300 rounded-lg transition-all"
                               title="Reactivar producto"
                             >
                               <RotateCcw size={16} />
@@ -282,7 +281,7 @@ export default function Products() {
                             onClick={() => permanentDeleteProduct(product._id)}
                             whileHover={{ scale: 1.1 }}
                             whileTap={{ scale: 0.95 }}
-                            className="p-2 text-red-400 hover:text-red-300 hover:bg-red-500/10 rounded-lg transition-all"
+                            className="p-2 text-red-400 hover:text-red-300 rounded-lg transition-all"
                             title="ELIMINAR PERMANENTEMENTE"
                           >
                             <AlertTriangle size={16} />
@@ -543,14 +542,14 @@ function ProductModal({ product, isOpen, onClose, onSave }) {
             <button
               type="button"
               onClick={onClose}
-              className="flex-1 px-4 py-3 border border-white/20 text-gray-200 rounded-xl hover:bg-white/10 transition font-medium"
+              className="flex-1 px-4 py-3 bg-rose-500 border-white/20 text-gray-200 rounded-xl hover:bg-rose-600 transition font-medium"
             >
               Cancelar
             </button>
             <button
               type="submit"
               disabled={loading}
-              className="flex-1 px-4 py-3 bg-rose-500 text-white rounded-xl hover:bg-rose-600 disabled:opacity-50 disabled:cursor-not-allowed transition font-medium"
+              className="flex-1 px-4 py-3 bg-rose-400 text-white rounded-xl hover:bg-rose-500 disabled:opacity-50 disabled:cursor-not-allowed transition font-medium"
             >
               {loading ? (
                 <div className="flex items-center justify-center gap-2">
