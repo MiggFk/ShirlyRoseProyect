@@ -9,11 +9,15 @@ const {
   getAllUsers, 
   deleteUser, 
   updateUser,
-  createUser
+  createUser,
+  updateProfile, // 🔹 NUEVO
+  getUserAppointments // 🔹 NUEVO
 } = require("../controllers/userController");
 
 // Perfil personal (todos los autenticados)
 router.get("/profile", auth, getProfile);
+router.put("/profile", auth, updateProfile); // 🔹 NUEVO
+router.get("/profile/appointments", auth, getUserAppointments); // 🔹 NUEVO
 
 // Rutas de administración (solo admin)
 router.post("/", auth, authorizeRoles("admin"), createUser);

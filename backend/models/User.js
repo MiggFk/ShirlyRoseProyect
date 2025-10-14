@@ -17,8 +17,26 @@ const userSchema = new mongoose.Schema({
   },
   role: {
     type: String,
-    enum: ["admin", "cliente", "empleado"],  // ← valores en español
+    enum: ["admin", "cliente", "empleado"],
     required: true
+  },
+  // 🔹 NUEVOS CAMPOS DE PERFIL
+  profileImage: {
+    type: String,
+    default: null
+  },
+  phone: {
+    type: String,
+    default: null
+  },
+  address: {
+    street: { type: String, default: null },
+    city: { type: String, default: null },
+    postalCode: { type: String, default: null }
+  },
+  birthDate: {
+    type: Date,
+    default: null
   }
 }, {
   timestamps: true
