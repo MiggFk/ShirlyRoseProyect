@@ -1,4 +1,5 @@
 // src/hooks/useLogin.js (Versión Final)
+import { useNavigate } from "react-router-dom";
 import Swal from "sweetalert2";
 import { useAuth } from '../context/AuthContext'; 
 
@@ -7,33 +8,59 @@ import { useAuth } from '../context/AuthContext';
  */
 export const useLogin = () => {
   const { login, isLoading } = useAuth(); 
-  // Ya no necesitamos 'navigate' aquí porque el Contexto lo maneja
-  // const navigate = useNavigate();
+  const navigate = useNavigate();
 
-  const handleSubmit = async (values, { setSubmitting }) => {
+  const handleSubmit = async (values, { setSubmitting, resetForm }) => {
+    // 🔧 Variable para evitar redirecciones múltiples
+    let loginSuccessful = false;
+
     try {
-      // LLAMADA AL LOGIN DEL CONTEXTO (Esta llamada ya actualiza el estado y redirige)
-      await login(values.email, values.password); 
-      // Nota: Ya no esperamos el 'user' retornado
+      // 1. LLAMAR AL LOGIN
+      const user = await login(values.email, values.password); 
+      loginSuccessful = true;
 
-      // Mostrar alerta de éxito ANTES de que el Contexto redirija
-      Swal.fire({
+      // 2. MOSTRAR ALERTA DE ÉXITO
+      await Swal.fire({
         icon: 'success',
-        title: '¡Inicio de sesión exitoso!',
-        text: 'Redirigiendo a tu panel...',
+        title: '¡Bienvenido!',
+        text: 'Inicio de sesión exitoso',
         showConfirmButton: false,
         timer: 1500,
-      }); 
-      
+        timerProgressBar: true,
+        allowOutsideClick: false, // 🔧 Evitar que cierren el modal
+        allowEscapeKey: false,
+      });
+
+      // 3. DESPUÉS DE LA ALERTA, REDIRIGIR
+      if (user.role === "admin" || user.role === "empleado") {
+        navigate("/dashboard", { replace: true });
+      } else {
+        navigate("/", { replace: true });
+      }
       
     } catch (err) {
-      // Manejar errores de la API
-      const message = err.message || "Ocurrió un error desconocido.";
-      Swal.fire({
+      // ✅ ERROR: Mostrar alerta SIN redirigir
+      console.error("❌ Error en login:", err);
+      
+      const message = err.message || "Correo o contraseña incorrectos";
+      
+      await Swal.fire({
         icon: 'error',
         title: 'Error al iniciar sesión',
         text: message,
+        confirmButtonColor: '#f43f5e',
+        confirmButtonText: 'Intentar de nuevo',
+        allowOutsideClick: true,
       });
+
+      // ✅ Limpiar solo el campo de contraseña
+      resetForm({
+        values: {
+          email: values.email,
+          password: ''
+        }
+      });
+      
     } finally {
       setSubmitting(false);
     }

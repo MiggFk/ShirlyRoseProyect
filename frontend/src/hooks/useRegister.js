@@ -1,5 +1,6 @@
 // src/hooks/useRegister.js (Versión Limpia)
 
+import { useNavigate } from "react-router-dom";
 import Swal from "sweetalert2";
 import { useAuth } from '../context/AuthContext'; 
 
@@ -10,29 +11,43 @@ import { useAuth } from '../context/AuthContext';
 export const useRegister = () => {
   // ⬅️ Obtiene la función register y el estado isLoading del contexto
   const { register, isLoading } = useAuth(); 
+  const navigate = useNavigate();
 
-  const handleSubmit = async (values, { setSubmitting }) => {
+  const handleSubmit = async (values, { setSubmitting, resetForm }) => {
     try {
-      // 💥 LLAMADA AL CONTEXTO: register gestiona la API, estado, token y redirección.
-      await register(values.name, values.email, values.password); 
+      // 1. LLAMAR AL REGISTER
+      const user = await register(values.name, values.email, values.password); 
 
-      // Mostrar alerta de éxito (la redirección ocurre en el contexto)
-      Swal.fire({
+      // 2. MOSTRAR ALERTA DE ÉXITO
+      await Swal.fire({
         icon: 'success',
-        title: '¡Registro Exitoso!',
-        text: 'Tu cuenta ha sido creada. Redirigiendo...',
+        title: '¡Cuenta creada!',
+        text: 'Registro exitoso',
         showConfirmButton: false,
-        timer: 1500, // Tiempo reducido, ya que la redirección es manejada internamente
-      }); 
-
-    } catch (err) {
-      // Manejar errores propagados desde el Contexto
-      const message = err.message || "Ocurrió un error desconocido."; 
-      Swal.fire({
-        icon: 'error',
-        title: 'Error de Registro',
-        text: message,
+        timer: 1500,
+        timerProgressBar: true,
       });
+
+      // 3. REDIRIGIR DESPUÉS DE LA ALERTA
+      if (user.role === "admin" || user.role === "empleado") {
+        navigate("/dashboard");
+      } else {
+        navigate("/");
+      }
+      
+    } catch (err) {
+      const message = err.message || "Error al registrar usuario";
+      
+      await Swal.fire({
+        icon: 'error',
+        title: 'Error en el registro',
+        text: message,
+        confirmButtonColor: '#f43f5e',
+        confirmButtonText: 'Intentar de nuevo'
+      });
+
+      resetForm();
+      
     } finally {
       setSubmitting(false);
     }
