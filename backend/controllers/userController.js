@@ -1,6 +1,7 @@
 const Client = require("../models/Client");
 const User = require("../models/User");
 const { cloudinary } = require('../config/cloudinary'); // ← AGREGAR
+const bcrypt = require('bcryptjs');
 
 // Perfil del usuario autenticado
 const getProfile = async (req, res) => {
@@ -155,14 +156,32 @@ const deleteUser = async (req, res) => {
   }
 };
 
-// Actualizar usuario completo (nombre, email, rol)
+// 🔹 Actualizar usuario (admin)
 const updateUser = async (req, res) => {
   try {
-    const { name, email, role } = req.body;
+    const { name, email, password, role, phone, address, birthDate, isActive } = req.body;
+
+    const updateData = { 
+      name, 
+      email, 
+      role, 
+      phone, 
+      birthDate,
+      isActive // 🆕 Agregar isActive
+    };
+
+    // Parsear address si viene como string JSON
+    if (address) {
+      updateData.address = typeof address === 'string' ? JSON.parse(address) : address;
+    }
+
+    if (password) {
+      updateData.password = await bcrypt.hash(password, 10);
+    }
 
     const user = await User.findByIdAndUpdate(
       req.params.id,
-      { name, email, role },
+      updateData,
       { new: true, runValidators: true }
     ).select("-password");
 
@@ -172,7 +191,33 @@ const updateUser = async (req, res) => {
 
     res.json({ message: "Usuario actualizado correctamente", user });
   } catch (error) {
-    res.status(500).json({ message: "Error al actualizar usuario", error });
+    console.error('Error actualizando usuario:', error);
+    res.status(500).json({ message: "Error al actualizar usuario", error: error.message });
+  }
+};
+
+// 🆕 Activar/Desactivar usuario
+const toggleUserStatus = async (req, res) => {
+  try {
+    const user = await User.findById(req.params.id);
+    
+    if (!user) {
+      return res.status(404).json({ message: "Usuario no encontrado" });
+    }
+
+    user.isActive = !user.isActive;
+    await user.save();
+
+    res.json({ 
+      message: `Usuario ${user.isActive ? 'activado' : 'desactivado'} correctamente`,
+      user: {
+        ...user.toObject(),
+        password: undefined
+      }
+    });
+  } catch (error) {
+    console.error('Error cambiando estado del usuario:', error);
+    res.status(500).json({ message: "Error al cambiar estado", error: error.message });
   }
 };
 
@@ -180,8 +225,9 @@ module.exports = {
   getProfile,
   getAllUsers,
   deleteUser,
-  updateUser, 
+  updateUser,
   createUser,
-  updateProfile, // 🔹 NUEVO
-  getUserAppointments // 🔹 NUEVO
+  updateProfile,
+  getUserAppointments,
+  toggleUserStatus // 🆕 Exportar nueva función
 };

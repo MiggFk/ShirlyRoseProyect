@@ -37,6 +37,11 @@ const userSchema = new mongoose.Schema({
   birthDate: {
     type: Date,
     default: null
+  },
+  // 🆕 Campo para activar/desactivar usuario
+  isActive: {
+    type: Boolean,
+    default: true
   }
 }, {
   timestamps: true
