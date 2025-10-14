@@ -28,21 +28,6 @@ const createAppointment = async (req, res) => {
       return res.status(400).json({ message: "El empleado ya tiene una cita en ese horario." });
     }
 
-    // 🔹 VALIDACIÓN 3: Cliente solo puede tener 1 cita pendiente (OPCIONAL)
-    // COMENTADO porque puede causar problemas si quieres permitir múltiples citas
-    /*
-    const existingPendingAppointment = await Appointment.findOne({
-      clientId: finalClientId,
-      status: "pendiente",
-    });
-
-    if (existingPendingAppointment) {
-      return res.status(400).json({
-        message: "Ya tienes una cita pendiente. Cancela la anterior para agendar una nueva.",
-      });
-    }
-    */
-
     // Estado inicial
     let appointmentStatus = "pendiente";
     if (req.user.role === "admin" && status) {
@@ -60,7 +45,7 @@ const createAppointment = async (req, res) => {
 
     await newAppointment.save();
 
-    // 🔹 POPULATE CORREGIDO - clientId es directamente User
+    // 🔹 POPULATE - clientId ahora usa User
     const populatedAppointment = await Appointment.findById(newAppointment._id)
       .populate("clientId", "name email")
       .populate("employeeId", "name email role")
@@ -102,7 +87,7 @@ const getAppointments = async (req, res) => {
 
     const total = await Appointment.countDocuments(filter);
 
-    // 🔹 POPULATE CORREGIDO - clientId es directamente User
+    // 🔹 POPULATE - clientId ahora usa User directamente
     const appointments = await Appointment.find(filter)
       .populate("clientId", "name email")
       .populate("employeeId", "name email role")

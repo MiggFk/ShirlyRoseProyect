@@ -1,48 +1,75 @@
 import { useState, useEffect } from "react";
 import api from "../api/axios";
-import Swal from "sweetalert2";
 
-export function useFormOptions() {
+export const useFormOptions = () => {
   const [clients, setClients] = useState([]);
   const [services, setServices] = useState([]);
   const [employees, setEmployees] = useState([]);
-
-  const fetchData = async () => {
-    try {
-      // Ya no se necesita obtener el token manualmente. AuthContext lo gestiona.
-      
-      // CRÍTICO: Usamos api.get() directo. AuthContext ya configuró el header de Authorization globalmente.
-      const [resClients, resServices, resEmployees] = await Promise.all([
-        api.get("/clients"), // Se envía el token automáticamente
-        api.get("/services"), // Se envía el token automáticamente
-        api.get("/users"), // Se envía el token automáticamente
-      ]); //
-
-      // Lógica de Mapeo de Clientes (Se mantiene)
-      setClients(
-        resClients.data.map((c) => ({
-          _id: c.usuarioId?.user || c._id, 
-          name: c.usuarioId?.name || "Cliente sin usuario",
-          email: c.usuarioId?.email || "Sin correo",
-        }))
-      ); //
-
-      // Servicios van directo
-      setServices(resServices.data); //
-
-      // Solo usuarios con rol empleado
-      setEmployees(resEmployees.data.filter((u) => u.role === "empleado")); //
-    } catch (error) {
-      console.error("Error cargando opciones:", error.response?.data?.message || error.message);
-      // Incluimos un manejo de error más informativo
-      const errorMessage = error.response?.data?.message || "Error de conexión o token expirado. Intente iniciar sesión de nuevo."; //
-      Swal.fire("Error", errorMessage, "error"); //
-    }
-  };
+  const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    fetchData();
+    const fetchOptions = async () => {
+      try {
+        const token = localStorage.getItem("token");
+        
+        if (!token) {
+          console.warn("No hay token disponible");
+          setLoading(false);
+          return;
+        }
+
+        // 🔹 Cargar usuarios y servicios en paralelo
+        const [usersRes, servicesRes] = await Promise.all([
+          api.get("/users", {
+            headers: { Authorization: `Bearer ${token}` },
+          }),
+          api.get("/services", {
+            headers: { Authorization: `Bearer ${token}` },
+          }),
+        ]);
+
+        console.log("👥 Usuarios cargados:", usersRes.data);
+        console.log("💅 Servicios cargados:", servicesRes.data);
+
+        // 🔹 Filtrar usuarios por rol
+        const allUsers = usersRes.data || [];
+        
+        const clientUsers = allUsers.filter(user => 
+          user && user._id && user.name && user.role === "cliente"
+        );
+        
+        const employeeUsers = allUsers.filter(user => 
+          user && user._id && user.name && (user.role === "empleado" || user.role === "admin")
+        );
+
+        console.log("👤 Clientes filtrados:", clientUsers.length);
+        console.log("👨‍💼 Empleados filtrados:", employeeUsers.length);
+
+        setClients(clientUsers);
+        setEmployees(employeeUsers);
+        setServices(servicesRes.data || []);
+      } catch (error) {
+        console.error("❌ Error al cargar opciones:", error);
+        
+        // Si el error es de autenticación, no hacer nada (el interceptor se encarga)
+        if (error.response?.status === 401) {
+          console.warn("Sesión expirada o no válida");
+        }
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    fetchOptions();
   }, []);
 
-  return { clients, services, employees };
-}
+  return { 
+    clients, 
+    services, 
+    employees, 
+    loading,
+    hasClients: clients.length > 0,
+    hasServices: services.length > 0,
+    hasEmployees: employees.length > 0,
+  };
+};

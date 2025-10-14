@@ -15,7 +15,7 @@ export default function Appointments() {
     createAppointment,
   } = useAppointments();
 
-  const { clients, services, employees } = useFormOptions();
+  const { clients, services, employees, loading: optionsLoading, hasClients } = useFormOptions();
 
   const [search, setSearch] = useState("");
   const [dateFilter, setDateFilter] = useState("");
@@ -27,12 +27,45 @@ export default function Appointments() {
     clientId: "",
     serviceId: "",
     employeeId: "",
-    dateTime: "",
+    date: "", // 🔹 Separar fecha
+    time: "", // 🔹 y hora
   });
 
   const user = JSON.parse(localStorage.getItem("user"));
 
-  const validClients = clients.filter((client) => client && client.name);
+  const validClients = clients.filter((client) => client && client._id && client.name);
+
+  // 🔹 Generar horarios disponibles (9:00 AM - 6:00 PM)
+  const availableTimes = useMemo(() => {
+    const times = [];
+    for (let hour = 9; hour <= 18; hour++) {
+      for (let minute of [0, 30]) {
+        if (hour === 18 && minute === 30) break; // Terminar a las 6:00 PM
+        const timeString = `${hour.toString().padStart(2, '0')}:${minute.toString().padStart(2, '0')}`;
+        const displayTime = new Date(`2000-01-01T${timeString}`).toLocaleTimeString('es-ES', {
+          hour: '2-digit',
+          minute: '2-digit',
+          hour12: true
+        });
+        times.push({ value: timeString, label: displayTime });
+      }
+    }
+    return times;
+  }, []);
+
+  // 🔹 Obtener fecha mínima (mañana)
+  const getMinDate = () => {
+    const tomorrow = new Date();
+    tomorrow.setDate(tomorrow.getDate() + 1);
+    return tomorrow.toISOString().split('T')[0];
+  };
+
+  // 🔹 Obtener fecha máxima (3 meses adelante)
+  const getMaxDate = () => {
+    const maxDate = new Date();
+    maxDate.setMonth(maxDate.getMonth() + 3);
+    return maxDate.toISOString().split('T')[0];
+  };
 
   const filteredAppointments = useMemo(() => {
     return appointments.filter((cita) => {
@@ -59,16 +92,53 @@ export default function Appointments() {
     }
   };
 
-  const handleSubmit = async (e) => {
-    e.preventDefault();
-    await createAppointment(formData);
-    setShowModal(false);
+  const openModal = () => {
     setFormData({
       clientId: "",
       serviceId: "",
       employeeId: "",
-      dateTime: "",
+      date: "",
+      time: "",
     });
+    setShowModal(true);
+  };
+
+  const closeModal = () => {
+    setFormData({
+      clientId: "",
+      serviceId: "",
+      employeeId: "",
+      date: "",
+      time: "",
+    });
+    setShowModal(false);
+  };
+
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+    
+    // 🔹 Combinar fecha y hora
+    if (!formData.date || !formData.time) {
+      alert("Por favor selecciona fecha y hora");
+      return;
+    }
+
+    const dateTime = `${formData.date}T${formData.time}:00`;
+    
+    const appointmentData = {
+      clientId: formData.clientId,
+      serviceId: formData.serviceId,
+      employeeId: formData.employeeId,
+      dateTime: dateTime,
+    };
+
+    console.log("📋 Datos del formulario:", appointmentData);
+    
+    const success = await createAppointment(appointmentData);
+    
+    if (success) {
+      closeModal();
+    }
   };
 
   return (
@@ -104,7 +174,7 @@ export default function Appointments() {
           <motion.button
             whileHover={{ scale: 1.05 }}
             className="bg-white/10 backdrop-blur-xl border border-white/20 text-white px-6 py-3 rounded-2xl shadow-lg hover:bg-white/20 transition-all font-semibold flex items-center gap-2"
-            onClick={() => setShowModal(true)}
+            onClick={openModal}
           >
             <HiPlus className="text-xl" /> Nueva Cita
           </motion.button>
@@ -198,7 +268,10 @@ export default function Appointments() {
                       {cita.employeeId?.name || "Sin empleado"}
                     </td>
                     <td className="py-3 px-6 text-white">
-                      {new Date(cita.dateTime).toLocaleString()}
+                      {new Date(cita.dateTime).toLocaleString('es-ES', {
+                        dateStyle: 'medium',
+                        timeStyle: 'short'
+                      })}
                     </td>
                     <td className="py-3 px-6">
                       <span className={getStatusBadge(cita.status)}>
@@ -253,96 +326,160 @@ export default function Appointments() {
             animate={{ opacity: 1 }}
             exit={{ opacity: 0 }}
             className="fixed inset-0 bg-black/60 backdrop-blur-md flex justify-center items-center z-50"
+            onClick={closeModal}
           >
             <motion.div
               initial={{ scale: 0.9 }}
               animate={{ scale: 1 }}
               exit={{ scale: 0.9 }}
-              className="bg-white/10 backdrop-blur-2xl border border-white/20 p-8 rounded-3xl shadow-2xl text-white w-full max-w-md"
+              className="bg-white/10 backdrop-blur-2xl border border-white/20 p-8 rounded-3xl shadow-2xl text-white w-full max-w-md max-h-[90vh] overflow-y-auto"
+              onClick={(e) => e.stopPropagation()}
             >
               <h3 className="text-2xl font-bold mb-6 text-center">
                 Nueva Cita
               </h3>
 
-              <form onSubmit={handleSubmit} className="space-y-4">
-                <select
-                  name="clientId"
-                  required
-                  value={formData.clientId}
-                  onChange={(e) =>
-                    setFormData({ ...formData, clientId: e.target.value })
-                  }
-                  className="w-full bg-white/10 border border-white/20 rounded-xl px-4 py-3 text-white focus:ring-2 focus:ring-white/30"
-                >
-                  <option value="">Seleccionar cliente</option>
-                  {validClients.map((c) => (
-                    <option key={c._id} value={c._id} className="text-black">
-                      {c.name}
-                    </option>
-                  ))}
-                </select>
-
-                <select
-                  name="serviceId"
-                  required
-                  value={formData.serviceId}
-                  onChange={(e) =>
-                    setFormData({ ...formData, serviceId: e.target.value })
-                  }
-                  className="w-full bg-white/10 border border-white/20 rounded-xl px-4 py-3 text-white focus:ring-2 focus:ring-white/30"
-                >
-                  <option value="">Seleccionar servicio</option>
-                  {services.map((s) => (
-                    <option key={s._id} value={s._id} className="text-black">
-                      {s.name}
-                    </option>
-                  ))}
-                </select>
-
-                <select
-                  name="employeeId"
-                  required
-                  value={formData.employeeId}
-                  onChange={(e) =>
-                    setFormData({ ...formData, employeeId: e.target.value })
-                  }
-                  className="w-full bg-white/10 border border-white/20 rounded-xl px-4 py-3 text-white focus:ring-2 focus:ring-white/30"
-                >
-                  <option value="">Seleccionar empleado</option>
-                  {employees.map((emp) => (
-                    <option key={emp._id} value={emp._id} className="text-black">
-                      {emp.name}
-                    </option>
-                  ))}
-                </select>
-
-                <input
-                  type="datetime-local"
-                  required
-                  value={formData.dateTime}
-                  onChange={(e) =>
-                    setFormData({ ...formData, dateTime: e.target.value })
-                  }
-                  className="w-full bg-white/10 border border-white/20 rounded-xl px-4 py-3 text-white focus:ring-2 focus:ring-white/30"
-                />
-
-                <div className="flex justify-between gap-4 pt-4">
+              {optionsLoading ? (
+                <div className="text-center py-8">
+                  <div className="w-12 h-12 border-4 border-white/30 border-t-transparent rounded-full animate-spin mx-auto mb-3"></div>
+                  <p className="text-white/70">Cargando opciones...</p>
+                </div>
+              ) : !hasClients ? (
+                <div className="text-center py-8">
+                  <p className="text-yellow-300 mb-4">⚠️ No hay clientes registrados</p>
+                  <p className="text-white/70 text-sm">Registra usuarios con rol "cliente" primero</p>
                   <motion.button
                     whileHover={{ scale: 1.05 }}
-                    onClick={() => setShowModal(false)}
-                    className="flex-1 bg-rose-500 hover:bg-rose-600 text-white py-3 rounded-xl font-semibold shadow-md transition-all"
+                    onClick={closeModal}
+                    className="mt-4 bg-rose-500 hover:bg-rose-600 text-white px-6 py-2 rounded-xl font-semibold"
                   >
-                    Cancelar
-                  </motion.button>
-                  <motion.button
-                    whileHover={{ scale: 1.05 }}
-                    type="submit"
-                    className="flex-1 bg-rose-400 hover:bg-rose-500 text-white py-3 rounded-xl font-semibold shadow-md transition-all"
-                  >
-                    Guardar
+                    Cerrar
                   </motion.button>
                 </div>
-              </form>
+              ) : (
+                <form onSubmit={handleSubmit} className="space-y-4">
+                  {/* Cliente */}
+                  <div>
+                    <label className="block text-sm font-semibold mb-2">Cliente *</label>
+                    <select
+                      name="clientId"
+                      required
+                      value={formData.clientId}
+                      onChange={(e) =>
+                        setFormData({ ...formData, clientId: e.target.value })
+                      }
+                      className="w-full bg-white/10 border border-white/20 rounded-xl px-4 py-3 text-white focus:ring-2 focus:ring-white/30"
+                    >
+                      <option value="" className="text-black">Seleccionar cliente</option>
+                      {validClients.map((c) => (
+                        <option key={c._id} value={c._id} className="text-black">
+                          {c.name}
+                        </option>
+                      ))}
+                    </select>
+                  </div>
+
+                  {/* Servicio */}
+                  <div>
+                    <label className="block text-sm font-semibold mb-2">Servicio *</label>
+                    <select
+                      name="serviceId"
+                      required
+                      value={formData.serviceId}
+                      onChange={(e) =>
+                        setFormData({ ...formData, serviceId: e.target.value })
+                      }
+                      className="w-full bg-white/10 border border-white/20 rounded-xl px-4 py-3 text-white focus:ring-2 focus:ring-white/30"
+                    >
+                      <option value="" className="text-black">Seleccionar servicio</option>
+                      {services.map((s) => (
+                        <option key={s._id} value={s._id} className="text-black">
+                          {s.name} - ${s.price}
+                        </option>
+                      ))}
+                    </select>
+                  </div>
+
+                  {/* Empleado */}
+                  <div>
+                    <label className="block text-sm font-semibold mb-2">Especialista *</label>
+                    <select
+                      name="employeeId"
+                      required
+                      value={formData.employeeId}
+                      onChange={(e) =>
+                        setFormData({ ...formData, employeeId: e.target.value })
+                      }
+                      className="w-full bg-white/10 border border-white/20 rounded-xl px-4 py-3 text-white focus:ring-2 focus:ring-white/30"
+                    >
+                      <option value="" className="text-black">Seleccionar especialista</option>
+                      {employees.map((emp) => (
+                        <option key={emp._id} value={emp._id} className="text-black">
+                          {emp.name}
+                        </option>
+                      ))}
+                    </select>
+                  </div>
+
+                  {/* 🔹 Fecha */}
+                  <div>
+                    <label className="block text-sm font-semibold mb-2">Fecha *</label>
+                    <input
+                      type="date"
+                      required
+                      min={getMinDate()}
+                      max={getMaxDate()}
+                      value={formData.date}
+                      onChange={(e) =>
+                        setFormData({ ...formData, date: e.target.value })
+                      }
+                      className="w-full bg-white/10 border border-white/20 rounded-xl px-4 py-3 text-white focus:ring-2 focus:ring-white/30"
+                    />
+                  </div>
+
+                  {/* 🔹 Hora */}
+                  <div>
+                    <label className="block text-sm font-semibold mb-2">Hora *</label>
+                    <select
+                      required
+                      value={formData.time}
+                      onChange={(e) =>
+                        setFormData({ ...formData, time: e.target.value })
+                      }
+                      className="w-full bg-white/10 border border-white/20 rounded-xl px-4 py-3 text-white focus:ring-2 focus:ring-white/30"
+                    >
+                      <option value="" className="text-black">Seleccionar hora</option>
+                      {availableTimes.map((time) => (
+                        <option key={time.value} value={time.value} className="text-black">
+                          {time.label}
+                        </option>
+                      ))}
+                    </select>
+                    <p className="text-xs text-white/60 mt-1">
+                      Horario: 9:00 AM - 6:00 PM
+                    </p>
+                  </div>
+
+                  {/* Botones */}
+                  <div className="flex justify-between gap-4 pt-4">
+                    <motion.button
+                      type="button"
+                      whileHover={{ scale: 1.05 }}
+                      onClick={closeModal}
+                      className="flex-1 bg-rose-500 hover:bg-rose-600 text-white py-3 rounded-xl font-semibold shadow-md transition-all"
+                    >
+                      Cancelar
+                    </motion.button>
+                    <motion.button
+                      whileHover={{ scale: 1.05 }}
+                      type="submit"
+                      className="flex-1 bg-rose-400 hover:bg-rose-500 text-white py-3 rounded-xl font-semibold shadow-md transition-all"
+                    >
+                      Guardar
+                    </motion.button>
+                  </div>
+                </form>
+              )}
             </motion.div>
           </motion.div>
         )}
