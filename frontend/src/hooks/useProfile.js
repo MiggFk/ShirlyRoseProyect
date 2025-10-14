@@ -57,12 +57,28 @@ export const useProfile = () => {
     }
   }, []);
 
-  // 🔹 Actualizar perfil
-  const updateProfile = async (data) => {
+  // 🔹 Actualizar perfil con FormData para enviar archivos
+  const updateProfile = async (data, imageFile) => {
     try {
       const token = localStorage.getItem("token");
-      const response = await api.put("/users/profile", data, {
-        headers: { Authorization: `Bearer ${token}` },
+      
+      // Crear FormData para enviar archivos
+      const formData = new FormData();
+      formData.append('name', data.name);
+      formData.append('phone', data.phone || '');
+      formData.append('birthDate', data.birthDate || '');
+      formData.append('address', JSON.stringify(data.address));
+      
+      // Agregar imagen si existe
+      if (imageFile) {
+        formData.append('profileImage', imageFile);
+      }
+
+      const response = await api.put("/users/profile", formData, {
+        headers: { 
+          Authorization: `Bearer ${token}`,
+          'Content-Type': 'multipart/form-data'
+        },
       });
 
       setUser(response.data.user);

@@ -4,6 +4,7 @@ import { useProfile } from "../../hooks/useProfile";
 import { useNavigate } from "react-router-dom";
 import Footer from "../../components/Footer";
 import paloRosa from "../../assets/images/paloRosa.png";
+import Swal from 'sweetalert2';
 import {
   FaHome,
   FaCalendarAlt,
@@ -159,7 +160,10 @@ const EditProfileView = ({ user, onUpdate }) => {
       : "",
   });
 
-  const [imagePreview, setImagePreview] = useState(user?.profileImage);
+  const [imageFile, setImageFile] = useState(null); // ← CAMBIO: guardar archivo
+  const [imagePreview, setImagePreview] = useState(
+    user?.profileImage?.url || user?.profileImage || null
+  );
   const [loading, setLoading] = useState(false);
 
   const handleChange = (e) => {
@@ -169,6 +173,21 @@ const EditProfileView = ({ user, onUpdate }) => {
   const handleImageChange = (e) => {
     const file = e.target.files[0];
     if (file) {
+      // Validar tamaño (máximo 5MB)
+      if (file.size > 5 * 1024 * 1024) {
+        Swal.fire('Error', 'La imagen no debe superar los 5MB', 'error');
+        return;
+      }
+
+      // Validar tipo
+      if (!file.type.startsWith('image/')) {
+        Swal.fire('Error', 'Solo se permiten archivos de imagen', 'error');
+        return;
+      }
+
+      setImageFile(file); // ← CAMBIO: guardar archivo
+      
+      // Crear preview
       const reader = new FileReader();
       reader.onloadend = () => {
         setImagePreview(reader.result);
@@ -181,7 +200,7 @@ const EditProfileView = ({ user, onUpdate }) => {
     e.preventDefault();
     setLoading(true);
 
-    const success = await onUpdate({
+    const profileData = {
       name: formData.name,
       phone: formData.phone,
       address: {
@@ -190,18 +209,12 @@ const EditProfileView = ({ user, onUpdate }) => {
         postalCode: formData.postalCode,
       },
       birthDate: formData.birthDate,
-      profileImage: imagePreview,
-    });
+    };
+
+    const success = await onUpdate(profileData, imageFile); // ← CAMBIO: pasar archivo
 
     if (success) {
-      setFormData({
-        name: formData.name,
-        phone: formData.phone,
-        street: formData.street,
-        city: formData.city,
-        postalCode: formData.postalCode,
-        birthDate: formData.birthDate,
-      });
+      setImageFile(null); // Limpiar archivo después de guardar
     }
 
     setLoading(false);
@@ -235,8 +248,13 @@ const EditProfileView = ({ user, onUpdate }) => {
             </label>
           </div>
           <p className="text-sm text-gray-500 mt-2">
-            Haz clic en el ícono para cambiar tu foto
+            Haz clic en el ícono para cambiar tu foto (máx. 5MB)
           </p>
+          {imageFile && (
+            <p className="text-xs text-green-600 mt-1">
+              ✓ Nueva imagen seleccionada: {imageFile.name}
+            </p>
+          )}
         </div>
 
         {/* Campos del formulario */}
@@ -345,6 +363,16 @@ const DashboardView = ({ user }) => (
   >
     <ContentCard title="Información de Cuenta">
       <div className="space-y-2 text-gray-700">
+        {/* Imagen de perfil */}
+        {user?.profileImage && (
+          <div className="flex justify-center mb-4">
+            <img
+              src={user.profileImage.url || user.profileImage}
+              alt="Perfil"
+              className="w-24 h-24 rounded-full object-cover border-4 border-rose-300"
+            />
+          </div>
+        )}
         <p>
           <strong>Nombre:</strong> {user?.name}
         </p>

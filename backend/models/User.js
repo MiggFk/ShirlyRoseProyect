@@ -20,10 +20,10 @@ const userSchema = new mongoose.Schema({
     enum: ["admin", "cliente", "empleado"],
     required: true
   },
-  // 🔹 NUEVOS CAMPOS DE PERFIL
+  // 🔹 CAMBIO: De String simple a objeto con url y public_id
   profileImage: {
-    type: String,
-    default: null
+    url: { type: String, default: null },
+    public_id: { type: String, default: null }
   },
   phone: {
     type: String,

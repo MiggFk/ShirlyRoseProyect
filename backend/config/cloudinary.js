@@ -14,17 +14,25 @@ cloudinary.config({
 // Configurar storage de Multer para Cloudinary
 const storage = new CloudinaryStorage({
   cloudinary: cloudinary,
-  params: {
-    folder: 'shirlyrose-products', // Carpeta en Cloudinary
-    allowed_formats: ['jpg', 'png', 'jpeg', 'webp'],
-    public_id: (req, file) => {
-      // Generar nombre único para cada imagen
-      return `product_${Date.now()}_${Math.round(Math.random() * 1E9)}`;
-    },
-    transformation: [
-      { width: 800, height: 600, crop: 'limit' }, // Redimensionar
-      { quality: 'auto' } // Optimización automática
-    ]
+  params: async (req, file) => {
+    // Determinar carpeta según el tipo de archivo
+    let folder = 'shirlyrose-products'; // Por defecto
+    
+    if (req.baseUrl.includes('/users')) {
+      folder = 'shirlyrose-profiles'; // Para perfiles de usuario
+    } else if (req.baseUrl.includes('/services')) {
+      folder = 'shirlyrose-services'; // Para servicios
+    }
+
+    return {
+      folder: folder,
+      allowed_formats: ['jpg', 'png', 'jpeg', 'webp'],
+      public_id: `${folder}_${Date.now()}_${Math.round(Math.random() * 1E9)}`,
+      transformation: [
+        { width: 800, height: 600, crop: 'limit' },
+        { quality: 'auto' }
+      ]
+    };
   },
 });
 

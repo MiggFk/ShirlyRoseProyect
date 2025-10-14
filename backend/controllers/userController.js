@@ -1,5 +1,6 @@
 const Client = require("../models/Client");
 const User = require("../models/User");
+const { cloudinary } = require('../config/cloudinary'); // ← AGREGAR
 
 // Perfil del usuario autenticado
 const getProfile = async (req, res) => {
@@ -31,33 +32,60 @@ const getProfile = async (req, res) => {
   }
 };
 
-// 🔹 NUEVO: Actualizar perfil del usuario autenticado
+// 🔹 Actualizar perfil del usuario autenticado
 const updateProfile = async (req, res) => {
   try {
-    const { name, phone, address, birthDate, profileImage } = req.body;
+    const { name, phone, address, birthDate } = req.body;
+
+    // Buscar usuario actual
+    const currentUser = await User.findById(req.user.id);
+    if (!currentUser) {
+      return res.status(404).json({ message: "Usuario no encontrado" });
+    }
+
+    // Preparar datos de actualización
+    const updateData = { 
+      name, 
+      phone, 
+      birthDate 
+    };
+
+    // Parsear address si viene como string JSON
+    if (address) {
+      updateData.address = typeof address === 'string' ? JSON.parse(address) : address;
+    }
+
+    // 🔹 Si hay nueva imagen, subir a Cloudinary
+    if (req.file) {
+      // Eliminar imagen anterior de Cloudinary si existe
+      if (currentUser.profileImage && currentUser.profileImage.public_id) {
+        try {
+          await cloudinary.uploader.destroy(currentUser.profileImage.public_id);
+        } catch (error) {
+          console.error('Error eliminando imagen anterior:', error);
+        }
+      }
+
+      // Guardar nueva imagen
+      updateData.profileImage = {
+        url: req.file.path,
+        public_id: req.file.filename
+      };
+    }
 
     const updatedUser = await User.findByIdAndUpdate(
       req.user.id,
-      { 
-        name, 
-        phone, 
-        address, 
-        birthDate,
-        profileImage 
-      },
+      updateData,
       { new: true, runValidators: true }
     ).select("-password");
-
-    if (!updatedUser) {
-      return res.status(404).json({ message: "Usuario no encontrado" });
-    }
 
     res.json({ 
       message: "Perfil actualizado correctamente", 
       user: updatedUser 
     });
   } catch (error) {
-    res.status(500).json({ message: "Error al actualizar perfil", error });
+    console.error('Error actualizando perfil:', error);
+    res.status(500).json({ message: "Error al actualizar perfil", error: error.message });
   }
 };
 
