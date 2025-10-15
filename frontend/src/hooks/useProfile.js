@@ -104,6 +104,40 @@ export const useProfile = () => {
     }
   };
 
+  // 🔹 Eliminar imagen de perfil
+  const deleteProfileImage = async () => {
+    try {
+      const token = localStorage.getItem("token");
+      
+      await api.delete("/users/profile/image", {
+        headers: { Authorization: `Bearer ${token}` }
+      });
+
+      // Actualizar usuario local
+      const updatedUser = { ...user, profileImage: null };
+      setUser(updatedUser);
+      localStorage.setItem("user", JSON.stringify(updatedUser));
+
+      Swal.fire({
+        icon: "success",
+        title: "Imagen eliminada",
+        text: "Tu foto de perfil ha sido eliminada.",
+        timer: 2000,
+        showConfirmButton: false,
+      });
+
+      return true;
+    } catch (error) {
+      console.error("Error al eliminar imagen:", error);
+      Swal.fire({
+        icon: "error",
+        title: "Error",
+        text: "No se pudo eliminar la imagen. Intenta nuevamente.",
+      });
+      return false;
+    }
+  };
+
   // 🔹 Cerrar sesión
   const handleLogout = () => {
     Swal.fire({
@@ -152,6 +186,7 @@ export const useProfile = () => {
     loading,
     handleLogout,
     updateProfile,
+    deleteProfileImage,
     refreshProfile: fetchProfile,
     refreshAppointments: fetchAppointments,
   };

@@ -16,6 +16,8 @@ import {
   FaCamera,
   FaTimes,
   FaArrowLeft,
+  FaImages,
+  FaTrash,
 } from "react-icons/fa";
 
 // COMPONENTE: Tarjeta de contenido
@@ -152,7 +154,7 @@ const Sidebar = ({ isOpen, onClose, onLogout, user, setActiveTab }) => {
 };
 
 // VISTA: Editar Perfil
-const EditProfileView = ({ user, onUpdate }) => {
+const EditProfileView = ({ user, onUpdate, onDeleteImage }) => {
   // Función para obtener la URL de la imagen
   const getImageUrl = (profileImage) => {
     if (!profileImage) return null;
@@ -175,6 +177,7 @@ const EditProfileView = ({ user, onUpdate }) => {
   const [imageFile, setImageFile] = useState(null);
   const [imagePreview, setImagePreview] = useState(getImageUrl(user?.profileImage));
   const [loading, setLoading] = useState(false);
+  const [showImageModal, setShowImageModal] = useState(false);
 
   // Actualizar preview cuando cambie el usuario
   useEffect(() => {
@@ -185,29 +188,85 @@ const EditProfileView = ({ user, onUpdate }) => {
     setFormData({ ...formData, [e.target.name]: e.target.value });
   };
 
-  const handleImageChange = (e) => {
-    const file = e.target.files[0];
-    if (file) {
-      // Validar tamaño (máximo 5MB)
-      if (file.size > 5 * 1024 * 1024) {
-        Swal.fire('Error', 'La imagen no debe superar los 5MB', 'error');
-        return;
-      }
+  const processImageFile = (file) => {
+    // Validar tamaño (máximo 5MB)
+    if (file.size > 5 * 1024 * 1024) {
+      Swal.fire('Error', 'La imagen no debe superar los 5MB', 'error');
+      return;
+    }
 
-      // Validar tipo
-      if (!file.type.startsWith('image/')) {
-        Swal.fire('Error', 'Solo se permiten archivos de imagen', 'error');
-        return;
-      }
+    // Validar tipo
+    if (!file.type.startsWith('image/')) {
+      Swal.fire('Error', 'Solo se permiten archivos de imagen', 'error');
+      return;
+    }
 
-      setImageFile(file);
+    setImageFile(file);
+    
+    // Crear preview
+    const reader = new FileReader();
+    reader.onloadend = () => {
+      setImagePreview(reader.result);
+    };
+    reader.readAsDataURL(file);
+    setShowImageModal(false);
+  };
+
+  const handleTakePhoto = () => {
+    const input = document.createElement('input');
+    input.type = 'file';
+    input.accept = 'image/*';
+    
+    // IMPORTANTE: usar 'user' para cámara frontal o 'environment' para trasera
+    // En móviles esto abrirá la cámara directamente
+    input.setAttribute('capture', 'user'); // o 'environment' para cámara trasera
+    
+    input.onchange = (e) => {
+      const file = e.target.files[0];
+      if (file) {
+        processImageFile(file);
+      }
+    };
+    input.click();
+  };
+
+  const handleSelectFromGallery = () => {
+    const input = document.createElement('input');
+    input.type = 'file';
+    input.accept = 'image/*';
+    input.onchange = (e) => {
+      const file = e.target.files[0];
+      if (file) {
+        processImageFile(file);
+      }
+    };
+    input.click();
+  };
+
+  const handleDeletePhoto = async () => {
+    const result = await Swal.fire({
+      title: '¿Eliminar foto de perfil?',
+      text: 'Esta acción no se puede deshacer',
+      icon: 'warning',
+      showCancelButton: true,
+      confirmButtonColor: '#f43f5e',
+      cancelButtonColor: '#6b7280',
+      confirmButtonText: 'Sí, eliminar',
+      cancelButtonText: 'Cancelar'
+    });
+
+    if (result.isConfirmed) {
+      setLoading(true);
+      setShowImageModal(false);
       
-      // Crear preview
-      const reader = new FileReader();
-      reader.onloadend = () => {
-        setImagePreview(reader.result);
-      };
-      reader.readAsDataURL(file);
+      const success = await onDeleteImage?.();
+      
+      if (success) {
+        setImageFile(null);
+        setImagePreview(null);
+      }
+      
+      setLoading(false);
     }
   };
 
@@ -229,7 +288,7 @@ const EditProfileView = ({ user, onUpdate }) => {
     const success = await onUpdate(profileData, imageFile);
 
     if (success) {
-      setImageFile(null); // Limpiar archivo después de guardar
+      setImageFile(null);
     }
 
     setLoading(false);
@@ -238,6 +297,84 @@ const EditProfileView = ({ user, onUpdate }) => {
   return (
     <ContentCard title="Editar Información Personal">
       <div className="space-y-4">
+        {/* Modal de selección de imagen */}
+        <AnimatePresence>
+          {showImageModal && (
+            <motion.div
+              className="fixed inset-0 z-50 flex items-center justify-center p-4"
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              exit={{ opacity: 0 }}
+            >
+              <motion.div
+                className="absolute inset-0 bg-black/50"
+                onClick={() => setShowImageModal(false)}
+              />
+              
+              <motion.div
+                className="relative bg-white rounded-2xl p-6 max-w-sm w-full shadow-2xl"
+                initial={{ scale: 0.9, y: 20 }}
+                animate={{ scale: 1, y: 0 }}
+                exit={{ scale: 0.9, y: 20 }}
+              >
+                <button
+                  onClick={() => setShowImageModal(false)}
+                  className="absolute top-4 right-4 p-2 hover:bg-gray-100 rounded-full transition"
+                >
+                  <FaTimes className="w-5 h-5 text-gray-600" />
+                </button>
+
+                <h3 className="text-2xl font-bold text-rose-500 mb-6">
+                  Selecciona una opción
+                </h3>
+
+                <div className="space-y-3">
+                  <button
+                    onClick={handleTakePhoto}
+                    className="w-full flex items-center gap-4 p-4 bg-rose-50 hover:bg-rose-100 rounded-xl transition group"
+                  >
+                    <div className="bg-rose-500 p-3 rounded-full group-hover:scale-110 transition">
+                      <FaCamera className="w-6 h-6 text-white" />
+                    </div>
+                    <div className="text-left">
+                      <p className="font-semibold text-gray-800">Tomar Foto</p>
+                      <p className="text-sm text-gray-600">Usa tu cámara</p>
+                    </div>
+                  </button>
+
+                  <button
+                    onClick={handleSelectFromGallery}
+                    className="w-full flex items-center gap-4 p-4 bg-rose-50 hover:bg-rose-100 rounded-xl transition group"
+                  >
+                    <div className="bg-rose-500 p-3 rounded-full group-hover:scale-110 transition">
+                      <FaImages className="w-6 h-6 text-white" />
+                    </div>
+                    <div className="text-left">
+                      <p className="font-semibold text-gray-800">Seleccionar de Galería</p>
+                      <p className="text-sm text-gray-600">Elige una foto existente</p>
+                    </div>
+                  </button>
+
+                  {(imagePreview || user?.profileImage) && (
+                    <button
+                      onClick={handleDeletePhoto}
+                      className="w-full flex items-center gap-4 p-4 bg-red-50 hover:bg-red-100 rounded-xl transition group"
+                    >
+                      <div className="bg-red-500 p-3 rounded-full group-hover:scale-110 transition">
+                        <FaTrash className="w-6 h-6 text-white" />
+                      </div>
+                      <div className="text-left">
+                        <p className="font-semibold text-gray-800">Eliminar Foto</p>
+                        <p className="text-sm text-gray-600">Quitar foto de perfil</p>
+                      </div>
+                    </button>
+                  )}
+                </div>
+              </motion.div>
+            </motion.div>
+          )}
+        </AnimatePresence>
+
         {/* Foto de perfil */}
         <div className="flex flex-col items-center mb-6">
           <div className="relative">
@@ -252,15 +389,17 @@ const EditProfileView = ({ user, onUpdate }) => {
                 <FaUserCircle className="w-20 h-20 text-rose-400" />
               )}
             </div>
-            <label className="absolute bottom-0 right-0 bg-rose-500 text-white p-2 rounded-full cursor-pointer hover:bg-rose-600 transition">
-              <FaCamera />
-              <input
-                type="file"
-                accept="image/*"
-                onChange={handleImageChange}
-                className="hidden"
-              />
-            </label>
+            <button
+              type="button"
+              onClick={() => {
+                console.log("Botón clickeado, showImageModal antes:", showImageModal);
+                setShowImageModal(true);
+                console.log("setShowImageModal(true) llamado");
+              }}
+              className="absolute bottom-0 right-0 bg-rose-500 text-white p-3 rounded-full cursor-pointer hover:bg-rose-600 transition shadow-lg hover:scale-110"
+            >
+              <FaCamera className="w-5 h-5" />
+            </button>
           </div>
           <p className="text-sm text-gray-500 mt-2">
             Haz clic en el ícono para cambiar tu foto (máx. 5MB)
@@ -491,7 +630,7 @@ const HistoryView = ({ appointments }) => (
 
 // COMPONENTE PRINCIPAL
 const Profile = () => {
-  const { user, appointments, loading, handleLogout, updateProfile } =
+  const { user, appointments, loading, handleLogout, updateProfile, deleteProfileImage } =
     useProfile();
   const [activeTab, setActiveTab] = useState("dashboard");
   const [isSidebarOpen, setIsSidebarOpen] = useState(false);
@@ -626,7 +765,11 @@ const Profile = () => {
           <AnimatePresence mode="wait">
             {activeTab === "dashboard" && <DashboardView user={user} />}
             {activeTab === "edit" && (
-              <EditProfileView user={user} onUpdate={updateProfile} />
+              <EditProfileView 
+                user={user} 
+                onUpdate={updateProfile}
+                onDeleteImage={deleteProfileImage}
+              />
             )}
             {activeTab === "appointments" && (
               <AppointmentsView appointments={appointments} />
