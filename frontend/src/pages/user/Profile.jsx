@@ -1,5 +1,5 @@
 import { motion, AnimatePresence } from "framer-motion";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { useProfile } from "../../hooks/useProfile";
 import { useNavigate } from "react-router-dom";
 import Footer from "../../components/Footer";
@@ -70,7 +70,11 @@ const Sidebar = ({ isOpen, onClose, onLogout, user, setActiveTab }) => {
               <div className="flex items-center gap-3">
                 {user?.profileImage ? (
                   <img
-                    src={user.profileImage}
+                    src={
+                      typeof user.profileImage === 'string' 
+                        ? user.profileImage 
+                        : user.profileImage.url
+                    }
                     alt="Perfil"
                     className="w-12 h-12 rounded-full object-cover"
                   />
@@ -149,6 +153,14 @@ const Sidebar = ({ isOpen, onClose, onLogout, user, setActiveTab }) => {
 
 // VISTA: Editar Perfil
 const EditProfileView = ({ user, onUpdate }) => {
+  // Función para obtener la URL de la imagen
+  const getImageUrl = (profileImage) => {
+    if (!profileImage) return null;
+    if (typeof profileImage === 'string') return profileImage;
+    if (profileImage.url) return profileImage.url;
+    return null;
+  };
+
   const [formData, setFormData] = useState({
     name: user?.name || "",
     phone: user?.phone || "",
@@ -160,11 +172,14 @@ const EditProfileView = ({ user, onUpdate }) => {
       : "",
   });
 
-  const [imageFile, setImageFile] = useState(null); // ← CAMBIO: guardar archivo
-  const [imagePreview, setImagePreview] = useState(
-    user?.profileImage?.url || user?.profileImage || null
-  );
+  const [imageFile, setImageFile] = useState(null);
+  const [imagePreview, setImagePreview] = useState(getImageUrl(user?.profileImage));
   const [loading, setLoading] = useState(false);
+
+  // Actualizar preview cuando cambie el usuario
+  useEffect(() => {
+    setImagePreview(getImageUrl(user?.profileImage));
+  }, [user?.profileImage]);
 
   const handleChange = (e) => {
     setFormData({ ...formData, [e.target.name]: e.target.value });
@@ -185,7 +200,7 @@ const EditProfileView = ({ user, onUpdate }) => {
         return;
       }
 
-      setImageFile(file); // ← CAMBIO: guardar archivo
+      setImageFile(file);
       
       // Crear preview
       const reader = new FileReader();
@@ -211,7 +226,7 @@ const EditProfileView = ({ user, onUpdate }) => {
       birthDate: formData.birthDate,
     };
 
-    const success = await onUpdate(profileData, imageFile); // ← CAMBIO: pasar archivo
+    const success = await onUpdate(profileData, imageFile);
 
     if (success) {
       setImageFile(null); // Limpiar archivo después de guardar
@@ -367,7 +382,11 @@ const DashboardView = ({ user }) => (
         {user?.profileImage && (
           <div className="flex justify-center mb-4">
             <img
-              src={user.profileImage.url || user.profileImage}
+              src={
+                typeof user.profileImage === 'string' 
+                  ? user.profileImage 
+                  : user.profileImage.url
+              }
               alt="Perfil"
               className="w-24 h-24 rounded-full object-cover border-4 border-rose-300"
             />
@@ -529,7 +548,11 @@ const Profile = () => {
           <div className="flex items-center gap-5">
             {user.profileImage ? (
               <motion.img
-                src={user.profileImage}
+                src={
+                  typeof user.profileImage === 'string' 
+                    ? user.profileImage 
+                    : user.profileImage.url
+                }
                 alt="Perfil"
                 initial={{ scale: 0 }}
                 animate={{ scale: 1 }}
