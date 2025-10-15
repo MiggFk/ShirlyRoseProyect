@@ -12,12 +12,12 @@ export const useLogin = () => {
 
   const handleSubmit = async (values, { setSubmitting, resetForm }) => {
     try {
-      console.log("🔵 Iniciando login...");
+      // console.log("🔵 Iniciando login...");
       
       // 1. Llamar al login (guarda datos pero NO redirige)
       const user = await login(values.email, values.password);
       
-      console.log("✅ Login exitoso, usuario:", user);
+      // console.log("✅ Login exitoso, usuario:", user);
 
       // 2. Mostrar SweetAlert
       Swal.fire({
@@ -33,7 +33,7 @@ export const useLogin = () => {
 
       // 3. Redirigir después de 1.5 segundos (cuando cierre el SweetAlert)
       setTimeout(() => {
-        console.log("🔄 Redirigiendo...");
+        // console.log("🔄 Redirigiendo...");
         if (user.role === "admin" || user.role === "empleado") {
           navigate("/dashboard", { replace: true });
         } else {
@@ -42,7 +42,7 @@ export const useLogin = () => {
       }, 1600); // Un poco más que el timer del SweetAlert
       
     } catch (err) {
-      console.error("❌ Error en login:", err);
+      // console.error("❌ Error en login:", err);
       
       const message = err.message || "Correo o contraseña incorrectos";
       

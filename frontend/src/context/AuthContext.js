@@ -69,10 +69,10 @@ export const AuthProvider = ({ children }) => {
       return data.user; // Retornar usuario en caso de éxito
       
     } catch (err) {
-      // ✅ EN CASO DE ERROR: NO redirigir, solo lanzar el error
-      console.error("❌ Error en login:", err);
+      // Solo para debugging, puedes comentarlo en producción
+      // console.error("❌ Error en login:", err);
       const message = err.response?.data?.message || "Correo o contraseña incorrectos";
-      throw new Error(message); // Lanza el error para que useLogin lo capture
+      throw new Error(message);
     }
   };
 
