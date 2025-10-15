@@ -42,17 +42,17 @@ export default function Sidebar() {
 
   return (
     <>
-      {/* Botón hamburguesa*/}
+      {/* Botón hamburguesa - Fixed en todas las pantallas */}
       <motion.button
         whileHover={{ scale: 1.1 }}
         whileTap={{ scale: 0.95 }}
         onClick={() => setIsOpen(!isOpen)}
         className="fixed top-5 left-5 z-50 p-2
-                   text-rose-300 hover:text-rose-400
+                   text-rose-400 hover:text-rose-500
                    transition-all duration-300"
         aria-label="Toggle menu"
       >
-        {isOpen ? <X size={30} strokeWidth={2.5} /> : <Menu size={30} strokeWidth={2.5} />}
+        {isOpen ? <X size={32} strokeWidth={2.5} /> : <Menu size={32} strokeWidth={2.5} />}
       </motion.button>
 
       {/* Overlay oscuro cuando el sidebar está abierto */}
@@ -117,7 +117,7 @@ export default function Sidebar() {
                   setIsOpen(false);
                 }}
                 className="w-full flex items-center justify-center gap-3 px-4 py-3 rounded-2xl
-                           bg-rose-400 backdrop-blur-xl text-rose-800 font-medium
+                           bg-rose-400 backdrop-blur-xl border border-white/20 text-rose-800 font-medium
                            hover:bg-rose-600 hover:scale-105 hover:text-white hover:font-bold
                            shadow-lg transition-all duration-300"
               >

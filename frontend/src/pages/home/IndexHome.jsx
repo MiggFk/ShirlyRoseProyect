@@ -161,8 +161,7 @@ export default function IndexHome() {
                   to="/dashboard"
                   className="flex items-center gap-2 px-4 py-2 rounded-lg bg-rose-300 text-rose-800 font-bold shadow hover:bg-rose-500 hover:text-white transition"
                 >
-                  <Settings size={18} />
-                  <span className="hidden sm:inline">Dashboard</span>
+                  <Settings size={20} />
                 </Link>
               )}
             </>
