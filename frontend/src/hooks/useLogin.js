@@ -1,4 +1,4 @@
-// src/hooks/useLogin.js (Versión Final)
+// src/hooks/useLogin.js (Versión Final Corregida)
 import { useNavigate } from "react-router-dom";
 import Swal from "sweetalert2";
 import { useAuth } from '../context/AuthContext'; 
@@ -11,55 +11,59 @@ export const useLogin = () => {
   const navigate = useNavigate();
 
   const handleSubmit = async (values, { setSubmitting, resetForm }) => {
-    // 🔧 Variable para evitar redirecciones múltiples
-    let loginSuccessful = false;
-
     try {
-      // 1. LLAMAR AL LOGIN
-      const user = await login(values.email, values.password); 
-      loginSuccessful = true;
+      console.log("🔵 Iniciando login...");
+      
+      // 1. Llamar al login (guarda datos pero NO redirige)
+      const user = await login(values.email, values.password);
+      
+      console.log("✅ Login exitoso, usuario:", user);
 
-      // 2. MOSTRAR ALERTA DE ÉXITO
-      await Swal.fire({
+      // 2. Mostrar SweetAlert
+      Swal.fire({
         icon: 'success',
         title: '¡Bienvenido!',
         text: 'Inicio de sesión exitoso',
         showConfirmButton: false,
         timer: 1500,
         timerProgressBar: true,
-        allowOutsideClick: false, // 🔧 Evitar que cierren el modal
+        allowOutsideClick: false,
         allowEscapeKey: false,
       });
 
-      // 3. DESPUÉS DE LA ALERTA, REDIRIGIR
-      if (user.role === "admin" || user.role === "empleado") {
-        navigate("/", { replace: true });
-      } else {
-        navigate("/", { replace: true });
-      }
+      // 3. Redirigir después de 1.5 segundos (cuando cierre el SweetAlert)
+      setTimeout(() => {
+        console.log("🔄 Redirigiendo...");
+        if (user.role === "admin" || user.role === "empleado") {
+          navigate("/dashboard", { replace: true });
+        } else {
+          navigate("/", { replace: true });
+        }
+      }, 1600); // Un poco más que el timer del SweetAlert
       
     } catch (err) {
-      // ✅ ERROR: Mostrar alerta SIN redirigir
       console.error("❌ Error en login:", err);
       
       const message = err.message || "Correo o contraseña incorrectos";
       
-      await Swal.fire({
+      // Mostrar error SIN redirigir
+      Swal.fire({
         icon: 'error',
         title: 'Error al iniciar sesión',
         text: message,
         confirmButtonColor: '#f43f5e',
-        confirmButtonText: 'Intentar de nuevo',
-        allowOutsideClick: true,
+        confirmButtonText: 'Intentar de nuevo'
       });
 
-      // ✅ Limpiar solo el campo de contraseña
-      resetForm({
-        values: {
-          email: values.email,
-          password: ''
-        }
-      });
+      // Limpiar solo la contraseña
+      if (resetForm) {
+        resetForm({
+          values: {
+            email: values.email,
+            password: ''
+          }
+        });
+      }
       
     } finally {
       setSubmitting(false);

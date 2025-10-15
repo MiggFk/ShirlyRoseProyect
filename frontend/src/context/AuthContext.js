@@ -15,7 +15,7 @@ export const AuthProvider = ({ children }) => {
   const TOKEN_KEY = 'token'; 
   const USER_DATA_KEY = 'user'; 
 
-  // --- LOGOUT ---
+  // --- LOGOUT (Estable con useCallback) ---
   const logout = useCallback((shouldNavigate = true) => { 
     localStorage.removeItem(TOKEN_KEY);
     localStorage.removeItem(USER_DATA_KEY);
@@ -27,7 +27,8 @@ export const AuthProvider = ({ children }) => {
     }
   }, [navigate]);
 
-  // --- CARGA INICIAL ---
+
+  // --- CARGA INICIAL (Estable con useEffect) ---
   useEffect(() => {
     const token = localStorage.getItem(TOKEN_KEY);
     const userDataString = localStorage.getItem(USER_DATA_KEY);
@@ -36,6 +37,7 @@ export const AuthProvider = ({ children }) => {
       try {
         const userData = JSON.parse(userDataString);
         setUser(userData);
+        // CRÍTICO: Configura el header de Axios al cargar la aplicación
         api.defaults.headers.common['Authorization'] = `Bearer ${token}`; 
       } catch (e) {
         console.error("Error al restaurar sesión:", e);
@@ -45,38 +47,55 @@ export const AuthProvider = ({ children }) => {
     setIsLoading(false);
   }, [logout]);
 
-  // --- LOGIN (🔧 NO MODIFICA EL ESTADO EN CASO DE ERROR) ---
+
+  // --- LOGIN (🔧 ARREGLADO: Solo redirige si NO hay error) ---
   const login = async (email, password) => {
     try {
       const { data } = await api.post("/auth/login", { email, password }); 
       
-      // ✅ Solo modificar localStorage y estado si la petición fue exitosa
+      // ✅ Solo si la petición fue exitosa, guardamos y redirigimos
       localStorage.setItem(TOKEN_KEY, data.token);
       localStorage.setItem(USER_DATA_KEY, JSON.stringify(data.user));
       setUser(data.user);
       api.defaults.headers.common['Authorization'] = `Bearer ${data.token}`; 
 
-      return data.user;
+      // Redirigir DENTRO del Contexto después de ESTABLECER el estado
+      if (data.user.role === "admin" || data.user.role === "empleado") {
+        navigate("/dashboard");
+      } else {
+        navigate("/");
+      }
 
-    } catch (err) {
-      console.error("❌ Error en login:", err);
+      return data.user; // Retornar usuario en caso de éxito
       
-      // 🔧 CRÍTICO: NO tocar localStorage ni el estado del usuario
-      // Simplemente lanzar el error para que el hook lo maneje
+    } catch (err) {
+      // ✅ EN CASO DE ERROR: NO redirigir, solo lanzar el error
+      console.error("❌ Error en login:", err);
       const message = err.response?.data?.message || "Correo o contraseña incorrectos";
-      throw new Error(message);
+      throw new Error(message); // Lanza el error para que useLogin lo capture
     }
   };
 
-  // --- REGISTRO ---
+
+  // Función de REGISTRO (Misma lógica de éxito que login)
   const register = async (name, email, password) => {
     try {
       const { data } = await api.post("/auth/register", { name, email, password }); 
 
+      // 1. Guardar en localStorage
       localStorage.setItem(TOKEN_KEY, data.token);
       localStorage.setItem(USER_DATA_KEY, JSON.stringify(data.user));
+
+      // 2. Guardar en el estado de React y configurar Axios
       setUser(data.user);
       api.defaults.headers.common['Authorization'] = `Bearer ${data.token}`; 
+
+      // 3. Redirigir DENTRO del Contexto (asume que el registro es auto-login)
+      if (data.user.role === "admin" || data.user.role === "empleado") {
+        navigate("/dashboard");
+      } else {
+        navigate("/");
+      }
 
       return data.user;
       
@@ -87,6 +106,7 @@ export const AuthProvider = ({ children }) => {
     }
   };
   
+
   const contextValue = {
     user,
     isLoading,
