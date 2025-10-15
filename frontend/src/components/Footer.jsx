@@ -16,7 +16,7 @@ export default function Footer() {
         initial={{ opacity: 0, y: 50 }}
         animate={{ opacity: 1, y: 0 }}
         transition={{ duration: 0.8, ease: "easeOut" }}
-        className="bg-rose-200 text-rose-600 py-10 px-6 rounded-3xl"
+        className="bg-rose-200 text-rose-500 py-10 px-6 rounded-3xl"
       >
         {/* Contenedor principal */}
         <div className="max-w-7xl mx-auto grid grid-cols-1 md:grid-cols-4 gap-14 text-center md:text-left">
@@ -26,7 +26,7 @@ export default function Footer() {
               Shirly Rose
             </h2>
             <Logo size="w-20 h-20" />
-            <p className="text-sm text-rose-600">cr23 #10-19   Caucasia - Antioquia  Colombia</p>
+            <p className="text-sm text-rose-500">cr23 #10-19   Caucasia - Antioquia  Colombia</p>
           </div>
 
           {/* Columna 2: Servicios */}
@@ -40,7 +40,7 @@ export default function Footer() {
                   <motion.li
                     key={i}
                     whileHover={{ x: 5, scale: 1.05 }}
-                    className="cursor-pointer hover:text-rose-400 transition-colors"
+                    className="cursor-pointer hover:text-rose-300 transition-colors"
                   >
                     {item}
                   </motion.li>
@@ -63,7 +63,7 @@ export default function Footer() {
                 <motion.li
                   key={i}
                   whileHover={{ x: 5, scale: 1.05 }}
-                  className="cursor-pointer hover:text-rose-400 transition-colors"
+                  className="cursor-pointer hover:text-rose-300 transition-colors"
                 >
                   <Link to={item.path}>{item.label}</Link>
                 </motion.li>
@@ -90,7 +90,7 @@ export default function Footer() {
                   rel="noopener noreferrer"
                   whileHover={{ scale: 1.2 }}
                   whileTap={{ scale: 0.9 }}
-                  className="text-rose-600 hover:text-rose-400 transition-colors"
+                  className="text-rose-600 hover:text-white transition-colors"
                 >
                   <Icon />
                 </motion.a>
@@ -100,7 +100,7 @@ export default function Footer() {
         </div>
 
         {/* Línea separadora */}
-        <div className="border-t border-rose-700 mt-8 pt-5 text-center text-sm text-rose-600">
+        <div className="border-t border-rose-500 mt-8 pt-5 text-center text-sm text-rose-500">
           © {new Date().getFullYear()} Shirly Rose · Estética & Spa. Todos los derechos reservados.
         </div>
       </motion.footer>

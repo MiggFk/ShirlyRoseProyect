@@ -206,7 +206,7 @@ const AppointmentsCalendar = ({ appointments }) => {
                             </div>
                         ) : (
                             <div className="text-center py-8">
-                                <p className="text-white/70 text-lg">📅 No hay citas para este día</p>
+                                <p className="text-white/70 text-lg"> No hay citas para este día</p>
                             </div>
                         )}
                     </motion.div>

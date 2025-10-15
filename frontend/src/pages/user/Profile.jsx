@@ -18,7 +18,7 @@ import {
   FaArrowLeft,
 } from "react-icons/fa";
 
-// 🔹 COMPONENTE: Tarjeta de contenido
+// COMPONENTE: Tarjeta de contenido
 const ContentCard = ({ title, children }) => (
   <motion.div
     className="bg-white rounded-xl shadow-md p-6"
@@ -31,7 +31,7 @@ const ContentCard = ({ title, children }) => (
   </motion.div>
 );
 
-// 🔹 COMPONENTE: Sidebar
+// COMPONENTE: Sidebar
 const Sidebar = ({ isOpen, onClose, onLogout, user, setActiveTab }) => {
   const navigate = useNavigate();
 
@@ -147,7 +147,7 @@ const Sidebar = ({ isOpen, onClose, onLogout, user, setActiveTab }) => {
   );
 };
 
-// 🔹 VISTA: Editar Perfil
+// VISTA: Editar Perfil
 const EditProfileView = ({ user, onUpdate }) => {
   const [formData, setFormData] = useState({
     name: user?.name || "",
@@ -470,7 +470,7 @@ const HistoryView = ({ appointments }) => (
   </ContentCard>
 );
 
-// 🔹 COMPONENTE PRINCIPAL
+// COMPONENTE PRINCIPAL
 const Profile = () => {
   const { user, appointments, loading, handleLogout, updateProfile } =
     useProfile();

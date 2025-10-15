@@ -16,7 +16,6 @@ export default function PublicNavbar() {
     { to: "/products", label: "Productos" },
     { to: "/services", label: "Servicios" },
     { to: "/about", label: "Nosotros" },
-    { to: "/contact", label: "Contacto" },
     { to: "/appointment", label: "Agenda Cita"}
   ];
 

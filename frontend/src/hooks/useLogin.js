@@ -33,7 +33,7 @@ export const useLogin = () => {
 
       // 3. DESPUÉS DE LA ALERTA, REDIRIGIR
       if (user.role === "admin" || user.role === "empleado") {
-        navigate("/dashboard", { replace: true });
+        navigate("/", { replace: true });
       } else {
         navigate("/", { replace: true });
       }

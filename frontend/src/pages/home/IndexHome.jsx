@@ -9,7 +9,9 @@
     ShoppingBag, 
     Scissors, 
     User,
-    Settings
+    Settings,
+    ShoppingCart,
+    LogOut
   } from "lucide-react";
 
   export default function IndexHome() {
@@ -29,14 +31,47 @@
     const featuredProducts = products.slice(0, 6);
     const featuredServices = services.slice(0, 4);
 
+    const [isCartOpen, setIsCartOpen] = useState(false);
+
+const handleLogout = () => {
+  localStorage.removeItem("user");
+  setUser(null);
+  window.location.href = "/login"; // redirige al login
+};
+
+
     return (
-      <div className="min-h-screen bg-gradient-to-br from-rose-50 via-pink-50 to-purple-50">
+      <div className="min-h-screen bg-gradient-to-br from-rose-50 via-rose-50 to-rose-100">
         {/* Header Mejorado */}
         <motion.header
           className="flex justify-between items-center px-6 py-4 shadow-md bg-white sticky top-0 z-50"
           initial={{ y: -50, opacity: 0 }}
           animate={{ y: 0, opacity: 1, transition: { duration: 0.5 } }}
         >
+          
+          {isCartOpen && (
+  <div className="fixed inset-0 z-50 flex justify-end bg-black/40 backdrop-blur-sm">
+    <motion.div
+      initial={{ x: "100%" }}
+      animate={{ x: 0 }}
+      exit={{ x: "100%" }}
+      transition={{ type: "tween", duration: 0.4 }}
+      className="bg-white w-full sm:w-[400px] h-full shadow-2xl p-6 relative"
+    >
+      <button
+        onClick={() => setIsCartOpen(false)}
+        className="absolute top-4 right-4 text-gray-500 hover:text-gray-800 transition"
+      >
+        ✕
+      </button>
+
+      <h2 className="text-2xl font-semibold text-gray-800 mb-4">
+        CARRITO DE COMPRA
+      </h2>
+      <p className="text-gray-600">Su carrito actualmente está vacío.</p>
+    </motion.div>
+  </div>
+)}
           {/* Logo + nombre */}
           <div className="flex items-center gap-2">
             <Link to="/" className="flex items-center gap-2">
@@ -74,9 +109,25 @@
                   to="/profile"
                   className="flex items-center gap-2 px-4 py-2 rounded-lg bg-rose-400 text-white font-medium shadow hover:bg-rose-500 transition"
                 >
-                  <User size={18} />
-                  <span className="hidden sm:inline">Perfil</span>
+                  <User size={20} />
                 </Link>
+
+              {/* Botón Carrito */}
+              <button
+              onClick={() => setIsCartOpen(true)}
+              className="flex items-center gap-2 px-4 py-2 rounded-lg bg-rose-400 text-white font-medium shadow hover:bg-rose-500 transition"
+              >
+                <ShoppingCart size={20} />
+                </button>
+                
+                {/* Botón Cerrar Sesión */}
+                <button
+                onClick={handleLogout}
+                className="flex items-center gap-2 px-4 py-2 rounded-lg bg-rose-400 text-white font-medium shadow hover:bg-rose-500 transition"
+                >
+                  <LogOut size={20} />
+                  </button>
+
                 {user.role === 'admin' && (
                   <Link
                     to="/dashboard"

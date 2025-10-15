@@ -117,7 +117,7 @@ export default function Sidebar() {
                   setIsOpen(false);
                 }}
                 className="w-full flex items-center justify-center gap-3 px-4 py-3 rounded-2xl
-                           bg-rose-400 backdrop-blur-xl border border-white/20 text-rose-800 font-medium
+                           bg-rose-400 backdrop-blur-xl text-rose-800 font-medium
                            hover:bg-rose-600 hover:scale-105 hover:text-white hover:font-bold
                            shadow-lg transition-all duration-300"
               >

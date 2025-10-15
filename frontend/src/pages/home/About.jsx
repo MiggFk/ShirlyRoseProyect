@@ -43,82 +43,103 @@ export default function About() {
     },
   ];
 
-  const fadeIn = {
-    hidden: { opacity: 0, y: 50 },
-    visible: { opacity: 1, y: 0, transition: { duration: 0.8 } },
-  };
-
   return (
-    <motion.div
-      className="min-h-screen bg-rose-50"
-      initial={{ opacity: 0 }}
-      animate={{ opacity: 1, transition: { duration: 0.8 } }}
-    >
-      
+    <div className="min-h-screen bg-gradient-to-br from-rose-50 via-pink-50 to-purple-50">
       {/* SideBar */}
       <PublicNavbar title="Shirly Rose" />
 
       {/* Contenido */}
-      <motion.main
-        initial={{ opacity: 0 }}
-        animate={{ opacity: 1 }}
-        transition={{ duration: 1, delay: 0.5 }}
-        className="pt-24"
-      >
-        <motion.h1
-          initial={{ scale: 0.8, opacity: 0 }}
-          animate={{ scale: 1, opacity: 1 }}
-          transition={{ type: "spring", stiffness: 100, delay: 0.7 }}
-          className="text-5xl font-bold text-gray-800 text-center mb-12"
-        >
-          Sobre Shirly Rose
-        </motion.h1>
+      <main className="pt-32 pb-16 px-6">
+        <div className="max-w-7xl mx-auto">
+          {/* Título principal */}
+          <motion.div
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.6 }}
+            className="text-center mb-20"
+          >
+            <h1 className="text-6xl font-bold text-gray-800 mb-4">
+              Sobre Shirly Rose
+            </h1>
+            <div className="w-24 h-1 bg-rose-400 mx-auto rounded-full"></div>
+          </motion.div>
 
-        <div className="space-y-10">
-          {sections.map((section, index) => (
-            <motion.div
-              key={index}
-              className={`flex flex-col md:flex-row ${
-                section.side === "left" ? "" : "md:flex-row-reverse"
-              } items-center`}
-              initial="hidden"
-              whileInView="visible"
-              viewport={{ once: true, amount: 0.4 }}
-              variants={fadeIn}
+          {/* Secciones */}
+          <div className="space-y-32">
+            {sections.map((section, index) => (
+              <motion.div
+                key={index}
+                initial={{ opacity: 0, y: 30 }}
+                whileInView={{ opacity: 1, y: 0 }}
+                transition={{ duration: 0.6 }}
+                viewport={{ once: true, amount: 0.3 }}
+                className={`flex flex-col ${
+                  section.side === "left" ? "md:flex-row" : "md:flex-row-reverse"
+                } items-center gap-12`}
+              >
+                {/* Imagen con overlay */}
+                <div className="w-full md:w-1/2 group relative overflow-hidden rounded-3xl shadow-2xl">
+                  <div className="aspect-[4/3] overflow-hidden">
+                    <img
+                      src={section.image}
+                      alt={section.title}
+                      className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-110"
+                    />
+                  </div>
+                  {/* Overlay sutil */}
+                  <div className="absolute inset-0 bg-gradient-to-t from-rose-800/20 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-500"></div>
+                </div>
+
+                {/* Texto */}
+                <div className="w-full md:w-1/2 space-y-6">
+                  {/* Número de sección */}
+                  <div className="inline-flex items-center justify-center w-12 h-12 bg-rose-400 rounded-full text-white font-bold text-lg shadow-lg">
+                    {index + 1}
+                  </div>
+
+                  <h2 className="text-4xl font-bold text-gray-800 leading-tight">
+                    {section.title}
+                  </h2>
+
+                  <div className="w-16 h-1 bg-rose-500 rounded-full"></div>
+
+                  <p className="text-gray-700 text-lg leading-relaxed">
+                    {section.text}
+                  </p>
+                </div>
+              </motion.div>
+            ))}
+          </div>
+
+          {/* Call to action final */}
+          <motion.div
+            initial={{ opacity: 0, y: 20 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.6 }}
+            viewport={{ once: true }}
+            className="mt-32 text-center bg-white rounded-3xl shadow-xl p-12 max-w-4xl mx-auto"
+          >
+            <h3 className="text-3xl font-bold text-gray-800 mb-4">
+              ¿Lista para tu transformación?
+            </h3>
+            <p className="text-gray-600 text-lg mb-8 max-w-2xl mx-auto">
+              Descubre la experiencia Shirly Rose y déjanos cuidar de ti con 
+              nuestros servicios profesionales de belleza y bienestar.
+            </p>
+            <a
+              href="/appointment"
+              className="inline-block bg-rose-400 hover:bg-rose-500 text-white font-semibold px-10 py-4 rounded-full transition-all duration-300 shadow-lg hover:shadow-xl transform hover:scale-105"
             >
-              {/* Imagen */}
-              <div className="w-full md:w-1/2 h-90">
-                <img
-                  src={section.image}
-                  alt={section.title}
-                  className="w-full h-full object-cover"
-                />
-              </div>
-
-              {/* Texto */}
-              <div className="w-full md:w-1/2 p-9">
-                <h2 className="text-3xl font-bold text-rose-600 mb-4">
-                  {section.title}
-                </h2>
-                <p className="text-gray-700 text-lg leading-relaxed">
-                  {section.text}
-                </p>
-              </div>
-            </motion.div>
-          ))}
+              Agenda tu Cita
+            </a>
+          </motion.div>
         </div>
-      </motion.main>
+      </main>
 
       {/* Footer */}
       <div className="mt-20">
-      <motion.footer
-        className="text-center py-8 mt-auto mt-10"
-        initial={{ y: 50, opacity: 0 }}
-        animate={{ y: 0, opacity: 1, transition: { duration: 0.5, delay: 0.8 } }}
-      >
         <Footer />
-      </motion.footer>
       </div>
-    </motion.div>
+    </div>
   );
 }
