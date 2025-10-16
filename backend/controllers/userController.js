@@ -109,19 +109,33 @@ const updateProfile = async (req, res) => {
   }
 };
 
-// 🔹 NUEVO: Obtener citas del usuario autenticado
+// 🔹 MODIFICAR: Obtener citas del usuario autenticado con más información
 const getUserAppointments = async (req, res) => {
   try {
     const Appointment = require("../models/Appointment");
     
     const appointments = await Appointment.find({ clientId: req.user.id })
-      .populate("serviceId", "name price duration")
-      .populate("employeeId", "name")
+      .populate({
+        path: 'serviceId',
+        select: 'name category price duration description' // 🔹 Especificar qué campos traer
+      })
       .sort({ dateTime: -1 });
+
+    // 🔹 Debug para ver qué está trayendo
+    console.log('📋 Appointments encontradas:', appointments.length);
+    if (appointments.length > 0) {
+      console.log('🔍 Ejemplo de cita:', {
+        id: appointments[0]._id,
+        serviceId: appointments[0].serviceId,
+        dateTime: appointments[0].dateTime,
+        status: appointments[0].status
+      });
+    }
 
     res.json({ appointments });
   } catch (error) {
-    res.status(500).json({ message: "Error al obtener citas", error });
+    console.error('❌ Error al obtener citas:', error);
+    res.status(500).json({ message: 'Error al obtener citas' });
   }
 };
 
@@ -248,5 +262,5 @@ module.exports = {
   createUser,
   updateProfile,
   getUserAppointments,
-  toggleUserStatus // 🆕 Exportar nueva función
+  toggleUserStatus
 };
