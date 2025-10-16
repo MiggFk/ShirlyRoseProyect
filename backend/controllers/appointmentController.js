@@ -1,6 +1,5 @@
 const Appointment = require("../models/Appointment");
 const User = require("../models/User"); // 🔹 NUEVO
-const Service = require("../models/Service"); // 🔹 NUEVO
 
 // Crear una nueva cita
 const createAppointment = async (req, res) => {
