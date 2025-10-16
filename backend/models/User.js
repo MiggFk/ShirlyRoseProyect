@@ -1,66 +1,65 @@
 const mongoose = require("mongoose");
-const bcrypt = require("bcrypt");
+const bcrypt = require("bcryptjs");
 
 const userSchema = new mongoose.Schema({
   name: {
     type: String,
-    required: true
+    required: true,
+    trim: true
   },
   email: {
     type: String,
     required: true,
-    unique: true
+    unique: true,
+    lowercase: true,
+    trim: true
   },
   password: {
     type: String,
-    required: true
+    required: true,
+    minlength: 6
   },
   role: {
     type: String,
-    enum: ["admin", "cliente", "empleado"],
-    required: true
+    enum: ["cliente", "empleado", "admin"],
+    default: "cliente"
   },
-  // 🔹 CAMBIO: De String simple a objeto con url y public_id
-  profileImage: {
-    url: { type: String, default: null },
-    public_id: { type: String, default: null }
-  },
-  phone: {
-    type: String,
-    default: null
-  },
-  address: {
-    street: { type: String, default: null },
-    city: { type: String, default: null },
-    postalCode: { type: String, default: null }
-  },
-  birthDate: {
-    type: Date,
-    default: null
-  },
-  // 🆕 Campo para activar/desactivar usuario
-  isActive: {
+  isVerified: {
     type: Boolean,
-    default: true
+    default: false
+  },
+  verificationToken: {
+    type: String,
+    default: undefined
+  },
+  verificationTokenExpires: {
+    type: Date,
+    default: undefined
   }
 }, {
   timestamps: true
 });
 
-// Middleware pre-save para encriptar contraseñas automáticamente
+// Hashear contraseña antes de guardar
 userSchema.pre('save', async function(next) {
-  // Solo encriptar si la contraseña ha sido modificada o es nueva
-  if (!this.isModified('password')) {
-    return next();
-  }
+  if (!this.isModified('password')) return next();
   
   try {
-    const saltRounds = 10;
-    this.password = await bcrypt.hash(this.password, saltRounds);
+    const salt = await bcrypt.genSalt(10);
+    this.password = await bcrypt.hash(this.password, salt);
     next();
   } catch (error) {
     next(error);
   }
 });
+
+// Método para comparar contraseñas - AGREGAR ESTO
+userSchema.methods.comparePassword = async function(candidatePassword) {
+  try {
+    return await bcrypt.compare(candidatePassword, this.password);
+  } catch (error) {
+    throw new Error('Error al comparar contraseñas');
+  }
+};
 
 module.exports = mongoose.model("User", userSchema);

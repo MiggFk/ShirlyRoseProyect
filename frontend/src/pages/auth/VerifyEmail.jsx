@@ -1,75 +1,65 @@
+import { useParams, Link } from "react-router-dom";
 import { motion } from "framer-motion";
-import { CheckCircle, XCircle, Loader2 } from "lucide-react";
-import { Link } from "react-router-dom";
+import { FiCheckCircle, FiXCircle, FiLoader } from "react-icons/fi";
 import { useVerifyEmail } from "../../hooks/useVerifyEmail";
 
 export default function VerifyEmail() {
-  const { status, message } = useVerifyEmail();
+  const { token } = useParams();
+  const { status, message } = useVerifyEmail(token);
 
   return (
-    <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-pink-100 via-purple-100 to-blue-100 p-4">
+    <div className="min-h-screen bg-gradient-to-br from-pink-50 via-white to-rose-50 flex items-center justify-center p-4">
       <motion.div
-        initial={{ opacity: 0, scale: 0.9 }}
-        animate={{ opacity: 1, scale: 1 }}
-        transition={{ duration: 0.5 }}
-        className="bg-white/80 backdrop-blur-xl p-8 rounded-3xl shadow-2xl max-w-md w-full border border-white/50"
+        initial={{ opacity: 0, y: 20 }}
+        animate={{ opacity: 1, y: 0 }}
+        className="bg-white rounded-2xl shadow-xl p-8 max-w-md w-full text-center"
       >
-        <div className="text-center">
-          {status === "loading" && (
-            <motion.div
-              animate={{ rotate: 360 }}
-              transition={{ duration: 1, repeat: Infinity, ease: "linear" }}
-              className="inline-block mb-4"
-            >
-              <Loader2 size={64} className="text-pink-500" />
-            </motion.div>
-          )}
+        {status === "loading" && (
+          <>
+            <FiLoader className="w-16 h-16 text-pink-500 mx-auto mb-4 animate-spin" />
+            <h2 className="text-2xl font-bold text-gray-800 mb-2">
+              Verificando tu email...
+            </h2>
+            <p className="text-gray-600">Por favor espera un momento</p>
+          </>
+        )}
 
-          {status === "success" && (
-            <motion.div
-              initial={{ scale: 0 }}
-              animate={{ scale: 1 }}
-              transition={{ type: "spring", stiffness: 200 }}
-              className="mb-4"
-            >
-              <CheckCircle size={64} className="text-green-500 mx-auto" />
-            </motion.div>
-          )}
-
-          {status === "error" && (
-            <motion.div
-              initial={{ scale: 0 }}
-              animate={{ scale: 1 }}
-              transition={{ type: "spring", stiffness: 200 }}
-              className="mb-4"
-            >
-              <XCircle size={64} className="text-red-500 mx-auto" />
-            </motion.div>
-          )}
-
-          <h1 className="text-3xl font-bold mb-4 bg-gradient-to-r from-pink-500 to-purple-600 bg-clip-text text-transparent">
-            {status === "loading" && "Verificando tu email..."}
-            {status === "success" && "¡Email verificado!"}
-            {status === "error" && "Error de verificación"}
-          </h1>
-
-          <p className="text-gray-700 mb-6">{message}</p>
-
-          {status === "success" && (
-            <p className="text-sm text-gray-600 mb-4">
-              Serás redirigido al login en 3 segundos...
+        {status === "success" && (
+          <>
+            <FiCheckCircle className="w-16 h-16 text-green-500 mx-auto mb-4" />
+            <h2 className="text-2xl font-bold text-gray-800 mb-2">
+              ¡Email verificado!
+            </h2>
+            <p className="text-gray-600 mb-4">{message}</p>
+            <p className="text-sm text-gray-500">
+              Serás redirigido al inicio de sesión...
             </p>
-          )}
+          </>
+        )}
 
-          {status === "error" && (
-            <Link
-              to="/login"
-              className="inline-block bg-gradient-to-r from-pink-500 to-purple-600 text-white px-6 py-3 rounded-full font-semibold hover:scale-105 transition-transform"
-            >
-              Volver al login
-            </Link>
-          )}
-        </div>
+        {status === "error" && (
+          <>
+            <FiXCircle className="w-16 h-16 text-red-500 mx-auto mb-4" />
+            <h2 className="text-2xl font-bold text-gray-800 mb-2">
+              Error en la verificación
+            </h2>
+            <p className="text-gray-600 mb-6">{message}</p>
+            <div className="space-y-3">
+              <Link
+                to="/login"
+                className="block w-full bg-pink-500 text-white py-3 rounded-lg hover:bg-pink-600 transition"
+              >
+                Ir al inicio de sesión
+              </Link>
+              <Link
+                to="/resend-verification"
+                className="block w-full border border-pink-500 text-pink-500 py-3 rounded-lg hover:bg-pink-50 transition"
+              >
+                Reenviar email de verificación
+              </Link>
+            </div>
+          </>
+        )}
       </motion.div>
     </div>
   );

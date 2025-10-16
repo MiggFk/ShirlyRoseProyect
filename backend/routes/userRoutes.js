@@ -1,31 +1,45 @@
 const express = require("express");
 const router = express.Router();
-const { upload } = require('../config/cloudinary');
+const multer = require("multer");
+const { CloudinaryStorage } = require("multer-storage-cloudinary");
+const { cloudinary } = require("../config/cloudinary");
 
-const auth = require("../middleware/authMiddleware");
-const authorizeRoles = require("../middleware/roleMiddleware");
-
-const { 
-  getProfile, 
-  getAllUsers, 
-  deleteUser, 
+const {
+  getProfile,
+  updateProfile,
+  getAllUsers,
+  deleteUser,
   updateUser,
   createUser,
-  updateProfile,
   getUserAppointments,
-  toggleUserStatus // 🆕 Importar
+  toggleUserStatus
 } = require("../controllers/userController");
 
-// Perfil personal (todos los autenticados)
-router.get("/profile", auth, getProfile);
-router.put("/profile", auth, upload.single('profileImage'), updateProfile);
-router.get("/profile/appointments", auth, getUserAppointments);
+const authMiddleware = require("../middleware/authMiddleware");
+const roleMiddleware = require("../middleware/roleMiddleware");
 
-// Rutas de administración (solo admin)
-router.post("/", auth, authorizeRoles("admin"), createUser);
-router.get("/", auth, authorizeRoles("admin"), getAllUsers);
-router.delete("/:id", auth, authorizeRoles("admin"), deleteUser);
-router.put("/:id", auth, authorizeRoles("admin"), updateUser);
-router.patch("/:id/toggle-status", auth, authorizeRoles("admin"), toggleUserStatus); // 🆕 Nueva ruta
+// Configurar Cloudinary Storage
+const storage = new CloudinaryStorage({
+  cloudinary: cloudinary,
+  params: {
+    folder: "profile_images",
+    allowed_formats: ["jpg", "jpeg", "png", "webp"],
+    transformation: [{ width: 500, height: 500, crop: "limit" }],
+  },
+});
+
+const upload = multer({ storage });
+
+// 👤 Rutas de perfil (usuario autenticado)
+router.get("/profile", authMiddleware, getProfile);
+router.put("/profile", authMiddleware, upload.single("profileImage"), updateProfile);
+router.get("/profile/appointments", authMiddleware, getUserAppointments);
+
+// 🔐 Rutas de administración (solo admin)
+router.get("/", authMiddleware, roleMiddleware("admin"), getAllUsers);
+router.post("/", authMiddleware, roleMiddleware("admin"), createUser);
+router.put("/:id", authMiddleware, roleMiddleware("admin"), updateUser);
+router.delete("/:id", authMiddleware, roleMiddleware("admin"), deleteUser);
+router.patch("/:id/toggle-status", authMiddleware, roleMiddleware("admin"), toggleUserStatus);
 
 module.exports = router;

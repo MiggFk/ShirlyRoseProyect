@@ -1,16 +1,35 @@
 import { Formik, Form, Field, ErrorMessage } from "formik";
 import * as Yup from "yup";
-import { Link } from "react-router-dom";
+import { Link, useNavigate, useLocation } from "react-router-dom";
 import { motion } from "framer-motion";
 import { FiHome } from "react-icons/fi";
 import { Mail, Lock, Eye, EyeOff } from "lucide-react";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import LogoShirly from "../../components/LogoShirly";
 import { useLogin } from "../../hooks/useLogin";
+import Swal from "sweetalert2";
 
 export default function Login() {
   const [showPassword, setShowPassword] = useState(false);
-  const { handleSubmit, isLoading } = useLogin();
+  const { handleSubmit: originalHandleSubmit, isLoading } = useLogin();
+  const navigate = useNavigate();
+  const location = useLocation();
+
+  // Mostrar mensaje de verificación exitosa si viene del link
+  useEffect(() => {
+    if (location.state?.verified && location.state?.message) {
+      Swal.fire({
+        icon: 'success',
+        title: '¡Email verificado!',
+        text: location.state.message,
+        confirmButtonColor: '#ec4899',
+        timer: 3000
+      });
+      
+      // Limpiar el state
+      window.history.replaceState({}, document.title);
+    }
+  }, [location]);
 
   const validationSchema = Yup.object({
     email: Yup.string()
@@ -44,6 +63,43 @@ export default function Login() {
   const logoContainerVariants = {
     hidden: { opacity: 0, x: -50 },
     visible: { opacity: 1, x: 0, transition: { duration: 0.8, delay: 0.8 } },
+  };
+
+  // HandleSubmit mejorado para manejar email no verificado
+  const handleSubmit = async (values, actions) => {
+    try {
+      await originalHandleSubmit(values, actions);
+    } catch (error) {
+      const errorMessage = error.response?.data?.message || "Error al iniciar sesión";
+      
+      // Si el email no está verificado, mostrar opción de reenvío
+      if (error.response?.data?.needsVerification) {
+        Swal.fire({
+          icon: 'warning',
+          title: 'Email no verificado',
+          text: errorMessage,
+          showCancelButton: true,
+          confirmButtonText: 'Reenviar email',
+          cancelButtonText: 'Cerrar',
+          confirmButtonColor: '#ec4899',
+          cancelButtonColor: '#6b7280'
+        }).then((result) => {
+          if (result.isConfirmed) {
+            navigate('/resend-verification');
+          }
+        });
+      } else {
+        // Cualquier otro error
+        Swal.fire({
+          icon: "error",
+          title: "Error",
+          text: errorMessage,
+          confirmButtonColor: "#ec4899"
+        });
+      }
+      
+      actions.setSubmitting(false);
+    }
   };
 
   return (
@@ -106,7 +162,7 @@ export default function Login() {
             validationSchema={validationSchema}
             onSubmit={handleSubmit}
           >
-            {({ isSubmitting, values }) => (
+            {({ isSubmitting }) => (
               <Form className="space-y-6">
                 {/* Email */}
                 <div>
