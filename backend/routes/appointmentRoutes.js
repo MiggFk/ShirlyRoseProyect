@@ -1,24 +1,31 @@
 const express = require("express");
 const router = express.Router();
-const auth = require("../middleware/authMiddleware");
-const authorizeRoles = require("../middleware/roleMiddleware");
-
 const {
   createAppointment,
   getAppointments,
   updateAppointmentStatus,
   deleteAppointment,
   getAppointmentStats,
+  getAdvancedStats,
 } = require("../controllers/appointmentController");
 
-// Rutas públicas/autenticadas
-router.post("/", auth, createAppointment);
-router.get("/", auth, getAppointments);
+const authMiddleware = require("../middleware/authMiddleware");
+const roleMiddleware = require("../middleware/roleMiddleware");
 
-// 🔹 ESTA ES LA LÍNEA 16 - Verifica que getAppointmentStats exista
-router.get("/stats", auth, authorizeRoles("admin"), getAppointmentStats);
+// Estadísticas (solo admin)
+router.get("/advanced-stats", authMiddleware, roleMiddleware("admin"), getAdvancedStats);
+router.get("/stats", authMiddleware, roleMiddleware("admin"), getAppointmentStats);
 
-router.put("/:id/status", auth, authorizeRoles("admin"), updateAppointmentStatus);
-router.delete("/:id", auth, authorizeRoles("admin"), deleteAppointment);
+// Crear cita (cualquier usuario autenticado)
+router.post("/", authMiddleware, createAppointment);
+
+// Obtener citas (cualquier usuario autenticado)
+router.get("/", authMiddleware, getAppointments);
+
+// Actualizar estado de cita (admin o empleado)
+router.patch("/:id", authMiddleware, roleMiddleware("admin", "empleado"), updateAppointmentStatus);
+
+// Eliminar cita (solo admin)
+router.delete("/:id", authMiddleware, roleMiddleware("admin"), deleteAppointment);
 
 module.exports = router;
