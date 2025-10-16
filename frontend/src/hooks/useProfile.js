@@ -58,52 +58,55 @@ export const useProfile = () => {
   }, []);
 
   // 🔹 Actualizar perfil con FormData para enviar archivos
-  const updateProfile = async (data, imageFile) => {
-    try {
-      const token = localStorage.getItem("token");
-      
-      // Crear FormData para enviar archivos
-      const formData = new FormData();
-      formData.append('name', data.name);
-      formData.append('phone', data.phone || '');
-      formData.append('birthDate', data.birthDate || '');
-      formData.append('address', JSON.stringify(data.address));
-      
-      // Agregar imagen si existe
-      if (imageFile) {
-        formData.append('profileImage', imageFile);
-      }
-
-      const response = await api.put("/users/profile", formData, {
-        headers: { 
-          Authorization: `Bearer ${token}`,
-          'Content-Type': 'multipart/form-data'
-        },
-      });
-
-      setUser(response.data.user);
-      localStorage.setItem("user", JSON.stringify(response.data.user));
-
-      Swal.fire({
-        icon: "success",
-        title: "Perfil actualizado",
-        text: "Tus datos se han guardado correctamente.",
-        timer: 2000,
-        showConfirmButton: false,
-      });
-
-      return true;
-    } catch (error) {
-      console.error("Error al actualizar perfil:", error);
-      Swal.fire({
-        icon: "error",
-        title: "Error",
-        text: "No se pudo actualizar el perfil. Intenta nuevamente.",
-      });
-      return false;
+const updateProfile = async (data, imageFile) => {
+  try {
+    const token = localStorage.getItem("token");
+    
+    // Crear FormData para enviar archivos
+    const formData = new FormData();
+    formData.append('name', data.name);
+    formData.append('phone', data.phone || '');
+    formData.append('birthDate', data.birthDate || '');
+    formData.append('address', JSON.stringify(data.address));
+    
+    // 🔹 NUEVO: Flag para eliminar imagen
+    if (data.removeProfileImage) {
+      formData.append('removeProfileImage', 'true');
     }
-  };
+    // Agregar imagen si existe
+    else if (imageFile) {
+      formData.append('profileImage', imageFile);
+    }
 
+    const response = await api.put("/users/profile", formData, {
+      headers: { 
+        Authorization: `Bearer ${token}`,
+        'Content-Type': 'multipart/form-data'
+      },
+    });
+
+    setUser(response.data.user);
+    localStorage.setItem("user", JSON.stringify(response.data.user));
+
+    Swal.fire({
+      icon: "success",
+      title: "Perfil actualizado",
+      text: "Tus datos se han guardado correctamente.",
+      timer: 2000,
+      showConfirmButton: false,
+    });
+
+    return true;
+  } catch (error) {
+    console.error("Error al actualizar perfil:", error);
+    Swal.fire({
+      icon: "error",
+      title: "Error",
+      text: error.response?.data?.message || "No se pudo actualizar el perfil. Intenta nuevamente.",
+    });
+    return false;
+  }
+};
   // 🔹 Eliminar imagen de perfil
   const deleteProfileImage = async () => {
     try {

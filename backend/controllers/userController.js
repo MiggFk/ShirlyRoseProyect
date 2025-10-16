@@ -36,7 +36,7 @@ const getProfile = async (req, res) => {
 // 🔹 Actualizar perfil del usuario autenticado
 const updateProfile = async (req, res) => {
   try {
-    const { name, phone, address, birthDate } = req.body;
+    const { name, phone, address, birthDate, removeProfileImage } = req.body;
 
     // Buscar usuario actual
     const currentUser = await User.findById(req.user.id);
@@ -56,12 +56,31 @@ const updateProfile = async (req, res) => {
       updateData.address = typeof address === 'string' ? JSON.parse(address) : address;
     }
 
+    // 🔹 NUEVA FUNCIONALIDAD: Eliminar imagen si removeProfileImage es true
+    if (removeProfileImage === 'true') {
+      // Eliminar imagen de Cloudinary si existe
+      if (currentUser.profileImage && currentUser.profileImage.public_id) {
+        try {
+          await cloudinary.uploader.destroy(currentUser.profileImage.public_id);
+          console.log('Imagen eliminada de Cloudinary');
+        } catch (error) {
+          console.error('Error eliminando imagen de Cloudinary:', error);
+        }
+      }
+
+      // Establecer profileImage como null
+      updateData.profileImage = {
+        url: null,
+        public_id: null
+      };
+    }
     // 🔹 Si hay nueva imagen, subir a Cloudinary
-    if (req.file) {
+    else if (req.file) {
       // Eliminar imagen anterior de Cloudinary si existe
       if (currentUser.profileImage && currentUser.profileImage.public_id) {
         try {
           await cloudinary.uploader.destroy(currentUser.profileImage.public_id);
+          console.log('Imagen anterior eliminada de Cloudinary');
         } catch (error) {
           console.error('Error eliminando imagen anterior:', error);
         }

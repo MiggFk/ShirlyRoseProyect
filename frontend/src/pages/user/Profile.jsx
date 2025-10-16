@@ -37,6 +37,13 @@ const ContentCard = ({ title, children }) => (
 const Sidebar = ({ isOpen, onClose, onLogout, user, setActiveTab }) => {
   const navigate = useNavigate();
 
+  const getImageUrl = (profileImage) => {
+    if (!profileImage) return null;
+    if (typeof profileImage === 'string') return profileImage;
+    if (profileImage.url) return profileImage.url;
+    return null;
+  };
+
   return (
     <AnimatePresence>
       {isOpen && (
@@ -70,13 +77,9 @@ const Sidebar = ({ isOpen, onClose, onLogout, user, setActiveTab }) => {
 
             <div className="p-6 border-b border-rose-200">
               <div className="flex items-center gap-3">
-                {user?.profileImage ? (
+                {getImageUrl(user?.profileImage) ? (
                   <img
-                    src={
-                      typeof user.profileImage === 'string' 
-                        ? user.profileImage 
-                        : user.profileImage.url
-                    }
+                    src={getImageUrl(user.profileImage)}
                     alt="Perfil"
                     className="w-12 h-12 rounded-full object-cover"
                   />
@@ -154,7 +157,7 @@ const Sidebar = ({ isOpen, onClose, onLogout, user, setActiveTab }) => {
 };
 
 // VISTA: Editar Perfil
-const EditProfileView = ({ user, onUpdate, onDeleteImage }) => {
+const EditProfileView = ({ user, onUpdate }) => {
   // Función para obtener la URL de la imagen
   const getImageUrl = (profileImage) => {
     if (!profileImage) return null;
@@ -216,10 +219,7 @@ const EditProfileView = ({ user, onUpdate, onDeleteImage }) => {
     const input = document.createElement('input');
     input.type = 'file';
     input.accept = 'image/*';
-    
-    // IMPORTANTE: usar 'user' para cámara frontal o 'environment' para trasera
-    // En móviles esto abrirá la cámara directamente
-    input.setAttribute('capture', 'user'); // o 'environment' para cámara trasera
+    input.setAttribute('capture', 'environment'); // Cámara en móviles
     
     input.onchange = (e) => {
       const file = e.target.files[0];
@@ -234,6 +234,7 @@ const EditProfileView = ({ user, onUpdate, onDeleteImage }) => {
     const input = document.createElement('input');
     input.type = 'file';
     input.accept = 'image/*';
+    
     input.onchange = (e) => {
       const file = e.target.files[0];
       if (file) {
@@ -259,11 +260,25 @@ const EditProfileView = ({ user, onUpdate, onDeleteImage }) => {
       setLoading(true);
       setShowImageModal(false);
       
-      const success = await onDeleteImage?.();
+      // Enviar actualización con flag removeProfileImage
+      const profileData = {
+        name: formData.name,
+        phone: formData.phone,
+        address: {
+          street: formData.street,
+          city: formData.city,
+          postalCode: formData.postalCode,
+        },
+        birthDate: formData.birthDate,
+        removeProfileImage: true
+      };
+      
+      const success = await onUpdate(profileData, null);
       
       if (success) {
         setImageFile(null);
         setImagePreview(null);
+        Swal.fire('¡Eliminada!', 'Tu foto de perfil ha sido eliminada', 'success');
       }
       
       setLoading(false);
@@ -312,7 +327,7 @@ const EditProfileView = ({ user, onUpdate, onDeleteImage }) => {
               />
               
               <motion.div
-                className="relative bg-white rounded-2xl p-6 max-w-sm w-full shadow-2xl"
+                className="relative bg-white rounded-2xl p-6 max-w-sm w-full shadow-2xl z-10"
                 initial={{ scale: 0.9, y: 20 }}
                 animate={{ scale: 1, y: 0 }}
                 exit={{ scale: 0.9, y: 20 }}
@@ -391,11 +406,7 @@ const EditProfileView = ({ user, onUpdate, onDeleteImage }) => {
             </div>
             <button
               type="button"
-              onClick={() => {
-                console.log("Botón clickeado, showImageModal antes:", showImageModal);
-                setShowImageModal(true);
-                console.log("setShowImageModal(true) llamado");
-              }}
+              onClick={() => setShowImageModal(true)}
               className="absolute bottom-0 right-0 bg-rose-500 text-white p-3 rounded-full cursor-pointer hover:bg-rose-600 transition shadow-lg hover:scale-110"
             >
               <FaCamera className="w-5 h-5" />
@@ -507,63 +518,67 @@ const EditProfileView = ({ user, onUpdate, onDeleteImage }) => {
   );
 };
 
-// 🔹 VISTA: Dashboard
-const DashboardView = ({ user }) => (
-  <motion.div
-    className="grid md:grid-cols-2 gap-6"
-    initial={{ opacity: 0, y: 20 }}
-    animate={{ opacity: 1, y: 0 }}
-    transition={{ duration: 0.5 }}
-  >
-    <ContentCard title="Información de Cuenta">
-      <div className="space-y-2 text-gray-700">
-        {/* Imagen de perfil */}
-        {user?.profileImage && (
-          <div className="flex justify-center mb-4">
-            <img
-              src={
-                typeof user.profileImage === 'string' 
-                  ? user.profileImage 
-                  : user.profileImage.url
-              }
-              alt="Perfil"
-              className="w-24 h-24 rounded-full object-cover border-4 border-rose-300"
-            />
-          </div>
-        )}
-        <p>
-          <strong>Nombre:</strong> {user?.name}
-        </p>
-        <p>
-          <strong>Correo:</strong> {user?.email}
-        </p>
-        <p>
-          <strong>Teléfono:</strong> {user?.phone || "No registrado"}
-        </p>
-        <p>
-          <strong>Dirección:</strong>{" "}
-          {user?.address?.street
-            ? `${user.address.street}, ${user.address.city}`
-            : "No registrada"}
-        </p>
-      </div>
-    </ContentCard>
+// VISTA: Dashboard
+const DashboardView = ({ user }) => {
+  const getImageUrl = (profileImage) => {
+    if (!profileImage) return null;
+    if (typeof profileImage === 'string') return profileImage;
+    if (profileImage.url) return profileImage.url;
+    return null;
+  };
 
-    <ContentCard title="Resumen de Actividad">
-      <div className="space-y-2 text-gray-700">
-        <p>
-          <strong>Rol:</strong> {user?.role === "cliente" ? "Cliente" : user?.role}
-        </p>
-        <p>
-          <strong>Miembro desde:</strong>{" "}
-          {new Date(user?.createdAt || Date.now()).toLocaleDateString()}
-        </p>
-      </div>
-    </ContentCard>
-  </motion.div>
-);
+  return (
+    <motion.div
+      className="grid md:grid-cols-2 gap-6"
+      initial={{ opacity: 0, y: 20 }}
+      animate={{ opacity: 1, y: 0 }}
+      transition={{ duration: 0.5 }}
+    >
+      <ContentCard title="Información de Cuenta">
+        <div className="space-y-2 text-gray-700">
+          {user?.profileImage && (
+            <div className="flex justify-center mb-4">
+              <img
+                src={getImageUrl(user.profileImage)}
+                alt="Perfil"
+                className="w-24 h-24 rounded-full object-cover border-4 border-rose-300"
+              />
+            </div>
+          )}
+          <p>
+            <strong>Nombre:</strong> {user?.name}
+          </p>
+          <p>
+            <strong>Correo:</strong> {user?.email}
+          </p>
+          <p>
+            <strong>Teléfono:</strong> {user?.phone || "No registrado"}
+          </p>
+          <p>
+            <strong>Dirección:</strong>{" "}
+            {user?.address?.street
+              ? `${user.address.street}, ${user.address.city}`
+              : "No registrada"}
+          </p>
+        </div>
+      </ContentCard>
 
-// 🔹 VISTA: Citas Pendientes
+      <ContentCard title="Resumen de Actividad">
+        <div className="space-y-2 text-gray-700">
+          <p>
+            <strong>Rol:</strong> {user?.role === "cliente" ? "Cliente" : user?.role}
+          </p>
+          <p>
+            <strong>Miembro desde:</strong>{" "}
+            {new Date(user?.createdAt || Date.now()).toLocaleDateString()}
+          </p>
+        </div>
+      </ContentCard>
+    </motion.div>
+  );
+};
+
+// VISTA: Citas Pendientes
 const AppointmentsView = ({ appointments }) => (
   <ContentCard title="Mis Citas Pendientes">
     {appointments.length === 0 ? (
@@ -597,7 +612,7 @@ const AppointmentsView = ({ appointments }) => (
   </ContentCard>
 );
 
-// 🔹 VISTA: Historial de Servicios
+// VISTA: Historial de Servicios
 const HistoryView = ({ appointments }) => (
   <ContentCard title="Historial de Servicios">
     {appointments.length === 0 ? (
@@ -630,10 +645,16 @@ const HistoryView = ({ appointments }) => (
 
 // COMPONENTE PRINCIPAL
 const Profile = () => {
-  const { user, appointments, loading, handleLogout, updateProfile, deleteProfileImage } =
-    useProfile();
+  const { user, appointments, loading, handleLogout, updateProfile } = useProfile();
   const [activeTab, setActiveTab] = useState("dashboard");
   const [isSidebarOpen, setIsSidebarOpen] = useState(false);
+
+  const getImageUrl = (profileImage) => {
+    if (!profileImage) return null;
+    if (typeof profileImage === 'string') return profileImage;
+    if (profileImage.url) return profileImage.url;
+    return null;
+  };
 
   if (loading) {
     return (
@@ -685,13 +706,9 @@ const Profile = () => {
 
         <div className="relative max-w-7xl mx-auto h-full px-6 flex items-center justify-between">
           <div className="flex items-center gap-5">
-            {user.profileImage ? (
+            {getImageUrl(user.profileImage) ? (
               <motion.img
-                src={
-                  typeof user.profileImage === 'string' 
-                    ? user.profileImage 
-                    : user.profileImage.url
-                }
+                src={getImageUrl(user.profileImage)}
                 alt="Perfil"
                 initial={{ scale: 0 }}
                 animate={{ scale: 1 }}
@@ -765,11 +782,7 @@ const Profile = () => {
           <AnimatePresence mode="wait">
             {activeTab === "dashboard" && <DashboardView user={user} />}
             {activeTab === "edit" && (
-              <EditProfileView 
-                user={user} 
-                onUpdate={updateProfile}
-                onDeleteImage={deleteProfileImage}
-              />
+              <EditProfileView user={user} onUpdate={updateProfile} />
             )}
             {activeTab === "appointments" && (
               <AppointmentsView appointments={appointments} />
@@ -781,7 +794,6 @@ const Profile = () => {
         </div>
       </main>
 
-      {/* Footer */}
       <Footer />
     </div>
   );
