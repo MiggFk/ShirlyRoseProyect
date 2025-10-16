@@ -1,13 +1,23 @@
 const express = require("express");
 const router = express.Router();
+const { 
+  register, 
+  login, 
+  getMe,
+  verifyEmail,
+  resendVerificationEmail
+} = require("../controllers/authController");
+const authMiddleware = require("../middleware/authMiddleware");
 
-// Importamos el controlador
-const { registerUser, loginUser  } = require("../controllers/authController");
+// Registro y login
+router.post("/register", register);
+router.post("/login", login);
 
-// Ruta POST para registrar un usuario
-router.post("/register", registerUser);
+// 🆕 Verificación de email
+router.get("/verify-email/:token", verifyEmail);
+router.post("/resend-verification", resendVerificationEmail);
 
-// Login
-router.post("/login", loginUser);
+// Obtener usuario autenticado
+router.get("/me", authMiddleware, getMe);
 
 module.exports = router;

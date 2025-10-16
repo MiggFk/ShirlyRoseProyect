@@ -2,41 +2,57 @@
 
 import { useNavigate } from "react-router-dom";
 import Swal from "sweetalert2";
-import { useAuth } from '../context/AuthContext'; 
+import { useState } from "react";
+import api from "../api/axios";
 
 /**
- * Custom hook para manejar la lógica de registro de usuarios.
- * * Ahora delega la lógica de API, estado y redirección al AuthContext.
+ * Custom hook para manejar el registro con verificación de email
  */
 export const useRegister = () => {
-  // ⬅️ Obtiene la función register y el estado isLoading del contexto
-  const { register, isLoading } = useAuth(); 
+  const [isLoading, setIsLoading] = useState(false);
   const navigate = useNavigate();
 
   const handleSubmit = async (values, { setSubmitting, resetForm }) => {
+    setIsLoading(true);
+    
     try {
-      // 1. LLAMAR AL REGISTER
-      const user = await register(values.name, values.email, values.password); 
-
-      // 2. MOSTRAR ALERTA DE ÉXITO
-      await Swal.fire({
-        icon: 'success',
-        title: '¡Cuenta creada!',
-        text: 'Registro exitoso',
-        showConfirmButton: false,
-        timer: 1500,
-        timerProgressBar: true,
+      // 1. REGISTRAR USUARIO
+      const res = await api.post("/auth/register", {
+        name: values.name,
+        email: values.email,
+        password: values.password,
       });
 
-      // 3. REDIRIGIR DESPUÉS DE LA ALERTA
-      if (user.role === "admin" || user.role === "empleado") {
-        navigate("/dashboard");
-      } else {
-        navigate("/");
-      }
+      console.log('✅ Registro exitoso:', res.data);
+
+      // 2. MOSTRAR ALERTA CON MENSAJE DE VERIFICACIÓN
+      await Swal.fire({
+        icon: 'success',
+        title: '¡Registro exitoso!',
+        html: `
+          <div class="text-center">
+            <p class="mb-2">Te hemos enviado un email de verificación a:</p>
+            <p class="font-bold text-pink-600 text-lg">${values.email}</p>
+            <p class="text-sm text-gray-600 mt-3">
+              📧 Por favor revisa tu bandeja de entrada y haz clic en el enlace de verificación.
+            </p>
+            <p class="text-xs text-gray-500 mt-2">
+              ⚠️ No podrás iniciar sesión hasta verificar tu cuenta
+            </p>
+          </div>
+        `,
+        confirmButtonColor: '#ff6b9d',
+        confirmButtonText: 'Ir al login',
+        allowOutsideClick: false,
+      });
+
+      // 3. REDIRIGIR AL LOGIN
+      navigate("/login");
       
     } catch (err) {
-      const message = err.message || "Error al registrar usuario";
+      console.error('❌ Error en registro:', err);
+      
+      const message = err.response?.data?.message || "Error al registrar usuario";
       
       await Swal.fire({
         icon: 'error',
@@ -50,8 +66,9 @@ export const useRegister = () => {
       
     } finally {
       setSubmitting(false);
+      setIsLoading(false);
     }
   };
 
-  return { handleSubmit, isLoading }; 
+  return { handleSubmit, isLoading };
 };
