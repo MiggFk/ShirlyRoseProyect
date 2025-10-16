@@ -163,7 +163,7 @@ export default function IndexHome() {
         animate={{ opacity: 1, y: 0, transition: { duration: 0.8 } }}
       >
         {/* Capa semi-transparente para mejor legibilidad */}
-        <div className="absolute inset-0 bg-gradient-to-r from-rose-100/50 via-rose-50/20 to-transparent"></div>
+        <div className="absolute inset-0 bg-gradient-to-r from-rose-100 via-transparent"></div>
 
         {/* Contenido del Hero */}
         <div className="relative z-10 pl-10 md:pl-20 max-w-lg text-left">
@@ -539,7 +539,7 @@ export default function IndexHome() {
 
         {/* Botón para abrir en Google Maps */}
         <a
-          href="https://www.google.com/maps/search/?api=1&query=8.0103,-75.1967"
+          href="https://www.google.com/maps/search/?api=1&query=7.981094312246096, -75.20387725078415"
           target="_blank"
           rel="noopener noreferrer"
           className="inline-flex items-center gap-2 bg-rose-400 hover:bg-rose-500 text-white font-semibold px-8 py-4 rounded-full transition-all duration-300 shadow-lg hover:shadow-xl transform hover:scale-105"

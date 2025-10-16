@@ -1,17 +1,34 @@
-import { useState } from "react";
-import { Link } from "react-router-dom";
+import { useState, useEffect } from "react";
+import { Link, useLocation } from "react-router-dom";
 import { motion } from "framer-motion";
-import { Calendar, Clock, Scissors, User, Package, Home } from "lucide-react";
+import { Calendar, Clock, Scissors, User, Package, Home, DollarSign } from "lucide-react";
 import fondo from "../../assets/images/arbolOscuro.png";
 
 export default function Appointment() {
+  const location = useLocation();
+  const selectedService = location.state?.service;
+
+  // Usa estos datos para prellenar el formulario
   const [formData, setFormData] = useState({
+    service: selectedService?._id || "",
+    serviceName: selectedService?.name || "",
     nombre: "",
-    servicio: "",
     hora: "",
     fecha: "",
     producto: "",
   });
+
+  useEffect(() => {
+    if (selectedService) {
+      setFormData((prev) => ({
+        ...prev,
+        service: selectedService._id,
+        serviceName: selectedService.name,
+        price: selectedService.price,
+        duration: selectedService.duration,
+      }));
+    }
+  }, [selectedService]);
 
   const handleChange = (e) => {
     setFormData({ ...formData, [e.target.name]: e.target.value });
@@ -20,13 +37,13 @@ export default function Appointment() {
   const handleSubmit = (e) => {
     e.preventDefault();
     console.log("Cita agendada:", formData);
-    // Aquí puedes agregar la lógica para enviar la cita
+    // Aquí puedes agregar lógica para guardar la cita en backend
   };
 
   const pageVariants = {
     initial: { opacity: 0 },
     animate: { opacity: 1, transition: { duration: 0.8 } },
-    exit: { opacity: 0, transition: { duration: 0.5 } }
+    exit: { opacity: 0, transition: { duration: 0.5 } },
   };
 
   return (
@@ -37,7 +54,7 @@ export default function Appointment() {
       animate="animate"
       exit="exit"
     >
-      {/* Fondo sin filtros */}
+      {/* Fondo */}
       <div
         className="absolute inset-0 z-0"
         style={{
@@ -47,7 +64,7 @@ export default function Appointment() {
         }}
       />
 
-      {/* Botón volver con icono de casa */}
+      {/* Botón volver */}
       <Link
         to="/"
         className="absolute top-6 left-6 z-30 flex items-center justify-center w-12 h-12 hover:scale-110 hover:text-rose-400 transition-all duration-300 text-white"
@@ -56,7 +73,7 @@ export default function Appointment() {
         <Home size={40} />
       </Link>
 
-      {/* Formulario mejorado */}
+      {/* Formulario */}
       <motion.div
         className="relative z-10 w-full max-w-lg"
         initial={{ y: 30, opacity: 0 }}
@@ -82,14 +99,40 @@ export default function Appointment() {
             </p>
           </div>
 
+          {/* Si llega desde un servicio, mostrar resumen arriba */}
+          {selectedService && (
+            <motion.div
+              className="bg-rose-50 border border-rose-200 rounded-xl p-4 mb-6 text-gray-700"
+              initial={{ opacity: 0, y: -10 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ duration: 0.5 }}
+            >
+              <div className="flex items-center justify-between">
+                <div>
+                  <h3 className="font-semibold text-rose-600">{selectedService.name}</h3>
+                  <p className="text-sm text-gray-500">
+                    {selectedService.category && selectedService.category.charAt(0).toUpperCase() + selectedService.category.slice(1)}
+                  </p>
+                </div>
+                <div className="flex flex-col items-end">
+                  <span className="flex items-center text-rose-500 font-medium">
+                    <DollarSign size={16} className="mr-1" /> {selectedService.price?.toLocaleString()}
+                  </span>
+                  {selectedService.duration && (
+                    <span className="text-xs text-gray-500 flex items-center gap-1">
+                      <Clock size={12} />
+                      {selectedService.duration} min
+                    </span>
+                  )}
+                </div>
+              </div>
+            </motion.div>
+          )}
+
           {/* Formulario */}
           <form onSubmit={handleSubmit} className="space-y-5">
             {/* Nombre */}
-            <motion.div
-              initial={{ x: -20, opacity: 0 }}
-              animate={{ x: 0, opacity: 1 }}
-              transition={{ delay: 0.6 }}
-            >
+            <motion.div initial={{ x: -20, opacity: 0 }} animate={{ x: 0, opacity: 1 }} transition={{ delay: 0.6 }}>
               <label className="block text-sm font-medium text-gray-700 mb-2">
                 Nombre completo
               </label>
@@ -108,11 +151,7 @@ export default function Appointment() {
             </motion.div>
 
             {/* Servicio */}
-            <motion.div
-              initial={{ x: -20, opacity: 0 }}
-              animate={{ x: 0, opacity: 1 }}
-              transition={{ delay: 0.7 }}
-            >
+            <motion.div initial={{ x: -20, opacity: 0 }} animate={{ x: 0, opacity: 1 }} transition={{ delay: 0.7 }}>
               <label className="block text-sm font-medium text-gray-700 mb-2">
                 Servicio
               </label>
@@ -120,8 +159,9 @@ export default function Appointment() {
                 <Scissors className="absolute left-3 top-1/2 -translate-y-1/2 text-rose-400" size={20} />
                 <select
                   name="servicio"
-                  value={formData.servicio}
+                  value={formData.serviceName}
                   onChange={handleChange}
+                  disabled={!!selectedService} // Si viene de "Reservar", bloquear edición
                   className="w-full pl-11 pr-4 py-3 border-2 border-rose-100 rounded-xl focus:outline-none focus:border-rose-400 focus:ring-2 focus:ring-rose-200 transition-all bg-white/50 appearance-none cursor-pointer"
                   required
                 >
@@ -130,18 +170,14 @@ export default function Appointment() {
                   <option value="peluqueria">Peluquería</option>
                   <option value="manicure">Manicure/Pedicure</option>
                   <option value="facial">Estética Facial</option>
-                  <option value="masaje">Masajes</option>
+                  <option value="depilacion">Depilación</option>
                 </select>
               </div>
             </motion.div>
 
-            {/* Fecha y Hora */}
-            <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-              <motion.div
-                initial={{ x: -20, opacity: 0 }}
-                animate={{ x: 0, opacity: 1 }}
-                transition={{ delay: 0.8 }}
-              >
+            <div className="grid grid-cols-2 gap-4">
+              {/* Fecha */}
+              <motion.div initial={{ x: -20, opacity: 0 }} animate={{ x: 0, opacity: 1 }} transition={{ delay: 0.8 }}>
                 <label className="block text-sm font-medium text-gray-700 mb-2">
                   Fecha
                 </label>
@@ -158,11 +194,7 @@ export default function Appointment() {
                 </div>
               </motion.div>
 
-              <motion.div
-                initial={{ x: 20, opacity: 0 }}
-                animate={{ x: 0, opacity: 1 }}
-                transition={{ delay: 0.8 }}
-              >
+              <motion.div initial={{ x: 20, opacity: 0 }} animate={{ x: 0, opacity: 1 }} transition={{ delay: 0.9 }}>
                 <label className="block text-sm font-medium text-gray-700 mb-2">
                   Hora
                 </label>
@@ -180,12 +212,8 @@ export default function Appointment() {
               </motion.div>
             </div>
 
-            {/* Producto (opcional) */}
-            <motion.div
-              initial={{ x: -20, opacity: 0 }}
-              animate={{ x: 0, opacity: 1 }}
-              transition={{ delay: 0.9 }}
-            >
+            {/* Producto opcional */}
+            <motion.div initial={{ x: -20, opacity: 0 }} animate={{ x: 0, opacity: 1 }} transition={{ delay: 1 }}>
               <label className="block text-sm font-medium text-gray-700 mb-2">
                 Producto adicional <span className="text-gray-400">(opcional)</span>
               </label>
@@ -202,7 +230,7 @@ export default function Appointment() {
               </div>
             </motion.div>
 
-            {/* Botón submit */}
+            {/* Botón confirmar */}
             <motion.button
               type="submit"
               whileHover={{ scale: 1.02 }}
@@ -210,13 +238,13 @@ export default function Appointment() {
               initial={{ y: 20, opacity: 0 }}
               animate={{ y: 0, opacity: 1 }}
               transition={{ delay: 1 }}
-              className="w-full bg-rose-400 hover:from-rose-500 hover:bg-rose-300 text-white py-4 rounded-xl font-semibold text-lg transition-all duration-300 shadow-lg hover:shadow-xl mt-6"
+              className="w-full bg-rose-400 hover:bg-rose-500 text-white py-4 rounded-xl font-semibold text-lg transition-all duration-300 shadow-lg hover:shadow-xl mt-6"
             >
               Confirmar Cita
             </motion.button>
           </form>
 
-          {/* Footer info */}
+          {/* Footer */}
           <p className="text-center text-sm text-gray-500 mt-6">
             Recibirás una confirmación por correo electrónico
           </p>
