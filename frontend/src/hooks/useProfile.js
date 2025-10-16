@@ -9,7 +9,7 @@ export const useProfile = () => {
   const [loading, setLoading] = useState(true);
   const navigate = useNavigate();
 
-  // 🔹 Cargar perfil (memoizado para evitar recreación)
+  // Cargar perfil (memoizado para evitar recreación)
   const fetchProfile = useCallback(async () => {
     try {
       const token = localStorage.getItem("token");
@@ -40,7 +40,7 @@ export const useProfile = () => {
     }
   }, [navigate]);
 
-  // 🔹 Cargar citas del usuario (memoizado)
+  // Cargar citas del usuario (memoizado)
   const fetchAppointments = useCallback(async () => {
     try {
       const token = localStorage.getItem("token");
@@ -57,7 +57,7 @@ export const useProfile = () => {
     }
   }, []);
 
-  // 🔹 Actualizar perfil con FormData para enviar archivos
+  // Actualizar perfil con FormData para enviar archivos
   const updateProfile = async (data, imageFile) => {
     try {
       const token = localStorage.getItem("token");
@@ -104,7 +104,7 @@ export const useProfile = () => {
     }
   };
 
-  // 🔹 Eliminar imagen de perfil
+  // Eliminar imagen de perfil
   const deleteProfileImage = async () => {
     try {
       const token = localStorage.getItem("token");
@@ -138,7 +138,7 @@ export const useProfile = () => {
     }
   };
 
-  // 🔹 Cerrar sesión
+  // Cerrar sesión
   const handleLogout = () => {
     Swal.fire({
       title: "¿Estás seguro?",
@@ -157,7 +157,7 @@ export const useProfile = () => {
     });
   };
 
-  // 🔹 useEffect con cleanup para evitar memory leaks
+  // useEffect con cleanup para evitar memory leaks
   useEffect(() => {
     let isMounted = true;
 

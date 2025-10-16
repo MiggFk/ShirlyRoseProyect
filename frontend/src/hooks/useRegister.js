@@ -9,7 +9,7 @@ import { useAuth } from '../context/AuthContext';
  * * Ahora delega la lógica de API, estado y redirección al AuthContext.
  */
 export const useRegister = () => {
-  // ⬅️ Obtiene la función register y el estado isLoading del contexto
+  //  Obtiene la función register y el estado isLoading del contexto
   const { register, isLoading } = useAuth(); 
   const navigate = useNavigate();
 

@@ -33,7 +33,7 @@ export const useLogin = () => {
 
       // 3. Redirigir después de 1.5 segundos (cuando cierre el SweetAlert)
       setTimeout(() => {
-        // console.log("🔄 Redirigiendo...");
+        // console.log(" Redirigiendo...");
         if (user.role === "admin" || user.role === "empleado") {
           navigate("/dashboard", { replace: true });
         } else {
@@ -42,7 +42,7 @@ export const useLogin = () => {
       }, 1600); // Un poco más que el timer del SweetAlert
       
     } catch (err) {
-      // console.error("❌ Error en login:", err);
+      // console.error(" Error en login:", err);
       
       const message = err.message || "Correo o contraseña incorrectos";
       

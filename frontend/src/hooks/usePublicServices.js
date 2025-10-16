@@ -11,7 +11,7 @@ export function usePublicServices() {
       setLoading(true);
       setError(null);
       
-      // 🔑 IMPORTANTE: Sin headers de autorización para rutas públicas
+      // IMPORTANTE: Sin headers de autorización para rutas públicas
       const response = await api.get("/services"); // ← Usar api consistente
       
       console.log('✅ Servicios públicos cargados:', response.data);

@@ -44,7 +44,7 @@ export default function About() {
   ];
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-rose-50 via-pink-50 to-purple-50">
+    <div className="min-h-screen bg-rose-50">
       {/* SideBar */}
       <PublicNavbar title="Shirly Rose" />
 
@@ -77,8 +77,8 @@ export default function About() {
                   section.side === "left" ? "md:flex-row" : "md:flex-row-reverse"
                 } items-center gap-12`}
               >
-                {/* Imagen con overlay */}
-                <div className="w-full md:w-1/2 group relative overflow-hidden rounded-3xl shadow-2xl">
+                {/* Imagen con overlay - MÁS GRANDE */}
+                <div className="w-full md:w-3/5 group relative overflow-hidden rounded-3xl shadow-2xl">
                   <div className="aspect-[4/3] overflow-hidden">
                     <img
                       src={section.image}
@@ -91,7 +91,7 @@ export default function About() {
                 </div>
 
                 {/* Texto */}
-                <div className="w-full md:w-1/2 space-y-6">
+                <div className="w-full md:w-2/5 space-y-6">
                   {/* Número de sección */}
                   <div className="inline-flex items-center justify-center w-12 h-12 bg-rose-400 rounded-full text-white font-bold text-lg shadow-lg">
                     {index + 1}
@@ -128,7 +128,7 @@ export default function About() {
             </p>
             <a
               href="/appointment"
-              className="inline-block bg-rose-400 hover:bg-rose-500 text-white font-semibold px-10 py-4 rounded-full transition-all duration-300 shadow-lg hover:shadow-xl transform hover:scale-105"
+              className="inline-block bg-rose-400 hover:bg-rose-600 text-white font-semibold px-10 py-4 rounded-full transition-all duration-300 shadow-lg hover:shadow-xl transform hover:scale-105"
             >
               Agenda tu Cita
             </a>

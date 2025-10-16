@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { Link, useLocation } from "react-router-dom";
 import { motion, AnimatePresence } from "framer-motion";
 import {
@@ -12,7 +12,9 @@ import {
   Scissors,
   Menu,
   X,
+  ShoppingCart,
 } from "lucide-react";
+import Swal from "sweetalert2";
 import LogoShirly from "./LogoShirly";
 import { useAuth } from "../context/AuthContext";
 
@@ -24,6 +26,19 @@ export default function Sidebar() {
   const userRole = user ? user.role : null;
   const ICON_SIZE = 22;
 
+  // El sidebar NO se abre automáticamente en pantallas grandes, se mantiene controlado
+  // por el botón hamburguesa en todas las resoluciones
+  useEffect(() => {
+    const handleResize = () => {
+      if (window.innerWidth >= 1024) {
+        // Mantenerlo cerrado hasta que el usuario lo abra manualmente
+        setIsOpen(false);
+      }
+    };
+    window.addEventListener("resize", handleResize);
+    return () => window.removeEventListener("resize", handleResize);
+  }, []);
+
   const links = [
     { to: "/dashboard", label: "Inicio", icon: <Home size={ICON_SIZE} className="text-rose-300 hover:text-white" /> },
     { to: "/dashboard/appointments", label: "Citas", icon: <Calendar size={ICON_SIZE} className="text-rose-300 hover:text-white" /> },
@@ -32,32 +47,56 @@ export default function Sidebar() {
     ...(userRole === "admin"
       ? [{ to: "/dashboard/users", label: "Usuarios", icon: <Users size={ICON_SIZE} className="text-rose-300 hover:text-white" /> }]
       : []),
+    { to: "/dashboard/cart", label: "Carrito", icon: <ShoppingCart size={ICON_SIZE} className="text-rose-300 hover:text-white" /> },
     { to: "/profile", label: "Perfil", icon: <UserCircle size={ICON_SIZE} className="text-rose-300 hover:text-white" /> },
     { to: "/", label: "Volver al sitio", icon: <ArrowLeft size={ICON_SIZE} className="text-rose-300 hover:text-white" /> },
   ];
 
   const handleLinkClick = () => {
-    setIsOpen(false);
+    if (window.innerWidth < 1024) setIsOpen(false);
+  };
+
+  const handleLogout = () => {
+    Swal.fire({
+      title: "¿Cerrar sesión?",
+      text: "Tu sesión actual se cerrará.",
+      icon: "warning",
+      showCancelButton: true,
+      confirmButtonColor: "#e11d48",
+      cancelButtonColor: "#6b7280",
+      confirmButtonText: "Sí, salir",
+      cancelButtonText: "Cancelar",
+      background: "#fff",
+    }).then((result) => {
+      if (result.isConfirmed) {
+        logout();
+        Swal.fire({
+          title: "Sesión cerrada",
+          text: "Has cerrado sesión correctamente.",
+          icon: "success",
+          confirmButtonColor: "#e11d48",
+        });
+        setIsOpen(false);
+      }
+    });
   };
 
   return (
     <>
-      {/* Botón hamburguesa - Fixed en todas las pantallas */}
+      {/* Botón hamburguesa (en todas las resoluciones) */}
       <motion.button
         whileHover={{ scale: 1.1 }}
         whileTap={{ scale: 0.95 }}
         onClick={() => setIsOpen(!isOpen)}
-        className="fixed top-5 left-5 z-50 p-2
-                   text-rose-400 hover:text-rose-500
-                   transition-all duration-300"
+        className="fixed top-5 left-5 z-50 p-2 text-rose-400 hover:text-rose-500 transition-all duration-300"
         aria-label="Toggle menu"
       >
         {isOpen ? <X size={32} strokeWidth={2.5} /> : <Menu size={32} strokeWidth={2.5} />}
       </motion.button>
 
-      {/* Overlay oscuro cuando el sidebar está abierto */}
+      {/* Overlay oscuro solo visible en pantallas pequeñas */}
       <AnimatePresence>
-        {isOpen && (
+        {isOpen && window.innerWidth < 1024 && (
           <motion.div
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
@@ -76,9 +115,9 @@ export default function Sidebar() {
             animate={{ x: 0 }}
             exit={{ x: -280 }}
             transition={{ type: "spring", damping: 25, stiffness: 200 }}
-            className="fixed left-0 top-0 z-40 w-64 min-h-screen p-6 flex flex-col justify-between
+            className="fixed left-0 top-0 z-40 w-64 h-full p-6 flex flex-col justify-between
                        bg-white/10 backdrop-blur-2xl border-r border-white/20
-                       text-white shadow-2xl"
+                       text-white shadow-2xl overflow-y-auto scrollbar-thin scrollbar-thumb-rose-300 scrollbar-track-transparent"
           >
             <div>
               {/* Logo */}
@@ -112,11 +151,8 @@ export default function Sidebar() {
             {/* Botón Cerrar Sesión */}
             {user && (
               <button
-                onClick={() => {
-                  logout();
-                  setIsOpen(false);
-                }}
-                className="w-full flex items-center justify-center gap-3 px-4 py-3 rounded-2xl
+                onClick={handleLogout}
+                className="mt-4 w-full flex items-center justify-center gap-3 px-4 py-3 rounded-2xl
                            bg-rose-400 backdrop-blur-xl border border-white/20 text-rose-800 font-medium
                            hover:bg-rose-600 hover:scale-105 hover:text-white hover:font-bold
                            shadow-lg transition-all duration-300"

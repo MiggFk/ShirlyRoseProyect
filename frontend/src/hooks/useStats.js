@@ -18,11 +18,11 @@ export function useStats() {
         headers: { Authorization: `Bearer ${token}` },
       });
       
-      // 🔹 CORREGIDO: Backend devuelve { data: {...} }
+      // CORREGIDO: Backend devuelve { data: {...} }
       setStats(res.data.data || res.data);
     } catch (error) {
       console.error("Error al cargar estadísticas:", error);
-      // 🔹 En caso de error, mantener el estado inicial vacío
+      // En caso de error, mantener el estado inicial vacío
       setStats({
         totalAppointments: 0,
         status: { pending: 0, completed: 0, cancelled: 0 },

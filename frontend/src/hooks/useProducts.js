@@ -93,7 +93,7 @@ export function useProducts() {
         }
     };
 
-    // 🆕 Reactivar producto
+    // Reactivar producto
     const reactivateProduct = async (id) => {
         try {
             const token = localStorage.getItem("token");
@@ -108,7 +108,7 @@ export function useProducts() {
         }
     };
 
-    // 🆕 Eliminar permanentemente
+    // Eliminar permanentemente
     const permanentDeleteProduct = async (id) => {
         const confirm = await Swal.fire({
             title: "⚠️ ¡PELIGRO!",

@@ -10,7 +10,7 @@ export function usePublicProducts() {
         try {
             setLoading(true);
             setError(null);
-            // 🔑 CLAVE: Sin headers de autorización para rutas públicas
+            // CLAVE: Sin headers de autorización para rutas públicas
             const res = await api.get("/products");
             setProducts(res.data);
         } catch (err) {
