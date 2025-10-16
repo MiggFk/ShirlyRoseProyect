@@ -39,6 +39,28 @@ export default function Services() {
     return categoryMap[category] || category;
   };
 
+  // Filtrar servicios por búsqueda de categoría o nombre
+  const filteredServices = React.useMemo(() => {
+    if (!search.trim()) return services;
+    
+    const searchLower = search.toLowerCase().trim();
+    
+    return services.filter(service => {
+      // Buscar en la categoría formateada
+      const categoryFormatted = formatCategory(service.category).toLowerCase();
+      
+      // Buscar en el nombre del servicio
+      const serviceName = (service.name || '').toLowerCase();
+      
+      // Buscar también en la categoría raw
+      const categoryRaw = (service.category || '').toLowerCase().replace(/_/g, ' ');
+      
+      return categoryFormatted.includes(searchLower) || 
+             serviceName.includes(searchLower) ||
+             categoryRaw.includes(searchLower);
+    });
+  }, [services, search]);
+
   if (loading) {
     return (
       <div className="min-h-screen bg-gradient-to-br from-rose-50 via-pink-50 to-purple-50 flex items-center justify-center">
@@ -69,10 +91,10 @@ export default function Services() {
   }
 
   return (
-    <div className="min-h-screen bg-rose-50 pt-28">
-      <PublicNavbar title="Shirly Rose"/>
+    <div className="min-h-screen bg-gradient-to-br from-rose-50 via-pink-50 to-purple-50">
+      <PublicNavbar />
       
-      <div className="container mx-auto px-4 py-12">
+      <div className="container mx-auto px-4 py-28">
         {/* Header con más espacio */}
         <motion.div 
           className="text-center mb-20"
@@ -87,7 +109,7 @@ export default function Services() {
             </h1>
           </div>
           <p className="text-lg text-gray-600 max-w-3xl mx-auto leading-relaxed">
-            Descubre nuestra amplia variedad de servicios de belleza y bienestar, 
+            Descubre nuestra amplia gama de servicios de belleza y bienestar, 
             diseñados para realzar tu belleza natural y hacerte sentir increíble.
           </p>
         </motion.div>
@@ -126,9 +148,30 @@ export default function Services() {
               ¡Vuelve pronto para descubrir todas nuestras opciones!
             </p>
           </motion.div>
+        ) : filteredServices.length === 0 ? (
+          <motion.div 
+            className="text-center py-20"
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            transition={{ delay: 0.3 }}
+          >
+            <Scissors size={80} className="mx-auto mb-6 text-gray-400" />
+            <h3 className="text-2xl font-semibold text-gray-600 mb-2">
+              No se encontraron servicios
+            </h3>
+            <p className="text-gray-500 max-w-md mx-auto">
+              No hay servicios que coincidan con "{search}". Intenta con otra búsqueda.
+            </p>
+            <button
+              onClick={() => setSearch("")}
+              className="mt-4 px-6 py-2 bg-rose-500 text-white rounded-lg hover:bg-rose-600 transition"
+            >
+              Limpiar búsqueda
+            </button>
+          </motion.div>
         ) : (
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
-            {services.map((service, index) => (
+            {filteredServices.map((service, index) => (
               <ServiceCard 
                 key={service._id} 
                 service={service} 
@@ -176,7 +219,7 @@ function ServiceCard({ service, index, formatDuration, formatCategory }) {
           </>
         ) : (
           // Imagen por defecto
-          <div className="w-full h-full bg-rose-200 flex items-center justify-center">
+          <div className="w-full h-full bg-gradient-to-br from-rose-100 to-pink-200 flex items-center justify-center">
             <div className="text-center">
               <Scissors size={48} className="text-rose-400 mx-auto mb-2" />
               <p className="text-rose-600 font-medium text-sm">
@@ -220,13 +263,12 @@ function ServiceCard({ service, index, formatDuration, formatCategory }) {
             </span>
           </div>
           
-          <motion.button
-            whileHover={{ scale: 1.05 }}
-            whileTap={{ scale: 0.95 }}
-            className="bg-rose-400 hover:bg-rose-600 text-white font-semibold px-6 py-3 rounded-xl shadow-lg transition-all duration-300"
+          <a
+          href="/appointment"
+          className="inline-block bg-rose-400 hover:bg-rose-600 text-white font-semibold px-10 py-4 rounded-full transition-all duration-300 shadow-lg hover:shadow-xl transform hover:scale-105"
           >
-            Reservar
-          </motion.button>
+          Agendar
+          </a>
         </div>
       </div>
     </motion.div>

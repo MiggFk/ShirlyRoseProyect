@@ -12,7 +12,6 @@ import {
   Scissors,
   Menu,
   X,
-  ShoppingCart,
 } from "lucide-react";
 import Swal from "sweetalert2";
 import LogoShirly from "./LogoShirly";
@@ -47,7 +46,6 @@ export default function Sidebar() {
     ...(userRole === "admin"
       ? [{ to: "/dashboard/users", label: "Usuarios", icon: <Users size={ICON_SIZE} className="text-rose-300 hover:text-white" /> }]
       : []),
-    { to: "/dashboard/cart", label: "Carrito", icon: <ShoppingCart size={ICON_SIZE} className="text-rose-300 hover:text-white" /> },
     { to: "/profile", label: "Perfil", icon: <UserCircle size={ICON_SIZE} className="text-rose-300 hover:text-white" /> },
     { to: "/", label: "Volver al sitio", icon: <ArrowLeft size={ICON_SIZE} className="text-rose-300 hover:text-white" /> },
   ];
