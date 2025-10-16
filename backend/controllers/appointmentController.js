@@ -1,4 +1,5 @@
 const Appointment = require("../models/Appointment");
+const User = require("../models/User"); // 🔹 NUEVO
 
 // Crear una nueva cita
 const createAppointment = async (req, res) => {
@@ -244,10 +245,282 @@ const getAppointmentStats = async (req, res) => {
   }
 };
 
+// 🆕 Estadísticas avanzadas
+const getAdvancedStats = async (req, res) => {
+  try {
+    const now = new Date();
+    const startOfMonth = new Date(now.getFullYear(), now.getMonth(), 1);
+    const startOfYear = new Date(now.getFullYear(), 0, 1);
+
+    // 1️⃣ Total de clientes registrados
+    const totalClients = await User.countDocuments({ role: "cliente" });
+    
+    // Clientes nuevos este mes
+    const newClientsThisMonth = await User.countDocuments({
+      role: "cliente",
+      createdAt: { $gte: startOfMonth }
+    });
+
+    // 2️⃣ Ingresos (basado en citas completadas)
+    const revenueStats = await Appointment.aggregate([
+      { 
+        $match: { 
+          status: "completada",
+          dateTime: { $gte: startOfMonth }
+        } 
+      },
+      {
+        $lookup: {
+          from: "services",
+          localField: "serviceId",
+          foreignField: "_id",
+          as: "service"
+        }
+      },
+      { $unwind: "$service" },
+      {
+        $group: {
+          _id: null,
+          totalRevenue: { $sum: "$service.price" },
+          totalAppointments: { $sum: 1 }
+        }
+      }
+    ]);
+
+    const monthlyRevenue = revenueStats[0]?.totalRevenue || 0;
+    const monthlyCompletedAppointments = revenueStats[0]?.totalAppointments || 0;
+
+    // Ingresos del año
+    const yearlyRevenueStats = await Appointment.aggregate([
+      { 
+        $match: { 
+          status: "completada",
+          dateTime: { $gte: startOfYear }
+        } 
+      },
+      {
+        $lookup: {
+          from: "services",
+          localField: "serviceId",
+          foreignField: "_id",
+          as: "service"
+        }
+      },
+      { $unwind: "$service" },
+      {
+        $group: {
+          _id: null,
+          totalRevenue: { $sum: "$service.price" }
+        }
+      }
+    ]);
+
+    const yearlyRevenue = yearlyRevenueStats[0]?.totalRevenue || 0;
+
+    // 3️⃣ Ticket promedio
+    const averageTicket = monthlyCompletedAppointments > 0 
+      ? monthlyRevenue / monthlyCompletedAppointments 
+      : 0;
+
+    // 4️⃣ Servicios más solicitados del mes (top 5)
+    const topServices = await Appointment.aggregate([
+      { 
+        $match: { 
+          dateTime: { $gte: startOfMonth }
+        } 
+      },
+      {
+        $group: {
+          _id: "$serviceId",
+          count: { $sum: 1 }
+        }
+      },
+      { $sort: { count: -1 } },
+      { $limit: 5 },
+      {
+        $lookup: {
+          from: "services",
+          localField: "_id",
+          foreignField: "_id",
+          as: "service"
+        }
+      },
+      { $unwind: "$service" },
+      {
+        $project: {
+          _id: 0,
+          name: "$service.name",
+          category: "$service.category",
+          count: 1,
+          revenue: { $multiply: ["$count", "$service.price"] }
+        }
+      }
+    ]);
+
+    // 5️⃣ Horarios pico (horas con más citas)
+    const peakHours = await Appointment.aggregate([
+      { 
+        $match: { 
+          dateTime: { $gte: startOfMonth }
+        } 
+      },
+      {
+        $group: {
+          _id: { $hour: "$dateTime" },
+          count: { $sum: 1 }
+        }
+      },
+      { $sort: { count: -1 } },
+      { $limit: 5 },
+      {
+        $project: {
+          _id: 0,
+          hour: {
+            $concat: [
+              { $toString: "$_id" },
+              ":00"
+            ]
+          },
+          appointments: "$count"
+        }
+      }
+    ]);
+
+    // 6️⃣ Tasa de cancelación
+    const totalAppointmentsMonth = await Appointment.countDocuments({
+      dateTime: { $gte: startOfMonth }
+    });
+    
+    const cancelledAppointments = await Appointment.countDocuments({
+      status: "cancelada",
+      dateTime: { $gte: startOfMonth }
+    });
+
+    const cancellationRate = totalAppointmentsMonth > 0 
+      ? ((cancelledAppointments / totalAppointmentsMonth) * 100).toFixed(1)
+      : 0;
+
+    // 7️⃣ Días con más actividad
+    const busiestDays = await Appointment.aggregate([
+      { 
+        $match: { 
+          dateTime: { $gte: startOfMonth }
+        } 
+      },
+      {
+        $group: {
+          _id: { $dayOfWeek: "$dateTime" },
+          count: { $sum: 1 }
+        }
+      },
+      { $sort: { count: -1 } }
+    ]);
+
+    const dayNames = ["Domingo", "Lunes", "Martes", "Miércoles", "Jueves", "Viernes", "Sábado"];
+    const formattedDays = busiestDays.map(day => ({
+      day: dayNames[day._id - 1],
+      appointments: day.count
+    }));
+
+    // 8️⃣ Clientes recurrentes (con más de 1 cita)
+    const recurringClients = await Appointment.aggregate([
+      { 
+        $match: { 
+          status: { $ne: "cancelada" }
+        } 
+      },
+      {
+        $group: {
+          _id: "$clientId",
+          appointmentCount: { $sum: 1 }
+        }
+      },
+      {
+        $match: {
+          appointmentCount: { $gt: 1 }
+        }
+      },
+      {
+        $count: "total"
+      }
+    ]);
+
+    const recurringClientsCount = recurringClients[0]?.total || 0;
+    const recurringRate = totalClients > 0 
+      ? ((recurringClientsCount / totalClients) * 100).toFixed(1)
+      : 0;
+
+    // 9️⃣ Comparativa mes anterior
+    const lastMonth = new Date(now.getFullYear(), now.getMonth() - 1, 1);
+    const endOfLastMonth = new Date(now.getFullYear(), now.getMonth(), 0);
+
+    const lastMonthRevenue = await Appointment.aggregate([
+      { 
+        $match: { 
+          status: "completada",
+          dateTime: { $gte: lastMonth, $lte: endOfLastMonth }
+        } 
+      },
+      {
+        $lookup: {
+          from: "services",
+          localField: "serviceId",
+          foreignField: "_id",
+          as: "service"
+        }
+      },
+      { $unwind: "$service" },
+      {
+        $group: {
+          _id: null,
+          totalRevenue: { $sum: "$service.price" }
+        }
+      }
+    ]);
+
+    const previousMonthRevenue = lastMonthRevenue[0]?.totalRevenue || 0;
+    const revenueGrowth = previousMonthRevenue > 0
+      ? (((monthlyRevenue - previousMonthRevenue) / previousMonthRevenue) * 100).toFixed(1)
+      : 0;
+
+    res.json({
+      data: {
+        revenue: {
+          monthly: monthlyRevenue,
+          yearly: yearlyRevenue,
+          previous: previousMonthRevenue,
+          growth: parseFloat(revenueGrowth),
+          averageTicket: Math.round(averageTicket)
+        },
+        clients: {
+          total: totalClients,
+          newThisMonth: newClientsThisMonth,
+          recurring: recurringClientsCount,
+          recurringRate: parseFloat(recurringRate)
+        },
+        performance: {
+          topServices: topServices,
+          peakHours: peakHours,
+          busiestDays: formattedDays,
+          cancellationRate: parseFloat(cancellationRate)
+        }
+      }
+    });
+
+  } catch (error) {
+    console.error("❌ Error al obtener estadísticas avanzadas:", error);
+    res.status(500).json({ 
+      message: "Error al obtener estadísticas avanzadas", 
+      error: error.message 
+    });
+  }
+};
+
 module.exports = {
   createAppointment,
   getAppointments,
   updateAppointmentStatus,
   deleteAppointment,
   getAppointmentStats,
+  getAdvancedStats,
 };

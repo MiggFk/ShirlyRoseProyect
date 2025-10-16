@@ -36,7 +36,7 @@ const getProfile = async (req, res) => {
 // 🔹 Actualizar perfil del usuario autenticado
 const updateProfile = async (req, res) => {
   try {
-    const { name, phone, address, birthDate } = req.body;
+    const { name, phone, address, birthDate, removeProfileImage } = req.body;
 
     // Buscar usuario actual
     const currentUser = await User.findById(req.user.id);
@@ -56,12 +56,31 @@ const updateProfile = async (req, res) => {
       updateData.address = typeof address === 'string' ? JSON.parse(address) : address;
     }
 
+    // 🔹 NUEVA FUNCIONALIDAD: Eliminar imagen si removeProfileImage es true
+    if (removeProfileImage === 'true') {
+      // Eliminar imagen de Cloudinary si existe
+      if (currentUser.profileImage && currentUser.profileImage.public_id) {
+        try {
+          await cloudinary.uploader.destroy(currentUser.profileImage.public_id);
+          console.log('Imagen eliminada de Cloudinary');
+        } catch (error) {
+          console.error('Error eliminando imagen de Cloudinary:', error);
+        }
+      }
+
+      // Establecer profileImage como null
+      updateData.profileImage = {
+        url: null,
+        public_id: null
+      };
+    }
     // 🔹 Si hay nueva imagen, subir a Cloudinary
-    if (req.file) {
+    else if (req.file) {
       // Eliminar imagen anterior de Cloudinary si existe
       if (currentUser.profileImage && currentUser.profileImage.public_id) {
         try {
           await cloudinary.uploader.destroy(currentUser.profileImage.public_id);
+          console.log('Imagen anterior eliminada de Cloudinary');
         } catch (error) {
           console.error('Error eliminando imagen anterior:', error);
         }
@@ -90,19 +109,33 @@ const updateProfile = async (req, res) => {
   }
 };
 
-// 🔹 NUEVO: Obtener citas del usuario autenticado
+// 🔹 MODIFICAR: Obtener citas del usuario autenticado con más información
 const getUserAppointments = async (req, res) => {
   try {
     const Appointment = require("../models/Appointment");
     
     const appointments = await Appointment.find({ clientId: req.user.id })
-      .populate("serviceId", "name price duration")
-      .populate("employeeId", "name")
+      .populate({
+        path: 'serviceId',
+        select: 'name category price duration description' // 🔹 Especificar qué campos traer
+      })
       .sort({ dateTime: -1 });
+
+    // 🔹 Debug para ver qué está trayendo
+    console.log('📋 Appointments encontradas:', appointments.length);
+    if (appointments.length > 0) {
+      console.log('🔍 Ejemplo de cita:', {
+        id: appointments[0]._id,
+        serviceId: appointments[0].serviceId,
+        dateTime: appointments[0].dateTime,
+        status: appointments[0].status
+      });
+    }
 
     res.json({ appointments });
   } catch (error) {
-    res.status(500).json({ message: "Error al obtener citas", error });
+    console.error('❌ Error al obtener citas:', error);
+    res.status(500).json({ message: 'Error al obtener citas' });
   }
 };
 
@@ -229,5 +262,5 @@ module.exports = {
   createUser,
   updateProfile,
   getUserAppointments,
-  toggleUserStatus // 🆕 Exportar nueva función
+  toggleUserStatus
 };
