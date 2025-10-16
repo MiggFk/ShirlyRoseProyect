@@ -22,7 +22,7 @@ const roleMiddleware = require("../middleware/roleMiddleware");
 const storage = new CloudinaryStorage({
   cloudinary: cloudinary,
   params: {
-    folder: "profile_images",
+    folder: "shirlyrose-profiles",
     allowed_formats: ["jpg", "jpeg", "png", "webp"],
     transformation: [{ width: 500, height: 500, crop: "limit" }],
   },

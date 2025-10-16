@@ -1,5 +1,5 @@
 import { motion, AnimatePresence } from "framer-motion";
-import { useState, useEffect } from "react";
+import { useState, useEffect, useRef } from "react";
 import { useProfile } from "../../hooks/useProfile";
 import { useNavigate } from "react-router-dom";
 import Footer from "../../components/Footer";
@@ -278,6 +278,7 @@ const EditProfileView = ({ user, onUpdate, setActiveTab }) => {
 
   const [formData, setFormData] = useState({
     name: user?.name || "",
+    email: user?.email || "",
     phone: user?.phone || "",
     street: user?.address?.street || "",
     city: user?.address?.city || "",
@@ -427,6 +428,7 @@ const EditProfileView = ({ user, onUpdate, setActiveTab }) => {
 
     const profileData = {
       name: formData.name,
+      email: formData.email,
       phone: formData.phone,
       address: {
         street: formData.street,
@@ -466,6 +468,7 @@ const EditProfileView = ({ user, onUpdate, setActiveTab }) => {
       
       const profileData = {
         name: formData.name,
+        email: formData.email,
         phone: formData.phone,
         address: {
           street: formData.street,
@@ -508,6 +511,7 @@ const EditProfileView = ({ user, onUpdate, setActiveTab }) => {
   const hasChanges = () => {
     const dataChanged = 
       formData.name !== (user?.name || "") ||
+      formData.email !== (user?.email || "") ||
       formData.phone !== (user?.phone || "") ||
       formData.street !== (user?.address?.street || "") ||
       formData.city !== (user?.address?.city || "") ||
