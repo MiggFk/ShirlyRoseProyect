@@ -249,6 +249,79 @@ const sendVerificationEmail = async (toEmail, userName, token) => {
   }
 };
 
+// 📧 ENVIAR EMAIL DE RECUPERACIÓN DE CONTRASEÑA
+const sendPasswordResetEmail = async (email, name, resetCode) => {
+  try {
+    const htmlTemplate = `
+      <!DOCTYPE html>
+      <html lang="es">
+      <head>
+        <meta charset="UTF-8">
+        <style>
+          body { font-family: Arial, sans-serif; background-color: #f5f5f5; }
+          .container { max-width: 600px; margin: 20px auto; background: white; padding: 40px; border-radius: 10px; box-shadow: 0 2px 10px rgba(0,0,0,0.1); }
+          .header { text-align: center; color: #ec4899; margin-bottom: 30px; }
+          .header h1 { margin: 0; font-size: 28px; }
+          .code-box { background: linear-gradient(135deg, #fce7f3 0%, #fbcfe8 100%); padding: 20px; border-radius: 8px; text-align: center; margin: 30px 0; }
+          .code { font-size: 36px; font-weight: bold; color: #be185d; letter-spacing: 5px; }
+          .message { color: #666; line-height: 1.6; }
+          .footer { text-align: center; margin-top: 30px; color: #999; font-size: 12px; }
+          .warning { background: #fef3c7; padding: 10px; border-radius: 5px; color: #92400e; font-size: 14px; margin: 20px 0; }
+        </style>
+      </head>
+      <body>
+        <div class="container">
+          <div class="header">
+            <h1>🌸 Shirly Rose</h1>
+            <p>Recuperación de Contraseña</p>
+          </div>
+          
+          <div class="message">
+            <p>¡Hola ${name}!</p>
+            <p>Recibimos una solicitud para recuperar tu contraseña. Usa el siguiente código para continuar:</p>
+          </div>
+          
+          <div class="code-box">
+            <p style="margin: 0 0 10px 0; color: #999;">Tu código de verificación:</p>
+            <div class="code">${resetCode}</div>
+          </div>
+          
+          <div class="message">
+            <p><strong>Este código expirará en 15 minutos.</strong></p>
+            <p>Si no solicitaste recuperar tu contraseña, ignora este email.</p>
+          </div>
+          
+          <div class="warning">
+            ⚠️ Por seguridad, nunca compartas este código con nadie. Nuestro equipo nunca te pedirá este código.
+          </div>
+          
+          <div class="footer">
+            <p>© 2024 Shirly Rose. Todos los derechos reservados.</p>
+          </div>
+        </div>
+      </body>
+      </html>
+    `;
+
+    const mailOptions = {
+      from: process.env.EMAIL_USER,
+      to: email,
+      subject: '🔐 Código de Recuperación de Contraseña - Shirly Rose',
+      html: htmlTemplate
+    };
+
+    await transporter.sendMail(mailOptions);
+    console.log('✅ Email de recuperación enviado a:', email);
+    return true;
+
+  } catch (error) {
+    console.error('❌ Error al enviar email de recuperación:', error);
+    throw error;
+  }
+};
+
 module.exports = {
-  sendVerificationEmail
+  sendVerificationEmail,
+  sendPasswordResetEmail, // ✅ Agregar esta función
+  // ...other exports...
 };

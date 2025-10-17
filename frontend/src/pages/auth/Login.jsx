@@ -229,14 +229,12 @@ export default function Login() {
                     />
                     <span className="text-sm text-gray-600">Recuérdame</span>
                   </label>
-                  <a
-                    href="/forgot-password"
+                  <Link
+                    to="/forgot-password"
                     className="text-rose-400 font-semibold hover:underline text-sm"
-                    target="_blank"
-                    rel="noopener noreferrer"
                   >
                     ¿Olvidaste tu contraseña?
-                  </a>
+                </Link>
                 </div>
 
                 <motion.button

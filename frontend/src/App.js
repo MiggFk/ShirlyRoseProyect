@@ -7,6 +7,7 @@ import Login from "./pages/auth/Login";
 import Register from "./pages/auth/Register";
 import VerifyEmail from "./pages/auth/VerifyEmail";
 import ResendVerification from "./pages/auth/ResendVerification";
+import ForgotPassword from "./pages/auth/ForgotPassword";
 import Profile from "./pages/user/Profile";
 import DashboardLayout from "./pages/dashboard/DashboardLayout";
 import Home from "./pages/dashboard/Home";
@@ -54,6 +55,7 @@ function App() {
           <Route path="/register" element={<Register />} />
           <Route path="/verify-email/:token" element={<VerifyEmail />} />
           <Route path="/resend-verification" element={<ResendVerification />} />
+          <Route path="/forgot-password" element={<ForgotPassword />} />
 
           {/* Perfil de usuario */}
           <Route
