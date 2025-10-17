@@ -5,7 +5,7 @@ import "../../components/Plasma.css";
 
 export default function DashboardLayout() {
   return (
-    <div className="min-h-screen relative bg-gray-900"> {/* Añadido bg-gray-900 */}
+    <div className="min-h-screen relative bg-black"> {/* Añadido bg-gray-900 */}
       {/* Fondo con Plasma */}
       <div className="fixed inset-0 z-0">
         <Plasma 
