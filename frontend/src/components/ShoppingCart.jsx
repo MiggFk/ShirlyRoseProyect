@@ -1,39 +1,33 @@
-import { useState, useRef } from "react";
+import React, { useState, useRef } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { ShoppingCart as CartIcon, X, Trash2, CheckCircle2, Plus, Minus } from "lucide-react";
 import { useCart } from "../context/CartContext";
 import Swal from "sweetalert2";
+import { useNavigate } from "react-router-dom";
 
-export default function ShoppingCart({ className = "" }) {
+export default function ShoppingCart(props) {
   const [isCartOpen, setIsCartOpen] = useState(false);
   const { cart, removeFromCart, clearCart, total, increaseQuantity, decreaseQuantity } = useCart();
   const [addedId, setAddedId] = useState(null);
   const [showToast, setShowToast] = useState(false);
-
-  // Animación del badge
-  const [badgeBump, setBadgeBump] = useState(false);
-  const prevCartCount = useRef(cart.reduce((a, b) => a + b.cantidad, 0));
-
-  // Detecta cualquier cambio en cantidad total de items (no solo cantidad de entradas)
-  const totalCount = cart.reduce((a, b) => a + b.cantidad, 0);
-
-  // Animaciones para badge y toast
-  if (totalCount > prevCartCount.current) {
-    setBadgeBump(true);
-    const last = cart[cart.length - 1];
-    setAddedId(last ? last.id + last.type : null);
-    setShowToast(true);
-    setTimeout(() => setBadgeBump(false), 350);
-    setTimeout(() => setAddedId(null), 1000);
-    setTimeout(() => setShowToast(false), 1400);
-    prevCartCount.current = totalCount;
-  } else if (totalCount < prevCartCount.current) {
-    prevCartCount.current = totalCount;
-  }
-
+  const navigate = useNavigate();
   const hasItems = cart && cart.length > 0;
 
-  // Confirmación visual al vaciar carrito
+  const prevCartCount = useRef(cart.reduce((a, b) => a + (b.cantidad || 1), 0));
+
+  const totalCount = cart.reduce((a, b) => a + (b.cantidad || 1), 0);
+
+  // Badge & toast side-effects (ensure not to call state setters during render repeatedly)
+  React.useEffect(() => {
+    if (totalCount > prevCartCount.current) {
+      setAddedId(cart.length ? (cart[cart.length - 1].id + cart[cart.length - 1].type) : null);
+      setShowToast(true);
+      setTimeout(() => setShowToast(false), 1400);
+    }
+    prevCartCount.current = totalCount;
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [totalCount]);
+
   const handleClearCart = async () => {
     const result = await Swal.fire({
       title: "¿Vaciar carrito?",
@@ -60,7 +54,6 @@ export default function ShoppingCart({ className = "" }) {
 
   return (
     <>
-      {/* Toast flotante superior right */}
       <AnimatePresence>
         {showToast && (
           <motion.div
@@ -80,13 +73,10 @@ export default function ShoppingCart({ className = "" }) {
         )}
       </AnimatePresence>
 
-      {/* Botón Carrito */}
       <motion.button
         onClick={() => setIsCartOpen(true)}
-        className={`flex items-center gap-2 px-4 py-2 rounded-lg bg-rose-400 text-white font-medium shadow hover:bg-rose-500 transition relative ${className}`}
+        className={`flex items-center gap-2 px-4 py-2 rounded-lg bg-rose-400 text-white font-medium shadow hover:bg-rose-500 transition relative ${props.className || ""}`}
         aria-label="Abrir carrito"
-        animate={badgeBump ? { scale: [1, 1.15, 1] } : { scale: 1 }}
-        transition={{ duration: 0.35 }}
       >
         <CartIcon size={20} />
         <AnimatePresence>
@@ -104,11 +94,9 @@ export default function ShoppingCart({ className = "" }) {
         </AnimatePresence>
       </motion.button>
 
-      {/* Modal del Carrito */}
       <AnimatePresence>
         {isCartOpen && (
           <>
-            {/* Overlay */}
             <motion.div
               initial={{ opacity: 0 }}
               animate={{ opacity: 1 }}
@@ -117,7 +105,6 @@ export default function ShoppingCart({ className = "" }) {
               className="fixed inset-0 z-50 bg-black/40 backdrop-blur-sm"
             />
 
-            {/* Panel del carrito */}
             <motion.div
               initial={{ x: "100%" }}
               animate={{ x: 0 }}
@@ -126,22 +113,14 @@ export default function ShoppingCart({ className = "" }) {
               className="fixed right-0 top-0 z-50 bg-white w-full sm:w-[420px] h-full shadow-2xl flex flex-col"
             >
               <div className="p-6 pb-2 flex-shrink-0">
-                {/* Header */}
                 <div className="flex items-center justify-between mb-2">
-                  <h2 className="text-2xl font-semibold text-gray-800">
-                    CARRITO DE COMPRA
-                  </h2>
-                  <button
-                    onClick={() => setIsCartOpen(false)}
-                    className="text-gray-500 hover:text-gray-800 transition p-2 hover:bg-gray-100 rounded-full"
-                    aria-label="Cerrar carrito"
-                  >
+                  <h2 className="text-2xl font-semibold text-gray-800">CARRITO DE COMPRA</h2>
+                  <button onClick={() => setIsCartOpen(false)} className="text-gray-500 hover:text-gray-800 transition p-2 hover:bg-gray-100 rounded-full" aria-label="Cerrar carrito">
                     <X size={24} />
                   </button>
                 </div>
               </div>
 
-              {/* Contenido scrollable */}
               <div className="flex-1 overflow-y-auto px-6 pb-2 pt-2 custom-scrollbar">
                 <AnimatePresence>
                   {hasItems ? (
@@ -166,49 +145,26 @@ export default function ShoppingCart({ className = "" }) {
                           transition={{ duration: 0.3 }}
                           className="flex gap-4 p-4 border rounded-lg items-center relative"
                         >
-                          <img
-                            src={item.image || "/placeholder-product.jpg"}
-                            alt={item.name}
-                            className="w-16 h-16 object-cover rounded bg-rose-50 border"
-                          />
+                          <img src={item.image || "/placeholder-product.jpg"} alt={item.name} className="w-16 h-16 object-cover rounded bg-rose-50 border" />
                           <div className="flex-1 min-w-0">
                             <h3 className="font-semibold text-gray-800 truncate">{item.name}</h3>
                             <p className="text-xs text-gray-400 capitalize">{item.type}</p>
                             <p className="text-sm text-rose-500 font-bold">${item.price?.toLocaleString()}</p>
                             <div className="flex items-center gap-2 mt-2">
-                              <button
-                                className="bg-gray-100 hover:bg-rose-100 text-rose-500 rounded-full w-7 h-7 flex items-center justify-center border"
-                                aria-label="Restar uno"
-                                onClick={() => decreaseQuantity(item.id, item.type)}
-                              >
+                              <button className="bg-gray-100 hover:bg-rose-100 text-rose-500 rounded-full w-7 h-7 flex items-center justify-center border" aria-label="Restar uno" onClick={() => decreaseQuantity(item.id, item.type)}>
                                 <Minus size={16} />
                               </button>
                               <span className="font-semibold text-gray-700">{item.cantidad}</span>
-                              <button
-                                className="bg-gray-100 hover:bg-rose-100 text-rose-500 rounded-full w-7 h-7 flex items-center justify-center border"
-                                aria-label="Sumar uno"
-                                onClick={() => increaseQuantity(item.id, item.type)}
-                              >
+                              <button className="bg-gray-100 hover:bg-rose-100 text-rose-500 rounded-full w-7 h-7 flex items-center justify-center border" aria-label="Sumar uno" onClick={() => increaseQuantity(item.id, item.type)}>
                                 <Plus size={16} />
                               </button>
                             </div>
                           </div>
-                          <motion.button
-                            className="text-gray-400 hover:text-rose-500 p-1"
-                            aria-label="Eliminar"
-                            whileTap={{ scale: 0.8, rotate: -20 }}
-                            onClick={() => removeFromCart(item.id, item.type)}
-                          >
+                          <motion.button className="text-gray-400 hover:text-rose-500 p-1" aria-label="Eliminar" whileTap={{ scale: 0.8, rotate: -20 }} onClick={() => removeFromCart(item.id, item.type)}>
                             <Trash2 size={20} />
                           </motion.button>
                           {addedId === item.id + item.type && (
-                            <motion.span
-                              className="absolute top-2 right-1 text-green-600"
-                              initial={{ scale: 0.7, opacity: 0 }}
-                              animate={{ scale: 1.2, opacity: 1 }}
-                              exit={{ scale: 0, opacity: 0 }}
-                              transition={{ duration: 0.3 }}
-                            >
+                            <motion.span className="absolute top-2 right-1 text-green-600" initial={{ scale: 0.7, opacity: 0 }} animate={{ scale: 1.2, opacity: 1 }} exit={{ scale: 0, opacity: 0 }} transition={{ duration: 0.3 }}>
                               <CheckCircle2 size={22} />
                             </motion.span>
                           )}
@@ -216,29 +172,17 @@ export default function ShoppingCart({ className = "" }) {
                       ))}
                     </div>
                   ) : (
-                    // Estado vacío
-                    <motion.div
-                      key="empty"
-                      initial={{ opacity: 0, y: 20 }}
-                      animate={{ opacity: 1, y: 0 }}
-                      exit={{ opacity: 0, y: 20 }}
-                      className="flex flex-col items-center justify-center py-12 text-center"
-                    >
+                    <motion.div key="empty" initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0, y: 20 }} className="flex flex-col items-center justify-center py-12 text-center">
                       <div className="w-24 h-24 bg-rose-100 rounded-full flex items-center justify-center mb-4">
                         <CartIcon size={48} className="text-rose-400" />
                       </div>
-                      <p className="text-gray-600 text-lg mb-2">
-                        Su carrito actualmente está vacío
-                      </p>
-                      <p className="text-gray-400 text-sm">
-                        ¡Agrega productos o servicios para comenzar!
-                      </p>
+                      <p className="text-gray-600 text-lg mb-2">Su carrito actualmente está vacío</p>
+                      <p className="text-gray-400 text-sm">¡Agrega productos o servicios para comenzar!</p>
                     </motion.div>
                   )}
                 </AnimatePresence>
               </div>
 
-              {/* Footer */}
               <div className="p-6 bg-white border-t flex flex-col gap-2 flex-shrink-0">
                 {hasItems && (
                   <div className="flex justify-between items-center mb-2">
@@ -248,24 +192,16 @@ export default function ShoppingCart({ className = "" }) {
                 )}
                 <div className="flex gap-2">
                   {hasItems && (
-                    <motion.button
-                      whileTap={{ scale: 0.96 }}
-                      onClick={handleClearCart}
-                      className="flex-1 bg-gray-100 hover:bg-gray-200 text-gray-600 font-medium py-3 rounded-lg transition text-sm"
-                    >
+                    <motion.button whileTap={{ scale: 0.96 }} onClick={handleClearCart} className="flex-1 bg-gray-100 hover:bg-gray-200 text-gray-600 font-medium py-3 rounded-lg transition text-sm">
                       Vaciar Carrito
                     </motion.button>
                   )}
-                  <motion.button
-                    whileTap={{ scale: 0.97 }}
-                    onClick={() => setIsCartOpen(false)}
-                    className={`flex-1 ${
-                      hasItems
-                        ? "bg-rose-400 hover:bg-rose-500 text-white"
-                        : "bg-gray-200 text-gray-400 cursor-not-allowed"
-                    } font-semibold py-3 rounded-lg transition shadow-lg`}
-                    disabled={!hasItems}
-                  >
+                  <motion.button whileTap={{ scale: 0.97 }} onClick={() => {
+                      if (hasItems) {
+                        setIsCartOpen(false);
+                        navigate("/checkout");
+                      }
+                    }} className={`flex-1 ${hasItems ? "bg-rose-400 hover:bg-rose-500 text-white" : "bg-gray-200 text-gray-400 cursor-not-allowed"} font-semibold py-3 rounded-lg transition shadow-lg`} disabled={!hasItems}>
                     {hasItems ? "Ir al Checkout" : "Continuar Comprando"}
                   </motion.button>
                 </div>
@@ -274,7 +210,7 @@ export default function ShoppingCart({ className = "" }) {
           </>
         )}
       </AnimatePresence>
-      {/* Scrollbar custom solo en este componente */}
+
       <style>{`
         .custom-scrollbar::-webkit-scrollbar {
           width: 8px;

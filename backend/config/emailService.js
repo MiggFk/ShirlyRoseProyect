@@ -331,8 +331,25 @@ const sendPasswordResetEmail = async (email, name, resetCode) => {
   }
 };
 
+async function sendBookingConfirmationEmail({ to, name, appointment, total }) {
+  if (!to) return;
+  await transporter.sendMail({
+    to,
+    subject: "Confirmación de reserva",
+    html: `
+      <div style="font-family:Arial,sans-serif">
+        <h2>¡Reserva confirmada!</h2>
+        <p>Hola ${name || "cliente"}, tu cita ha sido confirmada.</p>
+        <p><b>Fecha y hora:</b> ${new Date(appointment.dateTime).toLocaleString()}</p>
+        <p><b>Total:</b> $${(total || 0).toLocaleString()}</p>
+        <p>Gracias por tu reserva.</p>
+      </div>
+    `,
+  });
+}
+
 module.exports = {
   sendVerificationEmail,
   sendPasswordResetEmail, // ✅ Agregar esta función
-  // ...other exports...
+  sendBookingConfirmationEmail,
 };
