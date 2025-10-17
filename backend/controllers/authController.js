@@ -132,7 +132,13 @@ const login = async (req, res) => {
         name: user.name,
         email: user.email,
         role: user.role,
-        isVerified: user.isVerified
+        phone: user.phone || null,
+        profileImage: user.profileImage || null,
+        address: user.address || {},
+        birthDate: user.birthDate || null,
+        isVerified: user.isVerified,
+        isActive: user.isActive,
+        createdAt: user.createdAt
       },
     });
 

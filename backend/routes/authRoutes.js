@@ -128,6 +128,7 @@ router.post('/login', async (req, res) => {
       { expiresIn: '7d' }
     );
 
+    // ✅ CORRECTO: Devolver usuario completo
     res.json({
       message: 'Login exitoso',
       token,
@@ -135,7 +136,13 @@ router.post('/login', async (req, res) => {
         id: user._id,
         name: user.name,
         email: user.email,
-        role: user.role
+        role: user.role,
+        phone: user.phone || null,
+        profileImage: user.profileImage || null,
+        address: user.address || {},
+        birthDate: user.birthDate || null,
+        isVerified: user.isVerified,
+        isActive: user.isActive
       }
     });
 

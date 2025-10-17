@@ -1240,7 +1240,7 @@ const Profile = () => {
               transition={{ duration: 0.6, delay: 0.3 }}
             >
               <h1 className="text-4xl font-bold text-white drop-shadow">
-                Hola, {user.name.split(" ")[0]}
+                Hola, {user?.name ? `Hola, ${user.name.split(" ")[0]}` : "Hola"}
               </h1>
               <p className="text-rose-100">Bienvenida a Shirly Rose</p>
             </motion.div>

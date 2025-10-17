@@ -25,6 +25,22 @@ const userSchema = new mongoose.Schema(
       enum: ["admin", "empleado", "cliente"],
       default: "cliente",
     },
+    // 🔹 CAMPOS QUE FALTABAN RESTAURADOS:
+    phone: {
+      type: String,
+      default: null,
+    },
+    birthDate: {
+      type: Date,
+      default: null,
+    },
+    address: {
+      street: { type: String, default: null },
+      city: { type: String, default: null },
+      state: { type: String, default: null },
+      zipCode: { type: String, default: null },
+      country: { type: String, default: null },
+    },
     profileImage: {
       type: String,
       default: null,

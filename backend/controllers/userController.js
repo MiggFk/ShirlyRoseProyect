@@ -10,7 +10,10 @@ const getProfile = async (req, res) => {
       return res.status(404).json({ message: "Usuario no encontrado" });
     }
 
-    res.json(user);
+    // 🔹 Responder con el objeto completo incluyendo profile
+    res.json({
+      profile: user  // ← Envolver en "profile" para que coincida con el frontend
+    });
   } catch (error) {
     console.error("❌ Error al obtener perfil:", error);
     res.status(500).json({ message: "Error al obtener perfil", error: error.message });
@@ -20,49 +23,54 @@ const getProfile = async (req, res) => {
 // Actualizar perfil del usuario autenticado
 const updateProfile = async (req, res) => {
   try {
-    const { name, email, currentPassword, newPassword } = req.body;
+    const userId = req.user.id;
+    const { name, phone, address, birthDate } = req.body;
+
+    // ✅ Construir objeto de actualización solo con campos válidos
+    const updateData = {};
     
-    const user = await User.findById(req.user.id);
+    if (name && name.trim()) updateData.name = name.trim();
+    if (phone && phone.trim()) updateData.phone = phone.trim();
+    if (address && address.trim()) updateData.address = address.trim();
+    if (birthDate && birthDate.trim()) updateData.birthDate = birthDate.trim();
     
+    // ✅ Agregar imagen si viene en la request
+    if (req.file) {
+      updateData.profileImage = req.file.path;
+    }
+
+    // ✅ Actualizar solo los campos que tienen valor
+    const user = await User.findByIdAndUpdate(
+      userId,
+      { $set: updateData },  // Solo campos con valor
+      { new: true, runValidators: true }
+    ).select("-password");
+
     if (!user) {
       return res.status(404).json({ message: "Usuario no encontrado" });
     }
 
-    // Actualizar nombre y email
-    if (name) user.name = name;
-    if (email) user.email = email;
-
-    // Cambiar contraseña si se proporciona
-    if (newPassword && currentPassword) {
-      const isMatch = await user.comparePassword(currentPassword);
-      
-      if (!isMatch) {
-        return res.status(400).json({ message: "Contraseña actual incorrecta" });
-      }
-
-      user.password = newPassword;
-    }
-
-    // Actualizar imagen de perfil
-    if (req.file) {
-      user.profileImage = req.file.path;
-    }
-
-    await user.save();
-
-    res.json({
-      message: "Perfil actualizado exitosamente",
-      user: {
+    res.status(200).json({
+      message: "Perfil actualizado correctamente",
+      profile: {
         id: user._id,
         name: user.name,
         email: user.email,
         role: user.role,
-        profileImage: user.profileImage
+        phone: user.phone || null,
+        address: user.address || null,
+        birthDate: user.birthDate || null,
+        profileImage: user.profileImage || null,
+        isActive: user.isActive
       }
     });
+
   } catch (error) {
-    console.error("❌ Error al actualizar perfil:", error);
-    res.status(500).json({ message: "Error al actualizar perfil", error: error.message });
+    console.error("Error al actualizar perfil:", error);
+    res.status(500).json({ 
+      message: "Error al actualizar perfil", 
+      error: error.message 
+    });
   }
 };
 

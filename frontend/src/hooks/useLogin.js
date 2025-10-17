@@ -34,13 +34,14 @@ export const useLogin = () => {
 
   const handleSubmit = async (values, { setSubmitting, resetForm }) => {
     try {
-      // console.log("🔵 Iniciando login...");
-      
       // 1. Llamar al login
       const user = await login(values.email, values.password);
       
-      // console.log("✅ Login exitoso, usuario:", user);
-
+      // ✅ VALIDAR ANTES DE ACCEDER
+      if (!user || !user.name) {
+        throw new Error("Respuesta de servidor inválida");
+      }
+      
       // 2. Mostrar SweetAlert de éxito
       Swal.fire({
         icon: 'success',
@@ -48,14 +49,10 @@ export const useLogin = () => {
         text: `Hola ${user.name}`,
         showConfirmButton: false,
         timer: 1500,
-        timerProgressBar: true,
-        allowOutsideClick: false,
-        allowEscapeKey: false,
       });
 
       // 3. Redirigir después del SweetAlert
       setTimeout(() => {
-        // console.log(" Redirigiendo...");
         if (user.role === "admin" || user.role === "empleado") {
           navigate("/dashboard", { replace: true });
         } else {
@@ -64,8 +61,6 @@ export const useLogin = () => {
       }, 1600);
       
     } catch (err) {
-      // console.error(" Error en login:", err);
-      
       const errorData = err.response?.data;
       
       // 🔹 CASO 1: Email no verificado
