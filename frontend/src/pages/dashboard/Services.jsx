@@ -83,12 +83,11 @@ export default function Services() {
       {/* Header */}
       <div className="flex justify-between items-center mb-6">
         <motion.h2
-          className="text-3xl font-bold text-white drop-shadow-lg flex items-center gap-3"
+          className="text-4xl font-bold text-white drop-shadow-lg flex items-center gap-3"
           initial={{ y: -20, opacity: 0 }}
           animate={{ y: 0, opacity: 1 }}
           transition={{ duration: 0.5 }}
         >
-          <Scissors className="text-rose-300" size={32} />
           Gestión de Servicios
         </motion.h2>
 
@@ -592,7 +591,7 @@ function ServiceModal({ service, isOpen, onClose, onSave }) {
                 required
               >
                 {categories.map((cat) => (
-                  <option key={cat.value} value={cat.value} className="bg-gray-800 text-white">
+                  <option key={cat.value} value={cat.value} className="bg-white text-black">
                     {cat.label}
                   </option>
                 ))}

@@ -1,5 +1,7 @@
 import React, { useEffect, useMemo, useState } from "react";
 import { useNavigate } from "react-router-dom";
+import { motion } from "framer-motion";
+import { FaHome } from "react-icons/fa";
 import api from "../../api/axios";
 import { useCart } from "../../context/CartContext";
 import { useAuth } from "../../context/AuthContext";
@@ -178,25 +180,27 @@ export default function Checkout() {
   const serviceDuration = useMemo(() => selectedService?.durationMinutes || selectedService?.duration || 30, [selectedService]);
 
   return (
-    <div className="max-w-6xl mx-auto p-6 space-y-6">
-      {/* HERO + STEPPER */}
-      <header className="rounded-2xl overflow-hidden border">
-        <div className="bg-gradient-to-r from-rose-500 to-rose-600 px-6 py-8 text-white">
-          <h1 className="text-2xl font-bold">Reserva tu cita</h1>
-          <p className="text-white/90 text-sm mt-1">Elige servicio, profesional, fecha y paga en segundos.</p>
-        </div>
-        <div className="bg-white px-4 py-3">
-          <div className="flex items-center justify-between">
-            <Step n={1} current={step} label="Tus datos" />
-            <div className="flex-1 h-0.5 bg-slate-200 mx-2" />
-            <Step n={2} current={step} label="Servicio y profesional" />
-            <div className="flex-1 h-0.5 bg-slate-200 mx-2" />
-            <Step n={3} current={step} label="Fecha y hora" />
-            <div className="flex-1 h-0.5 bg-slate-200 mx-2" />
-            <Step n={4} current={step} label="Resumen y pago" />
-          </div>
-        </div>
-      </header>
+    <div className="max-w-6xl mx-auto p-6 relative">
+      {/* Botón Home */}
+      <motion.button
+        onClick={() => navigate('/')}
+        whileHover={{ scale: 1.1 }}
+        whileTap={{ scale: 0.95 }}
+      >
+        <FaHome className="text-3xl text-rose-500" />
+      </motion.button>
+
+      <h1 className="text-2xl font-bold mb-4 ml-20">Finalizar reserva</h1>
+      
+      <div className="flex items-center justify-between bg-white p-4 rounded-xl border mb-6">
+        <Step n={1} current={step} label="Tus datos" />
+        <div className="flex-1 h-0.5 bg-slate-200 mx-2" />
+        <Step n={2} current={step} label="Servicio y profesional" />
+        <div className="flex-1 h-0.5 bg-slate-200 mx-2" />
+        <Step n={3} current={step} label="Fecha y hora" />
+        <div className="flex-1 h-0.5 bg-slate-200 mx-2" />
+        <Step n={4} current={step} label="Resumen y pago" />
+      </div>
 
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
         {/* Columna principal */}

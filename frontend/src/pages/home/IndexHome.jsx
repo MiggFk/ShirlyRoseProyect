@@ -37,9 +37,10 @@ export default function IndexHome() {
       title: "¿Cerrar sesión?",
       text: "¿Estás seguro de que quieres salir?",
       icon: "question",
+      iconColor: "#fb7185", // color rose-400
       showCancelButton: true,
-      confirmButtonColor: "#f43f5e",
-      cancelButtonColor: "#6b7280",
+      confirmButtonColor: "#fb7185", // color rose-400
+      cancelButtonColor: "#ff4662ff", // color rose-400
       confirmButtonText: "Sí, salir",
       cancelButtonText: "Cancelar",
       backdrop: true,
@@ -52,6 +53,7 @@ export default function IndexHome() {
 
       await Swal.fire({
         icon: "success",
+        iconColor: "#fb7185", // color rose-400
         title: "Sesión cerrada",
         text: "Has cerrado sesión correctamente",
         showConfirmButton: false,
@@ -89,9 +91,6 @@ export default function IndexHome() {
           </Link>
           <Link to="/about" className="text-gray-700 hover:text-rose-500 font-medium transition">
             Nosotros
-          </Link>
-          <Link to="/appointment" className="text-gray-700 hover:text-rose-500 font-medium transition">
-            Agendar Cita
           </Link>
         </nav>
 
@@ -199,7 +198,7 @@ export default function IndexHome() {
             transition={{ duration: 0.8, delay: 0.5 }}
           >
             <Link
-              to="/appointment"
+              to="/services"
               className="inline-block px-8 py-3 rounded-xl bg-rose-400 text-white font-semibold shadow hover:bg-rose-500 transition duration-200"
             >
               Agenda tu cita
