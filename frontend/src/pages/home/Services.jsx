@@ -4,10 +4,12 @@ import Footer from "../../components/Footer";
 import PublicNavbar from "../../components/PublicNavbar";
 import { usePublicServices } from '../../hooks/usePublicServices';
 import { Clock, Scissors, Star } from 'lucide-react';
+import { useCart } from '../../context/CartContext';
 
 export default function Services() {
   const { services, loading, error } = usePublicServices();
   const [search, setSearch] = useState("");
+  const { addToCart, cart, removeFromCart, clearCart, total } = useCart();
 
   // Función para formatear duración
   const formatDuration = (duration) => {

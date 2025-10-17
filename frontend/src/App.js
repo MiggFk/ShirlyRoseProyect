@@ -1,6 +1,7 @@
 import React from "react";
 import { BrowserRouter, Routes, Route, Link } from "react-router-dom";
 import { AuthProvider } from "./context/AuthContext"; 
+import { CartProvider } from './context/CartContext';
 
 // Importaciones de Páginas y Componentes
 import Login from "./pages/auth/Login";
@@ -32,71 +33,73 @@ const NotFound = () => (
     <Link to="/" className="mt-4 text-pink-600 hover:underline">
       Volver al inicio
     </Link>
-  </div>
-);
+    </div>
+  );
 
-function App() {
-  return (
+  function App() {
+    return (
     <BrowserRouter>
-      <AuthProvider>
-        <Routes>
-          {/* Rutas Públicas */}
-          <Route path="/" element={<IndexHome />} />
-          <Route path="/services" element={<ServicesHome />} />  
-          <Route path="/products" element={<ProductsHome />} />
-          <Route path="/about" element={<About />} />
-          <Route path="/terms" element={<Terms />} />
-          <Route path="/privacy" element={<Privacy />} />
-          <Route path="/Appointment" element={<Appointment />} />
+      <CartProvider>
+        <AuthProvider>
+          <Routes>
+            {/* Rutas Públicas */}
+            <Route path="/" element={<IndexHome />} />
+            <Route path="/services" element={<ServicesHome />} />  
+            <Route path="/products" element={<ProductsHome />} />
+            <Route path="/about" element={<About />} />
+            <Route path="/terms" element={<Terms />} />
+            <Route path="/privacy" element={<Privacy />} />
+            <Route path="/Appointment" element={<Appointment />} />
 
-          
-          {/* Rutas de Autenticación */}
-          <Route path="/login" element={<Login />} />
-          <Route path="/register" element={<Register />} />
-          <Route path="/verify-email/:token" element={<VerifyEmail />} />
-          <Route path="/resend-verification" element={<ResendVerification />} />
-          <Route path="/forgot-password" element={<ForgotPassword />} />
+            
+            {/* Rutas de Autenticación */}
+            <Route path="/login" element={<Login />} />
+            <Route path="/register" element={<Register />} />
+            <Route path="/verify-email/:token" element={<VerifyEmail />} />
+            <Route path="/resend-verification" element={<ResendVerification />} />
+            <Route path="/forgot-password" element={<ForgotPassword />} />
 
-          {/* Perfil de usuario */}
-          <Route
-            path="/profile"
-            element={
-              <PrivateRoute>
-                <Profile />
-              </PrivateRoute>
-            }
-          />
-
-          {/* Dashboard (admin/empleado) */}
-          <Route
-            path="/dashboard"
-            element={
-              <PrivateRoute>
-                <DashboardLayout />
-              </PrivateRoute>
-            }
-          >
-            <Route index element={<Home />} />
-            <Route path="appointments" element={<Appointments />} />
-            <Route path="products" element={<Products />} />
-            <Route path="services" element={<Services />} />
+            {/* Perfil de usuario */}
             <Route
-              path="users"
+              path="/profile"
               element={
-                <RoleRoute allowedRoles={["admin"]}>
-                  <Users />
-                </RoleRoute>
+                <PrivateRoute>
+                  <Profile />
+                </PrivateRoute>
               }
             />
-          </Route>
 
-          {/* 404 */}
-          <Route path="*" element={<NotFound />} />
-        </Routes>
-      </AuthProvider>
+            {/* Dashboard (admin/empleado) */}
+            <Route
+              path="/dashboard"
+              element={
+                <PrivateRoute>
+                  <DashboardLayout />
+                </PrivateRoute>
+              }
+            >
+              <Route index element={<Home />} />
+              <Route path="appointments" element={<Appointments />} />
+              <Route path="products" element={<Products />} />
+              <Route path="services" element={<Services />} />
+              <Route
+                path="users"
+                element={
+                  <RoleRoute allowedRoles={["admin"]}>
+                    <Users />
+                  </RoleRoute>
+                }
+              />
+            </Route>
+
+            {/* 404 */}
+            <Route path="*" element={<NotFound />} />
+          </Routes>
+        </AuthProvider>
+      </CartProvider>
     </BrowserRouter>
-  );
-}
+    );
+  }
 
 export default App;
 

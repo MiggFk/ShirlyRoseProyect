@@ -2,10 +2,13 @@ import React from 'react';
 import { motion } from "framer-motion";
 import Footer from "../../components/Footer";
 import PublicNavbar from "../../components/PublicNavbar";
-import { usePublicProducts } from '../../hooks/usePublicProducts'; // Hook público
+import { usePublicProducts } from '../../hooks/usePublicProducts'; 
+import { useCart } from '../../context/CartContext';
+// Hook público
 
 export default function Products() {
   const { products, loading, error } = usePublicProducts(); // Sin autenticación
+  const { addToCart, cart, removeFromCart, clearCart, total } = useCart();
 
   if (loading) {
     return (

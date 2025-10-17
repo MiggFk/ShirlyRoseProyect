@@ -1,9 +1,11 @@
 import { useState } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { ShoppingCart as CartIcon, X } from "lucide-react";
+import { useCart } from '../context/CartContext';
 
 export default function ShoppingCart({ className = "" }) {
   const [isCartOpen, setIsCartOpen] = useState(false);
+  const { addToCart, cart, removeFromCart, clearCart, total } = useCart();
 
   return (
     <>

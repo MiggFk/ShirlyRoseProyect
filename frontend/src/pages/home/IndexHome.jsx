@@ -7,6 +7,7 @@ import LogoShirly from "../../components/LogoShirly";
 import { usePublicProducts } from "../../hooks/usePublicProducts";
 import { usePublicServices } from "../../hooks/usePublicServices";
 import ShoppingCart from "../../components/ShoppingCart";
+import { useCart } from '../../context/CartContext';
 import { 
   ShoppingBag, 
   Scissors, 
@@ -20,6 +21,7 @@ export default function IndexHome() {
   const { products, loading: productsLoading } = usePublicProducts();
   const { services, loading: servicesLoading } = usePublicServices();
   const [user, setUser] = useState(null);
+  const { addToCart, cart, removeFromCart, clearCart, total } = useCart();
 
   // Verificar si hay usuario logueado
   useEffect(() => {
@@ -160,7 +162,8 @@ export default function IndexHome() {
           backgroundPosition: "right center",
         }}
         initial={{ opacity: 0, y: 50 }}
-        animate={{ opacity: 1, y: 0, transition: { duration: 0.8 } }}
+        animate={{ opacity: 1, y: 0 }}
+        transition={{ duration: 0.8 }}
       >
         {/* Capa semi-transparente para mejor legibilidad */}
         <div className="absolute inset-0 bg-gradient-to-r from-rose-100 via-transparent"></div>
