@@ -58,55 +58,79 @@ export const useProfile = () => {
   }, []);
 
   // 🔹 Actualizar perfil con FormData para enviar archivos
-const updateProfile = async (data, imageFile) => {
-  try {
-    const token = localStorage.getItem("token");
-    
-    // Crear FormData para enviar archivos
-    const formData = new FormData();
-    formData.append('name', data.name);
-    formData.append('phone', data.phone || '');
-    formData.append('birthDate', data.birthDate || '');
-    formData.append('address', JSON.stringify(data.address));
-    
-    // 🔹 NUEVO: Flag para eliminar imagen
-    if (data.removeProfileImage) {
-      formData.append('removeProfileImage', 'true');
+  const updateProfile = async (profileData, imageFile) => {
+    try {
+      const token = localStorage.getItem('token');
+      
+      if (!token) {
+        throw new Error("No autenticado");
+      }
+
+      // ✅ Construir FormData correctamente
+      const formData = new FormData();
+      
+      // Agregar datos de perfil como JSON en un campo
+      formData.append('name', profileData.name || '');
+      formData.append('phone', profileData.phone || '');
+      formData.append('birthDate', profileData.birthDate || '');
+      
+      // Agregar dirección
+      if (profileData.address) {
+        formData.append('address', JSON.stringify(profileData.address));
+      }
+      
+      // Agregar imagen si existe
+      if (imageFile) {
+        formData.append('profileImage', imageFile);
+      }
+
+      console.log("📤 Enviando actualización:", {
+        name: profileData.name,
+        phone: profileData.phone,
+        birthDate: profileData.birthDate,
+        address: profileData.address,
+        hasImage: !!imageFile
+      });
+
+      const { data } = await api.put("/users/profile", formData, {
+        headers: {
+          "Authorization": `Bearer ${token}`,
+          "Content-Type": "multipart/form-data"
+        }
+      });
+
+      console.log("✅ Perfil actualizado:", data);
+
+      if (data.profile) {
+        setUser(data.profile);
+        localStorage.setItem('userData', JSON.stringify(data.profile));
+      }
+
+      Swal.fire({
+        icon: 'success',
+        title: '¡Perfil actualizado!',
+        text: 'Tus datos han sido guardados correctamente',
+        timer: 2000,
+        showConfirmButton: false
+      });
+
+      return true;
+
+    } catch (error) {
+      console.error("❌ Error al actualizar perfil:", error);
+      
+      const message = error.response?.data?.message || error.message || "Error desconocido";
+      
+      Swal.fire({
+        icon: 'error',
+        title: 'Error',
+        text: message,
+        showConfirmButton: true
+      });
+
+      return false;
     }
-    // Agregar imagen si existe
-    else if (imageFile) {
-      formData.append('profileImage', imageFile);
-    }
-
-    const response = await api.put("/users/profile", formData, {
-      headers: { 
-        Authorization: `Bearer ${token}`,
-        'Content-Type': 'multipart/form-data'
-      },
-    });
-
-    setUser(response.data.user);
-    localStorage.setItem("user", JSON.stringify(response.data.user));
-
-    Swal.fire({
-      icon: "success",
-      title: "Perfil actualizado",
-      text: "Tus datos se han guardado correctamente.",
-      timer: 2000,
-      showConfirmButton: false,
-    });
-
-    return true;
-  } catch (error) {
-    console.error("Error al actualizar perfil:", error);
-    Swal.fire({
-      icon: "error",
-      title: "Error",
-      text: error.response?.data?.message || "No se pudo actualizar el perfil. Intenta nuevamente.",
-    });
-    return false;
-  }
-};
+  };
   // 🔹 Eliminar imagen de perfil
   const deleteProfileImage = async () => {
     try {
@@ -185,6 +209,7 @@ const updateProfile = async (data, imageFile) => {
 
   return {
     user,
+    setUser,
     appointments,
     loading,
     handleLogout,

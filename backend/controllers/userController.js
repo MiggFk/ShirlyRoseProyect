@@ -24,31 +24,87 @@ const getProfile = async (req, res) => {
 const updateProfile = async (req, res) => {
   try {
     const userId = req.user.id;
-    const { name, phone, address, birthDate } = req.body;
+    const { name, phone, birthDate, address } = req.body;
 
-    // ✅ Construir objeto de actualización solo con campos válidos
+    console.log("📝 Datos recibidos en updateProfile:", {
+      name,
+      phone,
+      birthDate,
+      address,
+      hasFile: !!req.file
+    });
+
+    // ✅ Construir objeto de actualización
     const updateData = {};
     
-    if (name && name.trim()) updateData.name = name.trim();
-    if (phone && phone.trim()) updateData.phone = phone.trim();
-    if (address && address.trim()) updateData.address = address.trim();
-    if (birthDate && birthDate.trim()) updateData.birthDate = birthDate.trim();
+    // ✅ Validar y agregar campos
+    if (name !== undefined && name !== null && String(name).trim()) {
+      updateData.name = String(name).trim();
+    }
     
-    // ✅ Agregar imagen si viene en la request
+    if (phone !== undefined && phone !== null && String(phone).trim()) {
+      updateData.phone = String(phone).trim();
+    }
+    
+    if (birthDate !== undefined && birthDate !== null && String(birthDate).trim()) {
+      updateData.birthDate = String(birthDate).trim();
+    }
+    
+    // ✅ Parsear address si viene como string JSON
+    if (address !== undefined && address !== null) {
+      try {
+        if (typeof address === 'string') {
+          updateData.address = JSON.parse(address);
+        } else {
+          updateData.address = address;
+        }
+        console.log("📍 Address parseado:", updateData.address);
+      } catch (parseError) {
+        console.error("⚠️ Error al parsear address:", parseError);
+        updateData.address = address;
+      }
+    }
+    
+    // ✅ Agregar imagen si viene
     if (req.file) {
       updateData.profileImage = req.file.path;
+      console.log("📸 Imagen actualizada:", req.file.path);
     }
 
-    // ✅ Actualizar solo los campos que tienen valor
+    // ✅ Si no hay cambios, devolver usuario actual
+    if (Object.keys(updateData).length === 0) {
+      const user = await User.findById(userId).select("-password");
+      return res.status(200).json({
+        message: "No hay cambios para guardar",
+        profile: {
+          id: user._id,
+          name: user.name,
+          email: user.email,
+          role: user.role,
+          phone: user.phone || null,
+          address: user.address || {},
+          birthDate: user.birthDate || null,
+          profileImage: user.profileImage || null,
+          isActive: user.isActive,
+          createdAt: user.createdAt
+        }
+      });
+    }
+
+    console.log("💾 Actualizando con:", updateData);
+
+    // ✅ Actualizar usuario
     const user = await User.findByIdAndUpdate(
       userId,
-      { $set: updateData },  // Solo campos con valor
-      { new: true, runValidators: true }
+      { $set: updateData },
+      { new: true, runValidators: false }
     ).select("-password");
 
     if (!user) {
       return res.status(404).json({ message: "Usuario no encontrado" });
     }
+
+    console.log("✅ Usuario actualizado:", user);
 
     res.status(200).json({
       message: "Perfil actualizado correctamente",
@@ -58,15 +114,16 @@ const updateProfile = async (req, res) => {
         email: user.email,
         role: user.role,
         phone: user.phone || null,
-        address: user.address || null,
+        address: user.address || {},
         birthDate: user.birthDate || null,
         profileImage: user.profileImage || null,
-        isActive: user.isActive
+        isActive: user.isActive,
+        createdAt: user.createdAt
       }
     });
 
   } catch (error) {
-    console.error("Error al actualizar perfil:", error);
+    console.error("❌ Error al actualizar perfil:", error);
     res.status(500).json({ 
       message: "Error al actualizar perfil", 
       error: error.message 
