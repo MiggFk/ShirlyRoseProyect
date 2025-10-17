@@ -1,5 +1,5 @@
 import { motion, AnimatePresence } from "framer-motion";
-import { useState, useEffect, useRef } from "react";
+import { useState, useEffect } from "react";
 import { useProfile } from "../../hooks/useProfile";
 import { useNavigate } from "react-router-dom";
 import Footer from "../../components/Footer";
@@ -18,6 +18,7 @@ import {
   FaArrowLeft,
   FaImages,
   FaTrash,
+  FaCog
 } from "react-icons/fa";
 
 // COMPONENTE: Tarjeta de contenido
@@ -75,6 +76,7 @@ const Sidebar = ({ isOpen, onClose, onLogout, user, setActiveTab }) => {
               <FaTimes className="w-6 h-6 text-rose-500" />
             </button>
 
+            {/* Header del Sidebar modificado */}
             <div className="p-6 border-b border-rose-200">
               <div className="flex items-center gap-3">
                 {getImageUrl(user?.profileImage) ? (
@@ -88,7 +90,6 @@ const Sidebar = ({ isOpen, onClose, onLogout, user, setActiveTab }) => {
                 )}
                 <div>
                   <p className="font-bold text-gray-800">{user?.name}</p>
-                  <p className="text-xs text-gray-500">{user?.email}</p>
                 </div>
               </div>
             </div>
@@ -139,6 +140,19 @@ const Sidebar = ({ isOpen, onClose, onLogout, user, setActiveTab }) => {
               >
                 <FaClock /> Historial
               </button>
+
+              {/* Botón de Dashboard Admin - Solo visible para admins */}
+              {user?.role === 'admin' && (
+                <button
+                  onClick={() => {
+                    navigate("/dashboard");
+                    onClose();
+                  }}
+                  className="w-full flex items-center gap-3 p-3 rounded-lg bg-rose-400 text-white hover:bg-rose-500 transition mt-4"
+                >
+                  <FaCog /> Dashboard
+                </button>
+              )}
             </nav>
 
             <div className="absolute bottom-4 left-4 right-4">
@@ -191,7 +205,7 @@ const DashboardView = ({ user }) => {
               <img
                 src={getImageUrl(user.profileImage)}
                 alt="Perfil"
-                className="w-24 h-24 rounded-full object-cover border-4 border-rose-300"
+                className="w-24 h-24 rounded-full object-cover"
               />
             </div>
           )}
@@ -1221,7 +1235,7 @@ const Profile = () => {
                 initial={{ scale: 0 }}
                 animate={{ scale: 1 }}
                 transition={{ duration: 0.6 }}
-                className="w-20 h-20 rounded-full object-cover border-4 border-white shadow-lg"
+                className="w-20 h-20 rounded-full object-cover shadow-lg"
               />
             ) : (
               <motion.div
