@@ -16,14 +16,12 @@ import {
   LogOut
 } from "lucide-react";
 
-
 export default function IndexHome() {
-  const { products, loading: productsLoading } = usePublicProducts();
-  const { services, loading: servicesLoading } = usePublicServices();
+  const { products, loading: productsLoading, error: productsError } = usePublicProducts();
+  const { services, loading: servicesLoading, error: servicesError } = usePublicServices();
   const [user, setUser] = useState(null);
-  const { addToCart, cart, removeFromCart, clearCart, total } = useCart();
+  const { addToCart } = useCart();
 
-  // Verificar si hay usuario logueado
   useEffect(() => {
     const userData = localStorage.getItem("user");
     if (userData) {
@@ -31,11 +29,9 @@ export default function IndexHome() {
     }
   }, []);
 
-  // Tomar solo los primeros productos y servicios para destacados
-  const featuredProducts = products.slice(0, 6);
-  const featuredServices = services.slice(0, 4);
+  const featuredProducts = Array.isArray(products) ? products.slice(0, 6) : [];
+  const featuredServices = Array.isArray(services) ? services.slice(0, 4) : [];
 
-  // 🔧 Función de logout con confirmación
   const handleLogout = async () => {
     const result = await Swal.fire({
       title: "¿Cerrar sesión?",
@@ -122,17 +118,6 @@ export default function IndexHome() {
               >
                 <LogOut size={20} />
               </button>
-
-              <ShoppingCart />
-
-              {user.role === 'admin' && (
-                <Link
-                  to="/dashboard"
-                  className="flex items-center gap-2 px-4 py-2 rounded-lg bg-rose-300 text-rose-800 font-bold shadow hover:bg-rose-500 hover:text-white transition"
-                >
-                  <Settings size={20} />
-                </Link>
-              )}
             </>
           ) : (
             // Usuario NO logueado
@@ -150,6 +135,16 @@ export default function IndexHome() {
                 Registrarse
               </Link>
             </>
+          )}
+          {/* Carrito: SIEMPRE visible para todos */}
+          <ShoppingCart />
+          {user && user.role === 'admin' && (
+            <Link
+              to="/dashboard"
+              className="flex items-center gap-2 px-4 py-2 rounded-lg bg-rose-300 text-rose-800 font-bold shadow hover:bg-rose-500 hover:text-white transition"
+            >
+              <Settings size={20} />
+            </Link>
           )}
         </div>
       </motion.header>
@@ -244,6 +239,10 @@ export default function IndexHome() {
             <div className="flex justify-center py-20">
               <div className="w-8 h-8 border-4 border-rose-500 border-t-transparent rounded-full animate-spin"></div>
             </div>
+          ) : productsError ? (
+            <div className="flex justify-center py-20">
+              <p className="text-red-500">{productsError}</p>
+            </div>
           ) : featuredProducts.length > 0 ? (
             <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-8">
               {featuredProducts.map((product, index) => (
@@ -293,7 +292,17 @@ export default function IndexHome() {
                         </span>
                         <span className="text-sm text-gray-500 block">Precio especial</span>
                       </div>
-                      <button className="bg-rose-500 hover:bg-rose-600 text-white font-semibold px-6 py-2 rounded-xl transition-all duration-300 shadow-lg hover:shadow-rose-500/25">
+                      <button
+                        className="bg-rose-500 hover:bg-rose-600 text-white font-semibold px-6 py-2 rounded-xl transition-all duration-300 shadow-lg hover:shadow-rose-500/25"
+                        onClick={() => addToCart({
+                          id: product._id,
+                          type: 'producto',
+                          name: product.name,
+                          price: product.price,
+                          image: product.images?.[0]?.url,
+                          cantidad: 1,
+                        })}
+                      >
                         Encargar
                       </button>
                     </div>
@@ -366,6 +375,10 @@ export default function IndexHome() {
             <div className="flex justify-center py-20">
               <div className="w-8 h-8 border-4 border-purple-500 border-t-transparent rounded-full animate-spin"></div>
             </div>
+          ) : servicesError ? (
+            <div className="flex justify-center py-20">
+              <p className="text-red-500">{servicesError}</p>
+            </div>
           ) : featuredServices.length > 0 ? (
             <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
               {featuredServices.map((service, index) => (
@@ -402,7 +415,17 @@ export default function IndexHome() {
                       <span className="text-2xl font-bold text-rose-500">
                         ${service.price?.toLocaleString()}
                       </span>
-                      <button className="bg-rose-500 hover:bg-rose-700 text-white font-semibold px-6 py-2 rounded-full transition-all duration-300">
+                      <button
+                        className="bg-rose-500 hover:bg-rose-700 text-white font-semibold px-6 py-2 rounded-full transition-all duration-300"
+                        onClick={() => addToCart({
+                          id: service._id,
+                          type: 'servicio',
+                          name: service.name,
+                          price: service.price,
+                          image: service.images?.[0]?.url,
+                          cantidad: 1,
+                        })}
+                      >
                         Agendar
                       </button>
                     </div>
@@ -444,118 +467,114 @@ export default function IndexHome() {
       </section>
 
       {/* Ubicación con Google Maps */}
-<section className="py-20 px-6 bg-white">
-  <div className="container mx-auto max-w-7xl">
-    <motion.div
-      className="text-center mb-16"
-      initial={{ opacity: 0, y: 30 }}
-      whileInView={{ opacity: 1, y: 0 }}
-      transition={{ duration: 0.8 }}
-      viewport={{ once: true }}
-    >
-      <h2 className="text-5xl font-black text-gray-800 mb-4">
-        Encuéntranos
-      </h2>
-      <p className="text-xl text-gray-600">
-        Visítanos y descubre la experiencia Shirly Rose
-      </p>
-    </motion.div>
+      <section className="py-20 px-6 bg-white">
+        <div className="container mx-auto max-w-7xl">
+          <motion.div
+            className="text-center mb-16"
+            initial={{ opacity: 0, y: 30 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.8 }}
+            viewport={{ once: true }}
+          >
+            <h2 className="text-5xl font-black text-gray-800 mb-4">
+              Encuéntranos
+            </h2>
+            <p className="text-xl text-gray-600">
+              Visítanos y descubre la experiencia Shirly Rose
+            </p>
+          </motion.div>
 
-    <motion.div
-      className="grid grid-cols-1 lg:grid-cols-2 gap-12 items-center"
-      initial={{ opacity: 0, y: 30 }}
-      whileInView={{ opacity: 1, y: 0 }}
-      transition={{ duration: 0.8 }}
-      viewport={{ once: true }}
-    >
-      {/* Mapa */}
-      <div className="relative h-96 lg:h-[500px] rounded-3xl overflow-hidden shadow-2xl">
-        <iframe
-          src="https://www.google.com/maps?q=Cr+23+10-19+Caucasia+Antioquia&output=embed"
-          width="100%"
-          height="100%"
-          style={{ border: 0 }}
-          allowFullScreen=""
-          loading="lazy"
-          referrerPolicy="no-referrer-when-downgrade"
-          title="Ubicación Shirly Rose"
-        ></iframe>
-      </div>
+          <motion.div
+            className="grid grid-cols-1 lg:grid-cols-2 gap-12 items-center"
+            initial={{ opacity: 0, y: 30 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.8 }}
+            viewport={{ once: true }}
+          >
+            {/* Mapa */}
+            <div className="relative h-96 lg:h-[500px] rounded-3xl overflow-hidden shadow-2xl">
+              <iframe
+                src="https://www.google.com/maps?q=Cr+23+10-19+Caucasia+Antioquia&output=embed"
+                width="100%"
+                height="100%"
+                style={{ border: 0 }}
+                allowFullScreen=""
+                loading="lazy"
+                referrerPolicy="no-referrer-when-downgrade"
+                title="Ubicación Shirly Rose"
+              ></iframe>
+            </div>
 
-      {/* Información de ubicación */}
-      <div className="space-y-6">
-        <div>
-          <h3 className="text-3xl font-bold text-gray-800 mb-4">
-            Shirly Rose · Estética & Spa
-          </h3>
-          <p className="text-gray-600 text-lg leading-relaxed">
-            Te esperamos en nuestro local para brindarte la mejor atención
-            y experiencia de belleza personalizada.
-          </p>
+            {/* Información de ubicación */}
+            <div className="space-y-6">
+              <div>
+                <h3 className="text-3xl font-bold text-gray-800 mb-4">
+                  Shirly Rose · Estética & Spa
+                </h3>
+                <p className="text-gray-600 text-lg leading-relaxed">
+                  Te esperamos en nuestro local para brindarte la mejor atención
+                  y experiencia de belleza personalizada.
+                </p>
+              </div>
+              {/* Dirección */}
+              <div className="flex items-start gap-4 p-4 bg-rose-50 rounded-2xl">
+                <div className="flex-shrink-0 w-12 h-12 bg-rose-400 rounded-full flex items-center justify-center">
+                  <svg className="w-6 h-6 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z" />
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 11a3 3 0 11-6 0 3 3 0 016 0z" />
+                  </svg>
+                </div>
+                <div>
+                  <h4 className="font-bold text-gray-800 mb-1">Dirección</h4>
+                  <p className="text-gray-600">Cr 23 #10-19</p>
+                  <p className="text-gray-600">Caucasia, Antioquia</p>
+                  <p className="text-gray-600">Colombia</p>
+                </div>
+              </div>
+              {/* Horario */}
+              <div className="flex items-start gap-4 p-4 bg-rose-50 rounded-2xl">
+                <div className="flex-shrink-0 w-12 h-12 bg-rose-400 rounded-full flex items-center justify-center">
+                  <svg className="w-6 h-6 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" />
+                  </svg>
+                </div>
+                <div>
+                  <h4 className="font-bold text-gray-800 mb-1">Horario de Atención</h4>
+                  <p className="text-gray-600">Lunes a Viernes: 6:00 AM - 10:00 PM</p>
+                  <p className="text-gray-600">Sábados: 8:00 AM - 6:00 PM</p>
+                  <p className="text-gray-600">Domingos: Cerrado</p>
+                </div>
+              </div>
+              {/* Teléfono */}
+              <div className="flex items-start gap-4 p-4 bg-rose-50 rounded-2xl">
+                <div className="flex-shrink-0 w-12 h-12 bg-rose-400 rounded-full flex items-center justify-center">
+                  <svg className="w-6 h-6 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M3 5a2 2 0 012-2h3.28a1 1 0 01.948.684l1.498 4.493a1 1 0 01-.502 1.21l-2.257 1.13a11.042 11.042 0 005.516 5.516l1.13-2.257a1 1 0 011.21-.502l4.493 1.498a1 1 0 01.684.949V19a2 2 0 01-2 2h-1C9.716 21 3 14.284 3 6V5z" />
+                  </svg>
+                </div>
+                <div>
+                  <h4 className="font-bold text-gray-800 mb-1">Teléfono</h4>
+                  <a href="tel:+573108317548" className="text-rose-500 hover:text-rose-600 font-medium">
+                    +57 310 831 7548
+                  </a>
+                </div>
+              </div>
+              {/* Botón para abrir en Google Maps */}
+              <a
+                href="https://www.google.com/maps/search/?api=1&query=7.981094312246096, -75.20387725078415"
+                target="_blank"
+                rel="noopener noreferrer"
+                className="inline-flex items-center gap-2 bg-rose-400 hover:bg-rose-500 text-white font-semibold px-8 py-4 rounded-full transition-all duration-300 shadow-lg hover:shadow-xl transform hover:scale-105"
+              >
+                <svg className="w-5 h-5" fill="currentColor" viewBox="0 0 20 20">
+                  <path fillRule="evenodd" d="M5.05 4.05a7 7 0 119.9 9.9L10 18.9l-4.95-4.95a7 7 0 010-9.9zM10 11a2 2 0 100-4 2 2 0 000 4z" clipRule="evenodd" />
+                </svg>
+                Abrir en Google Maps
+              </a>
+            </div>
+          </motion.div>
         </div>
-
-        {/* Dirección */}
-        <div className="flex items-start gap-4 p-4 bg-rose-50 rounded-2xl">
-          <div className="flex-shrink-0 w-12 h-12 bg-rose-400 rounded-full flex items-center justify-center">
-            <svg className="w-6 h-6 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z" />
-              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 11a3 3 0 11-6 0 3 3 0 016 0z" />
-            </svg>
-          </div>
-          <div>
-            <h4 className="font-bold text-gray-800 mb-1">Dirección</h4>
-            <p className="text-gray-600">Cr 23 #10-19</p>
-            <p className="text-gray-600">Caucasia, Antioquia</p>
-            <p className="text-gray-600">Colombia</p>
-          </div>
-        </div>
-
-        {/* Horario */}
-        <div className="flex items-start gap-4 p-4 bg-rose-50 rounded-2xl">
-          <div className="flex-shrink-0 w-12 h-12 bg-rose-400 rounded-full flex items-center justify-center">
-            <svg className="w-6 h-6 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" />
-            </svg>
-          </div>
-          <div>
-            <h4 className="font-bold text-gray-800 mb-1">Horario de Atención</h4>
-            <p className="text-gray-600">Lunes a Viernes: 6:00 AM - 10:00 PM</p>
-            <p className="text-gray-600">Sábados: 8:00 AM - 6:00 PM</p>
-            <p className="text-gray-600">Domingos: Cerrado</p>
-          </div>
-        </div>
-
-        {/* Teléfono */}
-        <div className="flex items-start gap-4 p-4 bg-rose-50 rounded-2xl">
-          <div className="flex-shrink-0 w-12 h-12 bg-rose-400 rounded-full flex items-center justify-center">
-            <svg className="w-6 h-6 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M3 5a2 2 0 012-2h3.28a1 1 0 01.948.684l1.498 4.493a1 1 0 01-.502 1.21l-2.257 1.13a11.042 11.042 0 005.516 5.516l1.13-2.257a1 1 0 011.21-.502l4.493 1.498a1 1 0 01.684.949V19a2 2 0 01-2 2h-1C9.716 21 3 14.284 3 6V5z" />
-            </svg>
-          </div>
-          <div>
-            <h4 className="font-bold text-gray-800 mb-1">Teléfono</h4>
-            <a href="tel:+573108317548" className="text-rose-500 hover:text-rose-600 font-medium">
-              +57 310 831 7548
-            </a>
-          </div>
-        </div>
-
-        {/* Botón para abrir en Google Maps */}
-        <a
-          href="https://www.google.com/maps/search/?api=1&query=7.981094312246096, -75.20387725078415"
-          target="_blank"
-          rel="noopener noreferrer"
-          className="inline-flex items-center gap-2 bg-rose-400 hover:bg-rose-500 text-white font-semibold px-8 py-4 rounded-full transition-all duration-300 shadow-lg hover:shadow-xl transform hover:scale-105"
-        >
-          <svg className="w-5 h-5" fill="currentColor" viewBox="0 0 20 20">
-            <path fillRule="evenodd" d="M5.05 4.05a7 7 0 119.9 9.9L10 18.9l-4.95-4.95a7 7 0 010-9.9zM10 11a2 2 0 100-4 2 2 0 000 4z" clipRule="evenodd" />
-          </svg>
-          Abrir en Google Maps
-        </a>
-      </div>
-    </motion.div>
-  </div>
-</section>
+      </section>
 
       {/* Por qué elegirnos */}
       <section className="py-20 px-6 bg-rose-50">

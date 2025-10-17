@@ -9,7 +9,7 @@ import { useCart } from '../../context/CartContext';
 export default function Services() {
   const { services, loading, error } = usePublicServices();
   const [search, setSearch] = useState("");
-  const { addToCart, cart, removeFromCart, clearCart, total } = useCart();
+  const { addToCart } = useCart(); // SOLO necesitas addToCart
 
   // Función para formatear duración
   const formatDuration = (duration) => {
@@ -50,13 +50,10 @@ export default function Services() {
     return services.filter(service => {
       // Buscar en la categoría formateada
       const categoryFormatted = formatCategory(service.category).toLowerCase();
-      
       // Buscar en el nombre del servicio
       const serviceName = (service.name || '').toLowerCase();
-      
       // Buscar también en la categoría raw
       const categoryRaw = (service.category || '').toLowerCase().replace(/_/g, ' ');
-      
       return categoryFormatted.includes(searchLower) || 
              serviceName.includes(searchLower) ||
              categoryRaw.includes(searchLower);
@@ -95,7 +92,6 @@ export default function Services() {
   return (
     <div className="min-h-screen bg-gradient-to-br from-rose-50 via-pink-50 to-purple-50">
       <PublicNavbar />
-      
       <div className="container mx-auto px-4 py-28">
         {/* Header con más espacio */}
         <motion.div 
@@ -180,18 +176,18 @@ export default function Services() {
                 index={index}
                 formatDuration={formatDuration}
                 formatCategory={formatCategory}
+                addToCart={addToCart} // PASA addToCart como prop
               />
             ))}
           </div>
         )}
       </div>
-
       <Footer />
     </div>
   );
 }
 
-function ServiceCard({ service, index, formatDuration, formatCategory }) {
+function ServiceCard({ service, index, formatDuration, formatCategory, addToCart }) {
   return (
     <motion.div
       initial={{ opacity: 0, y: 30 }}
@@ -208,7 +204,6 @@ function ServiceCard({ service, index, formatDuration, formatCategory }) {
               alt={service.name}
               className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-500"
             />
-            
             {/* Indicador de múltiples imágenes */}
             {service.images.length > 1 && (
               <div className="absolute top-4 left-4 bg-black/70 backdrop-blur-sm rounded-full px-2 py-1 flex items-center gap-1">
@@ -245,14 +240,12 @@ function ServiceCard({ service, index, formatDuration, formatCategory }) {
           <h3 className="font-bold text-xl text-gray-800 mb-2 line-clamp-1">
             {service.name}
           </h3>
-          
           {service.description && (
             <p className="text-gray-600 text-sm leading-relaxed line-clamp-3">
               {service.description}
             </p>
           )}
         </div>
-
         {/* Footer de la card */}
         <div className="flex items-center justify-between">
           <div className="flex flex-col">
@@ -264,13 +257,19 @@ function ServiceCard({ service, index, formatDuration, formatCategory }) {
               {formatDuration(service.duration)}
             </span>
           </div>
-          
-          <a
-          href="/appointment"
-          className="inline-block bg-rose-400 hover:bg-rose-600 text-white font-semibold px-10 py-4 rounded-full transition-all duration-300 shadow-lg hover:shadow-xl transform hover:scale-105"
+          <button
+            onClick={() => addToCart({
+              id: service._id,
+              type: 'servicio',
+              name: service.name,
+              price: service.price,
+              image: service.images?.[0]?.url,
+              cantidad: 1,
+            })}
+            className="inline-block bg-rose-400 hover:bg-rose-600 text-white font-semibold px-10 py-4 rounded-full transition-all duration-300 shadow-lg hover:shadow-xl transform hover:scale-105"
           >
-          Agendar
-          </a>
+            Agendar
+          </button>
         </div>
       </div>
     </motion.div>
