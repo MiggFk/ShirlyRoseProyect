@@ -21,10 +21,13 @@ import RoleRoute from "./components/RoleRoute";
 import IndexHome from "./pages/home/IndexHome";
 import ServicesHome from "./pages/home/Services";
 import ProductsHome from "./pages/home/Products";
+import Checkout from "./pages/checkout/Checkout";
 import Terms from "./pages/home/Terms";
 import About from "./pages/home/About";
 import Privacy from "./pages/home/Privacy";
-import Appointment from "./pages/home/Appointment"
+import Appointment from "./pages/home/Appointment";
+import PayMock from "./pages/checkout/PayMock";
+import Success from "./pages/checkout/Success";
 
 const NotFound = () => (
   <div className="flex flex-col items-center justify-center min-h-screen bg-gray-100">
@@ -50,6 +53,9 @@ const NotFound = () => (
             <Route path="/terms" element={<Terms />} />
             <Route path="/privacy" element={<Privacy />} />
             <Route path="/appointment" element={<Appointment />} />
+            <Route path="/checkout" element={<Checkout />} />
+            <Route path="/pay/:intentId" element={<PayMock />} />
+            <Route path="/checkout/success" element={<Success />} />
 
             
             {/* Rutas de Autenticación */}

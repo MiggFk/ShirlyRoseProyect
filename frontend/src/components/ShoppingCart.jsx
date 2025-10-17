@@ -3,12 +3,15 @@ import { motion, AnimatePresence } from "framer-motion";
 import { ShoppingCart as CartIcon, X, Trash2, CheckCircle2, Plus, Minus } from "lucide-react";
 import { useCart } from "../context/CartContext";
 import Swal from "sweetalert2";
+import { useNavigate } from "react-router-dom";
 
-export default function ShoppingCart({ className = "" }) {
+export default function ShoppingCart(props) {
   const [isCartOpen, setIsCartOpen] = useState(false);
   const { cart, removeFromCart, clearCart, total, increaseQuantity, decreaseQuantity } = useCart();
   const [addedId, setAddedId] = useState(null);
   const [showToast, setShowToast] = useState(false);
+  const navigate = useNavigate();
+  const hasItems = cart && cart.length > 0;
 
   // Animación del badge
   const [badgeBump, setBadgeBump] = useState(false);
@@ -30,8 +33,6 @@ export default function ShoppingCart({ className = "" }) {
   } else if (totalCount < prevCartCount.current) {
     prevCartCount.current = totalCount;
   }
-
-  const hasItems = cart && cart.length > 0;
 
   // Confirmación visual al vaciar carrito
   const handleClearCart = async () => {
@@ -83,7 +84,7 @@ export default function ShoppingCart({ className = "" }) {
       {/* Botón Carrito */}
       <motion.button
         onClick={() => setIsCartOpen(true)}
-        className={`flex items-center gap-2 px-4 py-2 rounded-lg bg-rose-400 text-white font-medium shadow hover:bg-rose-500 transition relative ${className}`}
+        className={`flex items-center gap-2 px-4 py-2 rounded-lg bg-rose-400 text-white font-medium shadow hover:bg-rose-500 transition relative ${props.className}`}
         aria-label="Abrir carrito"
         animate={badgeBump ? { scale: [1, 1.15, 1] } : { scale: 1 }}
         transition={{ duration: 0.35 }}
@@ -258,7 +259,12 @@ export default function ShoppingCart({ className = "" }) {
                   )}
                   <motion.button
                     whileTap={{ scale: 0.97 }}
-                    onClick={() => setIsCartOpen(false)}
+                    onClick={() => {
+                      if (hasItems) {
+                        setIsCartOpen(false);
+                        navigate("/checkout");
+                      }
+                    }}
                     className={`flex-1 ${
                       hasItems
                         ? "bg-rose-400 hover:bg-rose-500 text-white"
