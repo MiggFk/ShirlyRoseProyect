@@ -171,15 +171,26 @@ export const useProfile = () => {
       title: "¿Estás seguro?",
       text: "¿Quieres cerrar tu sesión?",
       icon: "warning",
+      iconColor: "#fb7185",
       showCancelButton: true,
-      confirmButtonColor: "#d33",
-      cancelButtonColor: "#3085d6",
+      confirmButtonColor: "#fb7185",
+      cancelButtonColor: "#ff4662ff",
       confirmButtonText: "Sí, cerrar sesión",
       cancelButtonText: "Cancelar",
     }).then((result) => {
       if (result.isConfirmed) {
         localStorage.clear();
-        navigate("/login");
+        Swal.fire({
+          title: "¡Hasta pronto!",
+          text: "Has cerrado sesión correctamente",
+          icon: "success",
+          iconColor: "#fb7185",
+          confirmButtonColor: "#fb7185",
+          timer: 2000,
+          showConfirmButton: false
+        }).then(() => {
+          navigate("/login");
+        });
       }
     });
   };

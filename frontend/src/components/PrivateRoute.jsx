@@ -1,8 +1,8 @@
 import { Navigate } from "react-router-dom";
-import { useAuth } from '../context/AuthContext'; // ⬅️ CRÍTICO: Usar el Contexto
+import { useAuth } from '../context/AuthContext'; //  CRÍTICO: Usar el Contexto
 
 export default function PrivateRoute({ children }) {
-  // ✅ Obtiene el estado centralizado
+  // Obtiene el estado centralizado
   const { isAuthenticated, isLoading } = useAuth(); 
 
   // 1. CONDICIÓN CRÍTICA: Esperar a que el Contexto termine de cargar.

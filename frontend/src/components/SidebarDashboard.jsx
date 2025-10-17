@@ -59,9 +59,10 @@ export default function Sidebar() {
       title: "¿Cerrar sesión?",
       text: "Tu sesión actual se cerrará.",
       icon: "warning",
+      iconColor: "#fb7185", 
       showCancelButton: true,
-      confirmButtonColor: "#e11d48",
-      cancelButtonColor: "#6b7280",
+      confirmButtonColor: "#fb7185", 
+      cancelButtonColor: "#ff4662ff", 
       confirmButtonText: "Sí, salir",
       cancelButtonText: "Cancelar",
       background: "#fff",
@@ -72,7 +73,8 @@ export default function Sidebar() {
           title: "Sesión cerrada",
           text: "Has cerrado sesión correctamente.",
           icon: "success",
-          confirmButtonColor: "#e11d48",
+          iconColor: "#fb7185",
+          confirmButtonColor: "#fb7185", 
         });
         setIsOpen(false);
       }
@@ -86,7 +88,7 @@ export default function Sidebar() {
         whileHover={{ scale: 1.1 }}
         whileTap={{ scale: 0.95 }}
         onClick={() => setIsOpen(!isOpen)}
-        className="fixed top-5 left-5 z-50 p-2 text-rose-400 hover:text-rose-500 transition-all duration-300"
+        className="fixed top-5 left-5 z-50 p-2 text-rose-500 transition-all duration-300"
         aria-label="Toggle menu"
       >
         {isOpen ? <X size={32} strokeWidth={2.5} /> : <Menu size={32} strokeWidth={2.5} />}

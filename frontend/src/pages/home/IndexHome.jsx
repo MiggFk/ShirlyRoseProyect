@@ -37,9 +37,10 @@ export default function IndexHome() {
       title: "¿Cerrar sesión?",
       text: "¿Estás seguro de que quieres salir?",
       icon: "question",
+      iconColor: "#fb7185", // color rose-400
       showCancelButton: true,
-      confirmButtonColor: "#f43f5e",
-      cancelButtonColor: "#6b7280",
+      confirmButtonColor: "#fb7185", // color rose-400
+      cancelButtonColor: "#ff4662ff", // color rose-400
       confirmButtonText: "Sí, salir",
       cancelButtonText: "Cancelar",
       backdrop: true,
@@ -52,6 +53,7 @@ export default function IndexHome() {
 
       await Swal.fire({
         icon: "success",
+        iconColor: "#fb7185", // color rose-400
         title: "Sesión cerrada",
         text: "Has cerrado sesión correctamente",
         showConfirmButton: false,

@@ -67,13 +67,26 @@ export default function Appointments() {
     return maxDate.toISOString().split('T')[0];
   };
 
+  // Agregar esta función auxiliar al inicio del componente
+  const normalizeText = (text) => {
+    return text
+      .toLowerCase()
+      .normalize("NFD")
+      .replace(/[\u0300-\u036f]/g, "");
+  };
+
+  // Modificar el useMemo del filteredAppointments
   const filteredAppointments = useMemo(() => {
     return appointments.filter((cita) => {
-      const clientName = cita.clientId?.name?.toLowerCase() || "";
-      const searchMatch = clientName.includes(search.toLowerCase());
+      const clientName = cita.clientId?.name || "";
+      const normalizedClientName = normalizeText(clientName);
+      const normalizedSearch = normalizeText(search);
+      
+      const searchMatch = normalizedClientName.includes(normalizedSearch);
       const citaDate = new Date(cita.dateTime).toISOString().split("T")[0];
       const dateMatch = dateFilter ? citaDate === dateFilter : true;
       const statusMatch = statusFilter ? cita.status === statusFilter : true;
+      
       return searchMatch && dateMatch && statusMatch;
     });
   }, [appointments, search, dateFilter, statusFilter]);
@@ -421,7 +434,7 @@ export default function Appointments() {
                     </select>
                   </div>
 
-                  {/* 🔹 Fecha */}
+                  {/* Fecha */}
                   <div>
                     <label className="block text-sm font-semibold mb-2">Fecha *</label>
                     <input
@@ -437,7 +450,7 @@ export default function Appointments() {
                     />
                   </div>
 
-                  {/* 🔹 Hora */}
+                  {/* Hora */}
                   <div>
                     <label className="block text-sm font-semibold mb-2">Hora *</label>
                     <select

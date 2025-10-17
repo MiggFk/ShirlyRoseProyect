@@ -28,6 +28,15 @@ const Users = () => {
 
   const groupedUsers = getUsersByRole();
 
+  // Agregar esta función auxiliar al inicio del componente Users
+  const normalizeText = (text) => {
+    return text
+      ?.toLowerCase()
+      .normalize("NFD")
+      .replace(/[\u0300-\u036f]/g, "");
+  };
+
+  // Modificar la función getFilteredUsers
   const getFilteredUsers = () => {
     let filtered = users;
 
@@ -36,9 +45,10 @@ const Users = () => {
     }
 
     if (searchTerm) {
+      const normalizedSearch = normalizeText(searchTerm);
       filtered = filtered.filter(user => 
-        user.name?.toLowerCase().includes(searchTerm.toLowerCase()) ||
-        user.email?.toLowerCase().includes(searchTerm.toLowerCase())
+        normalizeText(user.name).includes(normalizedSearch) ||
+        normalizeText(user.email).includes(normalizedSearch)
       );
     }
 
@@ -580,9 +590,9 @@ const UserModal = ({ isOpen, onClose, mode, user, onCreate, onUpdate }) => {
                 required
                 className="w-full px-3 py-2 bg-white/5 border border-white/20 rounded-lg text-white focus:ring-2 focus:ring-rose-500"
               >
-                <option value="cliente">Cliente</option>
-                <option value="empleado">Empleado</option>
-                <option value="admin">Administrador</option>
+                <option className="text-black" value="cliente">Cliente</option>
+                <option className="text-black" value="empleado">Empleado</option>
+                <option className="text-black" value="admin">Administrador</option>
               </select>
             </div>
 

@@ -35,7 +35,11 @@ export default function Footer() {
               Servicios
             </h3>
             <ul className="space-y-2">
-              {["Spa", "Peluquería", "Manicure/Pedicure", "Estética Facial"].map(
+              {["Spa",
+               "Peluquería", 
+               "Manicure/Pedicure", 
+               "Estética Facial"
+              ].map(
                 (item, i) => (
                   <motion.li
                     key={i}
@@ -58,7 +62,7 @@ export default function Footer() {
                 { label: "Sobre Nosotros", path: "/about" },
                 { label: "Política de Privacidad", path: "/privacy" },
                 { label: "Términos de Uso", path: "/terms" },
-                { label: "Contacto", path: "/" },
+                { label: "Contacto", path: "/contact" },
               ].map((item, i) => (
                 <motion.li
                   key={i}
