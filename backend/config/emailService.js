@@ -30,6 +30,7 @@ const sendVerificationEmail = async (toEmail, userName, token) => {
       throw new Error('Email destinatario no válido: ' + toEmail);
     }
 
+    // ✅ CORREGIDO: Quitar la "d" extra de "verify-email"
     const verificationUrl = `${process.env.FRONTEND_URL}/verify-email/${token}`;
 
     const mailOptions = {
@@ -37,73 +38,144 @@ const sendVerificationEmail = async (toEmail, userName, token) => {
         name: 'Shirly Rose',
         address: process.env.EMAIL_USER
       },
-      to: toEmail, // Asegurarse que sea una cadena válida
+      to: toEmail,
       subject: '✨ Verifica tu cuenta de Shirly Rose',
       html: `
         <!DOCTYPE html>
-        <html>
+        <html lang="es">
         <head>
+          <meta charset="UTF-8">
+          <meta name="viewport" content="width=device-width, initial-scale=1.0">
           <style>
-            body {
-              font-family: 'Arial', sans-serif;
-              background-color: #fdf2f8;
+            * {
               margin: 0;
               padding: 0;
+              box-sizing: border-box;
+            }
+            body {
+              font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Oxygen', 'Ubuntu', 'Cantarell', sans-serif;
+              background: linear-gradient(135deg, #fdf2f8 0%, #f3e8ff 100%);
+              padding: 20px;
             }
             .container {
               max-width: 600px;
-              margin: 40px auto;
+              margin: 0 auto;
               background-color: white;
-              border-radius: 16px;
+              border-radius: 20px;
               overflow: hidden;
-              box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+              box-shadow: 0 20px 60px rgba(236, 72, 153, 0.15);
             }
             .header {
-              background: linear-gradient(135deg, #ec4899 0%, #9333ea 100%);
-              padding: 40px 20px;
+              background: linear-gradient(135deg, #ec4899 0%, #be185d 100%);
+              padding: 50px 30px;
               text-align: center;
             }
             .header h1 {
               color: white;
               margin: 0;
-              font-size: 28px;
+              font-size: 32px;
+              font-weight: 700;
+              letter-spacing: -0.5px;
+            }
+            .header p {
+              color: rgba(255, 255, 255, 0.9);
+              margin: 8px 0 0 0;
+              font-size: 14px;
             }
             .content {
-              padding: 40px 30px;
-              text-align: center;
+              padding: 50px 40px;
             }
-            .content h2 {
+            .greeting {
               color: #1f2937;
+              font-size: 20px;
+              font-weight: 600;
               margin-bottom: 20px;
             }
-            .content p {
+            .text-block {
               color: #6b7280;
-              line-height: 1.6;
-              margin-bottom: 30px;
+              line-height: 1.8;
+              margin-bottom: 24px;
+              font-size: 15px;
+            }
+            .button-container {
+              text-align: center;
+              margin: 40px 0;
             }
             .button {
               display: inline-block;
-              background: linear-gradient(135deg, #ec4899 0%, #9333ea 100%);
+              background: linear-gradient(135deg, #ec4899 0%, #be185d 100%);
               color: white;
               text-decoration: none;
-              padding: 15px 40px;
-              border-radius: 8px;
-              font-weight: bold;
-              margin: 20px 0;
+              padding: 16px 48px;
+              border-radius: 10px;
+              font-weight: 600;
+              font-size: 16px;
+              transition: transform 0.2s, box-shadow 0.2s;
+              box-shadow: 0 10px 25px rgba(236, 72, 153, 0.3);
             }
-            .footer {
-              background-color: #f9fafb;
-              padding: 20px;
-              text-align: center;
-              color: #9ca3af;
-              font-size: 12px;
+            .button:hover {
+              transform: translateY(-2px);
+              box-shadow: 0 15px 35px rgba(236, 72, 153, 0.4);
             }
             .warning {
-              background-color: #fef3c7;
-              border-left: 4px solid #f59e0b;
-              padding: 15px;
-              margin: 20px 0;
-              text-align: left;
+              background: linear-gradient(135deg, rgba(236, 72, 153, 0.05) 0%, rgba(190, 24, 93, 0.05) 100%);
+              border-left: 4px solid #ec4899;
+              padding: 16px 20px;
+              margin: 30px 0;
+              border-radius: 8px;
+              font-size: 13px;
+              color: #5a1d4d;
+              font-weight: 500;
+            }
+            .link-backup {
+              background: #f9fafb;
+              padding: 20px;
+              border-radius: 8px;
+              margin: 30px 0;
+              font-size: 12px;
+              color: #6b7280;
+              word-break: break-all;
+            }
+            .link-backup a {
+              color: #ec4899;
+              text-decoration: none;
+              font-weight: 600;
+            }
+            .footer {
+              background: linear-gradient(135deg, #faf5ff 0%, #f3e8ff 100%);
+              padding: 30px;
+              text-align: center;
+              border-top: 1px solid #f0e7ff;
+            }
+            .footer-text {
+              color: #9ca3af;
+              font-size: 12px;
+              line-height: 1.6;
+              margin: 0;
+            }
+            .footer-text:not(:last-child) {
+              margin-bottom: 8px;
+            }
+            .divider {
+              width: 40px;
+              height: 2px;
+              background: linear-gradient(90deg, transparent, #ec4899, transparent);
+              margin: 20px auto;
+            }
+            .features {
+              background: #faf5ff;
+              padding: 20px;
+              border-radius: 10px;
+              margin: 25px 0;
+              font-size: 13px;
+              color: #6b7280;
+            }
+            .features p {
+              margin: 8px 0;
+            }
+            .emoji {
+              font-size: 20px;
+              margin-right: 8px;
             }
           </style>
         </head>
@@ -111,30 +183,48 @@ const sendVerificationEmail = async (toEmail, userName, token) => {
           <div class="container">
             <div class="header">
               <h1>💅 Shirly Rose</h1>
+              <p>Verifica tu cuenta para comenzar</p>
             </div>
+            
             <div class="content">
-              <h2>¡Hola ${userName}! 👋</h2>
-              <p>Gracias por registrarte en Shirly Rose. Estamos emocionados de tenerte con nosotros.</p>
-              <p>Para completar tu registro y activar tu cuenta, por favor verifica tu dirección de email haciendo clic en el botón de abajo:</p>
+              <div class="greeting">¡Hola ${userName}! 👋</div>
               
-              <a href="${verificationUrl}" class="button">Verificar mi email</a>
-              
-              <div class="warning">
-                <strong>⏰ Este enlace expirará en 24 horas</strong>
+              <div class="text-block">
+                Gracias por registrarte en <strong>Shirly Rose</strong>. Estamos emocionados de tenerte con nosotros.
               </div>
               
-              <p style="font-size: 14px; color: #9ca3af;">
-                Si no creaste esta cuenta, puedes ignorar este mensaje de forma segura.
-              </p>
+              <div class="text-block">
+                Para completar tu registro y activar tu cuenta, verifica tu dirección de email haciendo clic en el botón de abajo:
+              </div>
               
-              <p style="font-size: 12px; color: #9ca3af; margin-top: 30px;">
-                Si el botón no funciona, copia y pega este enlace en tu navegador:<br>
-                <span style="color: #ec4899;">${verificationUrl}</span>
-              </p>
+              <div class="button-container">
+                <a href="${verificationUrl}" class="button">✓ Verificar mi email</a>
+              </div>
+              
+              <div class="warning">
+                ⏰ <strong>Este enlace expirará en 24 horas</strong>. Actúa rápido para no perder tu acceso.
+              </div>
+              
+              <div class="features">
+                <p><span class="emoji">📅</span><strong>Reserva citas</strong> de forma segura y fácil</p>
+                <p><span class="emoji">💇</span><strong>Acceso a servicios</strong> premium personalizados</p>
+                <p><span class="emoji">✨</span><strong>Ofertas exclusivas</strong> para miembros verificados</p>
+              </div>
+              
+              <div class="link-backup">
+                <strong style="color: #1f2937;">Si el botón no funciona, copia este enlace:</strong><br><br>
+                <a href="${verificationUrl}">${verificationUrl}</a>
+              </div>
+              
+              <div class="text-block" style="font-size: 13px; color: #9ca3af; margin-bottom: 0;">
+                Si no creaste esta cuenta, puedes ignorar este mensaje de forma segura.
+              </div>
             </div>
+            
             <div class="footer">
-              <p>© 2025 Shirly Rose. Todos los derechos reservados.</p>
-              <p>Este es un email automático, por favor no respondas a este mensaje.</p>
+              <p class="footer-text">© 2025 Shirly Rose. Todos los derechos reservados.</p>
+              <div class="divider"></div>
+              <p class="footer-text">Este es un email automático. Por favor no respondas a este mensaje.</p>
             </div>
           </div>
         </body>
@@ -151,7 +241,6 @@ const sendVerificationEmail = async (toEmail, userName, token) => {
     const info = await transporter.sendMail(mailOptions);
     
     console.log('✅ Email enviado exitosamente:', info.messageId);
-    console.log('📧 Preview URL:', nodemailer.getTestMessageUrl(info));
     
     return info;
   } catch (error) {
