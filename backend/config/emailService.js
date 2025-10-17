@@ -303,7 +303,11 @@ const sendPasswordResetEmail = async (email, name, resetCode) => {
           </div>
           
           <div class="warning">
+<<<<<<< HEAD
             ⚠ Por seguridad, nunca compartas este código con nadie. Nuestro equipo nunca te pedirá este código.
+=======
+            ⚠️ Por seguridad, nunca compartas este código con nadie. Nuestro equipo nunca te pedirá este código.
+>>>>>>> b622c85646eeac692a3a349e5e06991d75f020e0
           </div>
           
           <div class="footer">
@@ -334,5 +338,9 @@ const sendPasswordResetEmail = async (email, name, resetCode) => {
 module.exports = {
   sendVerificationEmail,
   sendPasswordResetEmail, // ✅ Agregar esta función
+<<<<<<< HEAD
   // ...other exports...
+=======
+  // ...other exports...
+>>>>>>> b622c85646eeac692a3a349e5e06991d75f020e0
 };

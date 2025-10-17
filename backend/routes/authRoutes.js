@@ -254,4 +254,139 @@ router.post('/resend-verification', async (req, res) => {
 // Obtener usuario autenticado
 router.get("/me", authMiddleware, getMe);
 
+// ❌ SOLICITAR RECUPERACIÓN DE CONTRASEÑA
+router.post('/forgot-password', async (req, res) => {
+  try {
+    const { email } = req.body;
+
+    if (!email) {
+      return res.status(400).json({ message: 'El email es requerido' });
+    }
+
+    // Buscar usuario
+    const user = await User.findOne({ email: email.toLowerCase() });
+
+    if (!user) {
+      // No revelar si el email existe o no por seguridad
+      return res.status(200).json({ 
+        message: 'Si el email existe en nuestro sistema, recibirás un código de recuperación' 
+      });
+    }
+
+    // Generar código de 6 dígitos
+    const resetCode = Math.floor(100000 + Math.random() * 900000).toString();
+    const resetTokenExpires = Date.now() + 15 * 60 * 1000; // 15 minutos
+
+    // Guardar código en el usuario
+    user.resetCode = resetCode;
+    user.resetCodeExpires = resetTokenExpires;
+    await user.save();
+
+    console.log('✅ Código de reset generado:', {
+      email: user.email,
+      code: resetCode,
+      expires: new Date(resetTokenExpires)
+    });
+
+    // Enviar email con código
+    try {
+      await emailService.sendPasswordResetEmail(user.email, user.name, resetCode);
+      console.log('📧 Email de recuperación enviado a:', user.email);
+    } catch (emailError) {
+      console.error('❌ Error al enviar email:', emailError);
+      return res.status(500).json({ message: 'Error al enviar el email de recuperación' });
+    }
+
+    res.json({ 
+      message: 'Se ha enviado un código de recuperación a tu email',
+      success: true 
+    });
+
+  } catch (error) {
+    console.error('❌ Error en forgot-password:', error);
+    res.status(500).json({ message: 'Error al procesar la solicitud' });
+  }
+});
+
+// ✅ VERIFICAR CÓDIGO DE RECUPERACIÓN
+router.post('/verify-reset-code', async (req, res) => {
+  try {
+    const { email, code } = req.body;
+
+    if (!email || !code) {
+      return res.status(400).json({ message: 'Email y código son requeridos' });
+    }
+
+    // Buscar usuario con código válido
+    const user = await User.findOne({
+      email: email.toLowerCase(),
+      resetCode: code,
+      resetCodeExpires: { $gt: Date.now() }
+    });
+
+    if (!user) {
+      return res.status(400).json({ 
+        message: 'Código inválido o expirado. Intenta solicitar un nuevo código.' 
+      });
+    }
+
+    console.log('✅ Código verificado para:', user.email);
+
+    res.json({ 
+      message: 'Código verificado exitosamente',
+      success: true 
+    });
+
+  } catch (error) {
+    console.error('❌ Error en verify-reset-code:', error);
+    res.status(500).json({ message: 'Error al verificar el código' });
+  }
+});
+
+// 🔄 RESETEAR CONTRASEÑA
+router.post('/reset-password', async (req, res) => {
+  try {
+    const { email, password } = req.body;
+
+    if (!email || !password) {
+      return res.status(400).json({ message: 'Email y contraseña son requeridos' });
+    }
+
+    if (password.length < 8) {
+      return res.status(400).json({ message: 'La contraseña debe tener al menos 8 caracteres' });
+    }
+
+    // Buscar usuario
+    const user = await User.findOne({ email: email.toLowerCase() });
+
+    if (!user) {
+      return res.status(404).json({ message: 'Usuario no encontrado' });
+    }
+
+    // Verificar que tenga un código válido
+    if (!user.resetCodeExpires || user.resetCodeExpires < Date.now()) {
+      return res.status(400).json({ 
+        message: 'El código de recuperación ha expirado. Solicita uno nuevo.' 
+      });
+    }
+
+    // Actualizar contraseña
+    user.password = password; // Se encriptará automáticamente en el pre-save
+    user.resetCode = undefined;
+    user.resetCodeExpires = undefined;
+    await user.save();
+
+    console.log('✅ Contraseña actualizada para:', user.email);
+
+    res.json({ 
+      message: 'Contraseña actualizada exitosamente',
+      success: true 
+    });
+
+  } catch (error) {
+    console.error('❌ Error en reset-password:', error);
+    res.status(500).json({ message: 'Error al actualizar la contraseña' });
+  }
+});
+
 module.exports = router;

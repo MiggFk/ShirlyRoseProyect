@@ -11,11 +11,18 @@ import Swal from "sweetalert2";
 
 export default function Login() {
   const [showPassword, setShowPassword] = useState(false);
+  const [rememberMe, setRememberMe] = useState(false);
   const { handleSubmit: originalHandleSubmit, isLoading } = useLogin();
   const navigate = useNavigate();
   const location = useLocation();
 
-  // Mostrar mensaje de verificación exitosa si viene del link
+  useEffect(() => {
+    const savedEmail = localStorage.getItem("rememberedEmail");
+    if (savedEmail) {
+      setRememberMe(true);
+    }
+  }, []);
+
   useEffect(() => {
     if (location.state?.verified && location.state?.message) {
       Swal.fire({
@@ -25,8 +32,6 @@ export default function Login() {
         confirmButtonColor: '#ec4899',
         timer: 3000
       });
-      
-      // Limpiar el state
       window.history.replaceState({}, document.title);
     }
   }, [location]);
@@ -40,7 +45,6 @@ export default function Login() {
       .required("La contraseña es obligatoria"),
   });
 
-  // Animaciones
   const pageVariants = {
     initial: { x: "-100%" },
     animate: { x: "0%", transition: { duration: 0.7, ease: "easeOut" } },
@@ -65,14 +69,16 @@ export default function Login() {
     visible: { opacity: 1, x: 0, transition: { duration: 0.8, delay: 0.8 } },
   };
 
-  // HandleSubmit mejorado para manejar email no verificado
   const handleSubmit = async (values, actions) => {
     try {
+      if (rememberMe) {
+        localStorage.setItem("rememberedEmail", values.email);
+      } else {
+        localStorage.removeItem("rememberedEmail");
+      }
       await originalHandleSubmit(values, actions);
     } catch (error) {
       const errorMessage = error.response?.data?.message || "Error al iniciar sesión";
-      
-      // Si el email no está verificado, mostrar opción de reenvío
       if (error.response?.data?.needsVerification) {
         Swal.fire({
           icon: 'warning',
@@ -89,7 +95,6 @@ export default function Login() {
           }
         });
       } else {
-        // Cualquier otro error
         Swal.fire({
           icon: "error",
           title: "Error",
@@ -97,7 +102,6 @@ export default function Login() {
           confirmButtonColor: "#ec4899"
         });
       }
-      
       actions.setSubmitting(false);
     }
   };
@@ -110,7 +114,6 @@ export default function Login() {
       animate="animate"
       exit="exit"
     >
-      {/* Triángulo de fondo animado */}
       <motion.div
         className="absolute right-0 top-0 bottom-0 w-2/3 bg-rose-200 z-0"
         style={{ clipPath: "polygon(25% 0%, 100% 0%, 100% 100%, 0% 100%)" }}
@@ -119,21 +122,18 @@ export default function Login() {
         animate="visible"
       />
 
-      {/* Icono de Home animado */}
       <motion.div
         initial={{ x: -100 }}
         animate={{ x: 0 }}
         transition={{ duration: 1, type: "spring", stiffness: 100 }}
-        className="absolute top-8 left-8 text-rose-600 hover:text-rose-800 transition z-20"
+        className="absolute top-8 left-8 text-rose-400 hover:text-rose-600 transition z-20"
       >
-        <Link to="/" title="Volver al inicio">
+        <a href="/" title="Volver al inicio">
           <FiHome size={32} />
-        </Link>
+        </a>
       </motion.div>
 
-      {/* Contenedor principal */}
       <div className="relative flex flex-col md:flex-row items-center justify-around w-full max-w-7xl mx-auto p-4 md:p-8 z-10">
-        {/* Logo */}
         <motion.div
           className="flex justify-center items-center p-8 md:p-12 mb-8 md:mb-0"
           variants={logoContainerVariants}
@@ -143,7 +143,6 @@ export default function Login() {
           <LogoShirly size="h-64 w-64 md:h-80 md:w-80" />
         </motion.div>
 
-        {/* Formulario con Formik */}
         <motion.div
           className="w-full max-w-md p-6 md:p-10 bg-white/90 backdrop-blur-sm rounded-3xl shadow-2xl"
           variants={formVariants}
@@ -156,52 +155,59 @@ export default function Login() {
 
           <Formik
             initialValues={{
-              email: "",
+              email: localStorage.getItem("rememberedEmail") || "",
               password: "",
             }}
             validationSchema={validationSchema}
             onSubmit={handleSubmit}
           >
-            {({ isSubmitting }) => (
+            {({ isSubmitting, errors, touched }) => (
               <Form className="space-y-6">
-                {/* Email */}
                 <div>
                   <label className="block text-sm font-medium text-gray-700 mb-2">
                     Correo Electrónico
                   </label>
                   <div className="relative">
-                    <Mail className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400" size={20} />
+                    <Mail className={`absolute left-3 top-1/2 transform -translate-y-1/2 ${touched.email && errors.email ? 'text-red-400' : 'text-gray-400'}`} size={20} />
                     <Field
                       type="email"
                       name="email"
-                      className="w-full pl-10 pr-4 py-3 border border-gray-300 rounded-xl focus:ring-2 focus:ring-pink-500 focus:border-transparent transition"
+                      className={`w-full pl-10 pr-4 py-3 border rounded-xl focus:ring-2 transition ${
+                        touched.email && errors.email
+                          ? 'border-red-400 bg-red-50 focus:ring-red-300 focus:border-transparent'
+                          : 'border-gray-300 focus:ring-pink-500 focus:border-transparent'
+                      }`}
                       placeholder="tu@email.com"
                     />
                   </div>
                   <ErrorMessage
                     name="email"
                     component="div"
-                    className="bg-rose-200 text-rose-700 p-2 rounded-lg mt-2 text-sm font-medium"
+                    className="bg-red-100 text-red-700 p-2 rounded-lg mt-2 text-sm font-medium"
                   />
                 </div>
 
-                {/* Contraseña */}
                 <div>
                   <label className="block text-sm font-medium text-gray-700 mb-2">
                     Contraseña
                   </label>
                   <div className="relative">
-                    <Lock className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400" size={20} />
+                    <Lock className={`absolute left-3 top-1/2 transform -translate-y-1/2 ${touched.password && errors.password ? 'text-red-400' : 'text-gray-400'}`} size={20} />
                     <Field
                       type={showPassword ? "text" : "password"}
                       name="password"
-                      className="w-full pl-10 pr-12 py-3 border border-gray-300 rounded-xl focus:ring-2 focus:ring-pink-500 focus:border-transparent transition"
+                      className={`w-full pl-10 pr-12 py-3 border rounded-xl focus:ring-2 transition ${
+                        touched.password && errors.password
+                          ? 'border-red-400 bg-red-50 focus:ring-red-300 focus:border-transparent'
+                          : 'border-gray-300 focus:ring-pink-500 focus:border-transparent'
+                      }`}
                       placeholder="••••••••"
                     />
                     <button
                       type="button"
                       onClick={() => setShowPassword(!showPassword)}
-                      className="absolute right-3 top-1/2 transform -translate-y-1/2 text-gray-400 hover:text-gray-600"
+                      className="absolute right-3 top-1/2 transform -translate-y-1/2 text-gray-400 hover:text-rose-400 transition"
+                      tabIndex={-1}
                     >
                       {showPassword ? <EyeOff size={20} /> : <Eye size={20} />}
                     </button>
@@ -209,17 +215,34 @@ export default function Login() {
                   <ErrorMessage
                     name="password"
                     component="div"
-                    className="bg-rose-200 text-rose-700 p-2 rounded-lg mt-2 text-sm font-medium"
+                    className="bg-red-100 text-red-700 p-2 rounded-lg mt-2 text-sm font-medium"
                   />
                 </div>
 
-                {/* Botón */}
+                <div className="flex items-center justify-between">
+                  <label className="flex items-center gap-2 cursor-pointer">
+                    <input
+                      type="checkbox"
+                      checked={rememberMe}
+                      onChange={(e) => setRememberMe(e.target.checked)}
+                      className="w-4 h-4 accent-rose-400 rounded cursor-pointer"
+                    />
+                    <span className="text-sm text-gray-600">Recuérdame</span>
+                  </label>
+                  <Link
+                    to="/forgot-password"
+                    className="text-rose-400 font-semibold hover:underline text-sm"
+                  >
+                    ¿Olvidaste tu contraseña?
+                </Link>
+                </div>
+
                 <motion.button
                   type="submit"
                   disabled={isSubmitting || isLoading}
                   whileHover={{ scale: 1.02 }}
                   whileTap={{ scale: 0.98 }}
-                  className="w-full bg-gradient-to-r from-pink-500 to-purple-600 text-white py-3 rounded-xl font-semibold shadow-lg hover:shadow-xl transition-all disabled:opacity-50 disabled:cursor-not-allowed flex justify-center items-center gap-2"
+                  className="w-full bg-rose-400 hover:bg-rose-500 text-white py-3 rounded-xl font-semibold shadow-lg hover:shadow-xl transition-all disabled:opacity-50 disabled:cursor-not-allowed flex justify-center items-center gap-2"
                 >
                   {isSubmitting || isLoading ? (
                     <>
@@ -234,16 +257,13 @@ export default function Login() {
             )}
           </Formik>
 
-          <p className="text-center text-gray-600 mt-6">
+          <p className="text-center text-gray-700 mt-6">
             ¿No tienes cuenta?{" "}
-            <Link to="/register" className="text-pink-500 font-semibold hover:underline">
+            <Link
+              to="/register"
+              className="text-rose-400 hover:text-rose-600 transition"
+            >
               Regístrate aquí
-            </Link>
-          </p>
-
-          <p className="text-center text-gray-600 mt-2">
-            <Link to="/forgot-password" className="text-purple-500 font-semibold hover:underline text-sm">
-              ¿Olvidaste tu contraseña?
             </Link>
           </p>
         </motion.div>
