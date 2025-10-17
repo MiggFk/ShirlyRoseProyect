@@ -1,10 +1,12 @@
 import React, { useEffect, useState } from "react";
 import { useNavigate, useParams } from "react-router-dom";
 import api from "../../api/axios";
+import { useCart } from "../../context/CartContext";
 
 export default function PayMock() {
   const { intentId } = useParams();
   const navigate = useNavigate();
+  const { clearCart } = useCart();
   const [intent, setIntent] = useState(null);
   const [loading, setLoading] = useState(true);
   const [processing, setProcessing] = useState(false);
@@ -30,7 +32,10 @@ export default function PayMock() {
     try {
       const res = await api.post("/payments/mock/pay", { intentId, outcome });
       if (res.data?.appointmentId) {
+        clearCart();
+        try { localStorage.setItem("appointments_changed", String(Date.now())); } catch (e) {}
         navigate(`/checkout/success?appointment=${res.data.appointmentId}&invoice=${res.data.invoiceId}`);
+        return;
       } else {
         await load();
       }

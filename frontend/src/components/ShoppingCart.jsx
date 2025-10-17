@@ -17,7 +17,6 @@ export default function ShoppingCart(props) {
 
   const totalCount = cart.reduce((a, b) => a + (b.cantidad || 1), 0);
 
-  // Badge & toast side-effects (ensure not to call state setters during render repeatedly)
   React.useEffect(() => {
     if (totalCount > prevCartCount.current) {
       setAddedId(cart.length ? (cart[cart.length - 1].id + cart[cart.length - 1].type) : null);

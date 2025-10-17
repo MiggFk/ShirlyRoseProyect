@@ -1,137 +1,125 @@
-import { useEffect, useState, useCallback } from "react";
+import { useEffect, useMemo, useState, useCallback } from "react";
 import { useNavigate } from "react-router-dom";
 import Swal from "sweetalert2";
 import api from "../api/axios";
 
-export const useProfile = () => {
+// Helpers
+const normalizeStatus = (s) => {
+  const v = String(s || "").toLowerCase();
+  if (["cancelada", "cancelado", "cancelled"].includes(v)) return "cancelled";
+  if (["completada", "completed", "finalizada", "finalizado"].includes(v)) return "completed";
+  if (["confirmada", "confirmado", "confirmed"].includes(v)) return "confirmed";
+  if (["pendiente", "pending"].includes(v)) return "pending";
+  return v || "pending";
+};
+
+const pickDateTime = (apt) => {
+  if (apt?.dateTime) return new Date(apt.dateTime);
+  if (apt?.date && apt?.time) return new Date(`${apt.date}T${apt.time}`);
+  if (apt?.date) return new Date(apt.date);
+  return null;
+};
+
+const normalizeAppointment = (apt) => {
+  const dt = pickDateTime(apt);
+  const service = apt.serviceId || apt.service || {};
+  const employee = apt.employeeId || apt.employee || {};
+  return {
+    _id: apt._id,
+    status: normalizeStatus(apt.status),
+    dateTime: dt ? dt.toISOString() : null,
+    service: {
+      name: service.name,
+      price: service.price ?? null,
+      duration: service.durationMinutes ?? service.duration ?? null,
+      category: service.category ?? apt.category ?? null,
+    },
+    employee: {
+      name: employee.name,
+      profileImage: employee.profileImage,
+    },
+    raw: apt,
+  };
+};
+
+async function tryGetUser() {
+  const endpoints = ["/users/me", "/auth/me", "/profile/me"];
+  for (const ep of endpoints) {
+    try {
+      const { data } = await api.get(ep);
+      if (data) return data.user || data.data || data;
+    } catch {}
+  }
+  return null;
+}
+
+async function tryGetAppointments(userId) {
+  const endpoints = [
+    { url: "/appointments/mine", params: {} },
+    { url: "/appointments/me", params: {} },
+    { url: "/appointments", params: { me: true } },
+    { url: "/appointments", params: { userId } },
+  ];
+  for (const ep of endpoints) {
+    try {
+      const { data } = await api.get(ep.url, { params: ep.params });
+      const list = Array.isArray(data) ? data : (data.appointments || data.data || []);
+      if (Array.isArray(list)) return list;
+    } catch {}
+  }
+  return [];
+}
+
+export function useProfile() {
   const [user, setUser] = useState(null);
   const [appointments, setAppointments] = useState([]);
   const [loading, setLoading] = useState(true);
   const navigate = useNavigate();
 
-  // Cargar perfil (memoizado para evitar recreación)
-  const fetchProfile = useCallback(async () => {
+  const load = useCallback(async () => {
+    setLoading(true);
     try {
-      const token = localStorage.getItem("token");
-      if (!token) {
-        throw new Error("No se encontró el token de autenticación.");
-      }
-
-      const response = await api.get("/users/profile", {
-        headers: { Authorization: `Bearer ${token}` },
-      });
-
-      setUser(response.data.profile);
-      localStorage.setItem("user", JSON.stringify(response.data.profile));
-    } catch (error) {
-      console.error("Error al obtener el perfil:", error);
-      
-      // Solo mostrar alerta si no es un error de cancelación
-      if (error.code !== "ECONNABORTED" && error.code !== "ERR_CANCELED") {
-        Swal.fire({
-          icon: "error",
-          title: "Error de carga",
-          text: "No se pudo cargar el perfil. Intenta iniciar sesión nuevamente.",
-        }).then(() => {
-          localStorage.clear();
-          navigate("/login");
-        });
-      }
-    }
-  }, [navigate]);
-
-  // Cargar citas del usuario (memoizado)
-  const fetchAppointments = useCallback(async () => {
-    try {
-      const token = localStorage.getItem("token");
-      if (!token) return;
-
-      const response = await api.get("/users/profile/appointments", {
-        headers: { Authorization: `Bearer ${token}` },
-      });
-
-      setAppointments(response.data.appointments || []);
-    } catch (error) {
-      console.error("Error al cargar citas:", error);
-      // No mostrar alerta, solo log en consola
+      const me = await tryGetUser();
+      setUser(me);
+      const list = await tryGetAppointments(me?._id);
+      setAppointments(list.map(normalizeAppointment));
+    } finally {
+      setLoading(false);
     }
   }, []);
 
+  useEffect(() => { load(); }, [load]);
+
   // 🔹 Actualizar perfil con FormData para enviar archivos
-  const updateProfile = async (profileData, imageFile) => {
+  const updateProfile = useCallback(async (profileData, imageFile) => {
     try {
-      const token = localStorage.getItem('token');
-      
-      if (!token) {
-        throw new Error("No autenticado");
-      }
-
-      // ✅ Construir FormData correctamente
-      const formData = new FormData();
-      
-      // Agregar datos de perfil como JSON en un campo
-      formData.append('name', profileData.name || '');
-      formData.append('phone', profileData.phone || '');
-      formData.append('birthDate', profileData.birthDate || '');
-      
-      // Agregar dirección
-      if (profileData.address) {
-        formData.append('address', JSON.stringify(profileData.address));
-      }
-      
-      // Agregar imagen si existe
+      let payload = profileData;
+      let config = {};
       if (imageFile) {
-        formData.append('profileImage', imageFile);
+        const fd = new FormData();
+        Object.entries(profileData || {}).forEach(([k, v]) => {
+          if (v !== undefined && v !== null) fd.append(k, typeof v === "object" ? JSON.stringify(v) : v);
+        });
+        fd.append("profileImage", imageFile);
+        payload = fd;
+        config.headers = { "Content-Type": "multipart/form-data" };
       }
-
-      console.log("📤 Enviando actualización:", {
-        name: profileData.name,
-        phone: profileData.phone,
-        birthDate: profileData.birthDate,
-        address: profileData.address,
-        hasImage: !!imageFile
-      });
-
-      const { data } = await api.put("/users/profile", formData, {
-        headers: {
-          "Authorization": `Bearer ${token}`,
-          "Content-Type": "multipart/form-data"
-        }
-      });
-
-      console.log("✅ Perfil actualizado:", data);
-
-      if (data.profile) {
-        setUser(data.profile);
-        localStorage.setItem('userData', JSON.stringify(data.profile));
+      // intenta varias rutas de perfil
+      const endpoints = ["/users/me", "/profile/me", "/users/profile"];
+      for (const ep of endpoints) {
+        try {
+          const { data } = await api.put(ep, payload, config);
+          setUser(data.user || data.data || data);
+          return true;
+        } catch {}
       }
-
-      Swal.fire({
-        icon: 'success',
-        title: '¡Perfil actualizado!',
-        text: 'Tus datos han sido guardados correctamente',
-        timer: 2000,
-        showConfirmButton: false
-      });
-
-      return true;
-
-    } catch (error) {
-      console.error("❌ Error al actualizar perfil:", error);
-      
-      const message = error.response?.data?.message || error.message || "Error desconocido";
-      
-      Swal.fire({
-        icon: 'error',
-        title: 'Error',
-        text: message,
-        showConfirmButton: true
-      });
-
+      return false;
+    } catch {
       return false;
     }
-  };
-  // 🔹 Eliminar imagen de perfil
+  }, []);
+
+  // Eliminar imagen de perfil
   const deleteProfileImage = async () => {
     try {
       const token = localStorage.getItem("token");
@@ -166,56 +154,11 @@ export const useProfile = () => {
   };
 
   // Cerrar sesión
-  const handleLogout = () => {
-    Swal.fire({
-      title: "¿Estás seguro?",
-      text: "¿Quieres cerrar tu sesión?",
-      icon: "warning",
-      showCancelButton: true,
-      confirmButtonColor: "#d33",
-      cancelButtonColor: "#3085d6",
-      confirmButtonText: "Sí, cerrar sesión",
-      cancelButtonText: "Cancelar",
-    }).then((result) => {
-      if (result.isConfirmed) {
-        localStorage.clear();
-        navigate("/login");
-      }
-    });
-  };
+  const handleLogout = useCallback(async () => {
+    try { await api.post("/auth/logout"); } catch {}
+    try { localStorage.removeItem("token"); } catch {}
+    window.location.href = "/login";
+  }, []);
 
-  // useEffect con cleanup para evitar memory leaks
-  useEffect(() => {
-    let isMounted = true;
-
-    const loadData = async () => {
-      if (isMounted) {
-        setLoading(true);
-        await fetchProfile();
-        await fetchAppointments();
-        if (isMounted) {
-          setLoading(false);
-        }
-      }
-    };
-
-    loadData();
-
-    // Cleanup function
-    return () => {
-      isMounted = false;
-    };
-  }, [fetchProfile, fetchAppointments]);
-
-  return {
-    user,
-    setUser,
-    appointments,
-    loading,
-    handleLogout,
-    updateProfile,
-    deleteProfileImage,
-    refreshProfile: fetchProfile,
-    refreshAppointments: fetchAppointments,
-  };
-};
+  return { user, appointments, loading, handleLogout, updateProfile, deleteProfileImage, reload: load };
+}

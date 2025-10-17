@@ -17,7 +17,7 @@ export default function Success() {
         <p><b>Factura:</b> {invoiceId}</p>
       </div>
       <div className="flex gap-2 justify-center">
-        <button className="px-4 py-2 rounded bg-rose-500 text-white" onClick={()=>navigate("/appointments")}>Ver mis citas</button>
+        <button className="px-4 py-2 rounded bg-rose-500 text-white" onClick={()=>navigate("/profile/appointments")}>Ver mis citas</button>
         <button className="px-4 py-2 rounded border" onClick={()=>navigate("/")}>Inicio</button>
       </div>
     </div>
