@@ -92,9 +92,6 @@ export default function IndexHome() {
           <Link to="/about" className="text-gray-700 hover:text-rose-500 font-medium transition">
             Nosotros
           </Link>
-          <Link to="/appointment" className="text-gray-700 hover:text-rose-500 font-medium transition">
-            Agendar Cita
-          </Link>
         </nav>
 
         {/* Botones dinámicos según estado de sesión */}
@@ -201,7 +198,7 @@ export default function IndexHome() {
             transition={{ duration: 0.8, delay: 0.5 }}
           >
             <Link
-              to="/appointment"
+              to="/services"
               className="inline-block px-8 py-3 rounded-xl bg-rose-400 text-white font-semibold shadow hover:bg-rose-500 transition duration-200"
             >
               Agenda tu cita

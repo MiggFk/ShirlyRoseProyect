@@ -1,5 +1,7 @@
 import React, { useEffect, useMemo, useState } from "react";
 import { useNavigate } from "react-router-dom";
+import { motion } from "framer-motion";
+import { FaHome } from "react-icons/fa";
 import api from "../../api/axios";
 import { useCart } from "../../context/CartContext";
 import { useAuth } from "../../context/AuthContext";
@@ -119,9 +121,18 @@ export default function Checkout() {
   };
 
   return (
-    <div className="max-w-6xl mx-auto p-6">
-      <h1 className="text-2xl font-bold mb-4">Finalizar reserva</h1>
+    <div className="max-w-6xl mx-auto p-6 relative">
+      {/* Botón Home */}
+      <motion.button
+        onClick={() => navigate('/')}
+        whileHover={{ scale: 1.1 }}
+        whileTap={{ scale: 0.95 }}
+      >
+        <FaHome className="text-3xl text-rose-500" />
+      </motion.button>
 
+      <h1 className="text-2xl font-bold mb-4 ml-20">Finalizar reserva</h1>
+      
       <div className="flex items-center justify-between bg-white p-4 rounded-xl border mb-6">
         <Step n={1} current={step} label="Tus datos" />
         <div className="flex-1 h-0.5 bg-slate-200 mx-2" />
