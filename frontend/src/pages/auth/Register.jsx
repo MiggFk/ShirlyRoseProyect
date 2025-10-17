@@ -3,12 +3,47 @@ import * as Yup from "yup";
 import { Link } from "react-router-dom";
 import { motion } from "framer-motion";
 import { FiHome } from "react-icons/fi";
+import { Eye, EyeOff, Check } from "lucide-react";
+import { useState, useEffect } from "react";
 import LogoShirly from "../../components/LogoShirly";
 import { useRegister } from "../../hooks/useRegister";
 
 export default function Register() {
   const { handleSubmit, isLoading } = useRegister();
+  const [showPassword, setShowPassword] = useState(false);
+  const [showConfirmPassword, setShowConfirmPassword] = useState(false);
+  const [passwordStrength, setPasswordStrength] = useState(0);
+  const [passwordValue, setPasswordValue] = useState(""); // Estado para la contraseña
 
+  // Validación de fortaleza de contraseña
+  const validatePasswordStrength = (password) => {
+    let strength = 0;
+    if (password.length >= 8) strength++;
+    if (password.length >= 12) strength++;
+    if (/[A-Z]/.test(password)) strength++;
+    if (/[0-9]/.test(password)) strength++;
+    if (/[!@#$%^&*]/.test(password)) strength++;
+    return strength;
+  };
+
+  useEffect(() => {
+    setPasswordStrength(validatePasswordStrength(passwordValue));
+  }, [passwordValue]);
+
+  const getPasswordStrengthColor = (strength) => {
+    if (strength <= 1) return "bg-red-500";
+    if (strength <= 2) return "bg-orange-500";
+    if (strength <= 3) return "bg-yellow-500";
+    if (strength <= 4) return "bg-lime-500";
+    return "bg-green-500";
+  };
+
+  const getPasswordStrengthText = (strength) => {
+    const texts = ["Muy débil", "Débil", "Regular", "Buena", "Excelente"];
+    return texts[Math.min(strength, 4)];
+  };
+
+  // Validación Yup
   const validationSchema = Yup.object({
     name: Yup.string()
       .min(3, "Mínimo 3 caracteres")
@@ -18,6 +53,8 @@ export default function Register() {
       .required("El correo es obligatorio"),
     password: Yup.string()
       .min(8, "Mínimo 8 caracteres")
+      .matches(/[A-Z]/, "Debe incluir mayúsculas")
+      .matches(/[0-9]/, "Debe incluir números")
       .required("La contraseña es obligatoria"),
     confirmPassword: Yup.string()
       .oneOf([Yup.ref("password"), null], "Las contraseñas no coinciden")
@@ -25,6 +62,9 @@ export default function Register() {
     acceptedTerms: Yup.boolean()
       .oneOf([true], "Debes aceptar los términos y condiciones")
       .required("Debes aceptar los términos y condiciones"),
+    acceptedPrivacy: Yup.boolean()
+      .oneOf([true], "Debes aceptar la política de privacidad")
+      .required("Debes aceptar la política de privacidad"),
   });
 
   // Animaciones
@@ -74,7 +114,7 @@ export default function Register() {
         initial={{ x: 100 }}
         animate={{ x: 0 }}
         transition={{ duration: 1, type: "spring", stiffness: 100 }}
-        className="absolute right-8 top-8 text-rose-600 hover:text-rose-800 transition z-20"
+        className="absolute right-8 top-8 text-rose-400 hover:text-rose-600 transition z-20"
       >
         <Link to="/" title="Volver al inicio">
           <FiHome size={32} />
@@ -111,114 +151,197 @@ export default function Register() {
               password: "",
               confirmPassword: "",
               acceptedTerms: false,
+              acceptedPrivacy: false,
             }}
             validationSchema={validationSchema}
             onSubmit={handleSubmit}
           >
-            {({ isSubmitting }) => (
+            {({ isSubmitting, errors, touched, values, setFieldValue }) => (
               <Form className="space-y-4">
+                {/* Nombre */}
                 <div>
                   <Field
                     name="name"
                     type="text"
-                    className="w-full px-4 py-2 border border-rose-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-rose-300 transition-colors"
+                    className={`w-full px-4 py-2 border rounded-lg focus:outline-none focus:ring-2 transition-colors ${
+                      touched.name && errors.name
+                        ? 'border-red-400 bg-red-50 focus:ring-red-300'
+                        : 'border-rose-200 focus:ring-rose-300'
+                    }`}
                     placeholder="Nombre completo"
                   />
                   <ErrorMessage
                     name="name"
                     component="div"
-                    className="bg-rose-200 text-rose-700 p-2 rounded-lg mt-2 text-sm font-medium"
+                    className="bg-red-100 text-red-700 p-2 rounded-lg mt-2 text-sm font-medium"
                   />
                 </div>
 
+                {/* Email */}
                 <div>
                   <Field
                     name="email"
                     type="email"
-                    className="w-full px-4 py-2 border border-rose-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-rose-300 transition-colors"
+                    className={`w-full px-4 py-2 border rounded-lg focus:outline-none focus:ring-2 transition-colors ${
+                      touched.email && errors.email
+                        ? 'border-red-400 bg-red-50 focus:ring-red-300'
+                        : 'border-rose-200 focus:ring-rose-300'
+                    }`}
                     placeholder="Correo electrónico"
                   />
                   <ErrorMessage
                     name="email"
                     component="div"
-                    className="bg-rose-200 text-rose-700 p-2 rounded-lg mt-2 text-sm font-medium"
+                    className="bg-red-100 text-red-700 p-2 rounded-lg mt-2 text-sm font-medium"
                   />
                 </div>
 
+                {/* Contraseña */}
                 <div>
-                  <Field
-                    name="password"
-                    type="password"
-                    className="w-full px-4 py-2 border border-rose-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-rose-300 transition-colors"
-                    placeholder="Contraseña (mínimo 8 caracteres)"
-                  />
+                  <div className="relative">
+                    <Field
+                      name="password"
+                      type={showPassword ? "text" : "password"}
+                      value={values.password}
+                      onChange={(e) => {
+                        setFieldValue("password", e.target.value);
+                        setPasswordValue(e.target.value);
+                      }}
+                      className={`w-full px-4 py-2 border rounded-lg focus:outline-none focus:ring-2 transition-colors pr-10 ${
+                        touched.password && errors.password
+                          ? 'border-red-400 bg-red-50 focus:ring-red-300'
+                          : 'border-rose-200 focus:ring-rose-300'
+                      }`}
+                      placeholder="Contraseña"
+                    />
+                    <button
+                      type="button"
+                      onClick={() => setShowPassword(!showPassword)}
+                      className="absolute right-3 top-1/2 transform -translate-y-1/2 text-gray-400 hover:text-rose-400 transition"
+                      tabIndex={-1}
+                    >
+                      {showPassword ? <EyeOff size={18} /> : <Eye size={18} />}
+                    </button>
+                  </div>
+
+                  {/* Indicador de fortaleza */}
+                  {values.password && (
+                    <div className="mt-2 space-y-1">
+                      <div className="flex gap-1">
+                        {[...Array(5)].map((_, i) => (
+                          <div
+                            key={i}
+                            className={`h-1 flex-1 rounded-full transition ${
+                              i < passwordStrength ? getPasswordStrengthColor(passwordStrength) : "bg-gray-300"
+                            }`}
+                          />
+                        ))}
+                      </div>
+                      <p className="text-xs text-gray-600">
+                        Fortaleza: <span className="font-semibold">{getPasswordStrengthText(passwordStrength)}</span>
+                      </p>
+                    </div>
+                  )}
+
+                  {/* Requisitos de contraseña */}
+                  <div className="mt-3 space-y-1 text-xs">
+                    <div className={`flex items-center gap-2 ${values.password.length >= 8 ? "text-green-600" : "text-gray-500"}`}>
+                      <Check size={14} /> Mínimo 8 caracteres
+                    </div>
+                    <div className={`flex items-center gap-2 ${/[A-Z]/.test(values.password) ? "text-green-600" : "text-gray-500"}`}>
+                      <Check size={14} /> Una letra mayúscula
+                    </div>
+                    <div className={`flex items-center gap-2 ${/[0-9]/.test(values.password) ? "text-green-600" : "text-gray-500"}`}>
+                      <Check size={14} /> Un número
+                    </div>
+                  </div>
+
                   <ErrorMessage
                     name="password"
                     component="div"
-                    className="bg-rose-200 text-rose-700 p-2 rounded-lg mt-2 text-sm font-medium"
+                    className="bg-red-100 text-red-700 p-2 rounded-lg mt-2 text-sm font-medium"
                   />
                 </div>
 
+                {/* Confirmar Contraseña */}
                 <div>
-                  <Field
-                    name="confirmPassword"
-                    type="password"
-                    className="w-full px-4 py-2 border border-rose-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-rose-300 transition-colors"
-                    placeholder="Confirmar contraseña"
-                  />
+                  <div className="relative">
+                    <Field
+                      name="confirmPassword"
+                      type={showConfirmPassword ? "text" : "password"}
+                      className={`w-full px-4 py-2 border rounded-lg focus:outline-none focus:ring-2 transition-colors pr-10 ${
+                        touched.confirmPassword && errors.confirmPassword
+                          ? 'border-red-400 bg-red-50 focus:ring-red-300'
+                          : 'border-rose-200 focus:ring-rose-300'
+                      }`}
+                      placeholder="Confirmar contraseña"
+                    />
+                    <button
+                      type="button"
+                      onClick={() => setShowConfirmPassword(!showConfirmPassword)}
+                      className="absolute right-3 top-1/2 transform -translate-y-1/2 text-gray-400 hover:text-rose-400 transition"
+                      tabIndex={-1}
+                    >
+                      {showConfirmPassword ? <EyeOff size={18} /> : <Eye size={18} />}
+                    </button>
+                  </div>
                   <ErrorMessage
                     name="confirmPassword"
                     component="div"
-                    className="bg-rose-200 text-rose-700 p-2 rounded-lg mt-2 text-sm font-medium"
+                    className="bg-red-100 text-red-700 p-2 rounded-lg mt-2 text-sm font-medium"
                   />
                 </div>
 
-                {/* Términos */}
+                {/* Términos y privacidad */}
                 <div className="flex items-start space-x-2 mt-2">
                   <Field
                     type="checkbox"
                     name="acceptedTerms"
                     id="terms"
-                    className="h-4 w-4 mt-1 text-rose-500 border-rose-300 rounded focus:ring-rose-400"
+                    className="h-4 w-4 mt-1 text-rose-500 border-rose-300 rounded focus:ring-rose-400 cursor-pointer"
                   />
-                  <label htmlFor="terms" className="text-sm text-gray-600">
+                  <label htmlFor="terms" className="text-sm text-gray-700">
                     Acepto los{" "}
-                    <Link
-                      to="/terms"
-                      className="text-rose-500 hover:underline cursor-pointer"
+                    <a
+                      href="/terms"
                       target="_blank"
                       rel="noopener noreferrer"
+                      className="text-rose-400 hover:text-rose-600 transition cursor-pointer"
                     >
                       términos y condiciones
-                    </Link>
+                    </a>
                   </label>
                 </div>
                 <ErrorMessage
                   name="acceptedTerms"
                   component="div"
-                  className="bg-rose-200 text-rose-700 p-2 rounded-lg text-sm font-medium"
+                  className="bg-red-100 text-red-700 p-2 rounded-lg text-sm font-medium"
                 />
 
-                {/* Política de privacidad */}
                 <div className="flex items-start space-x-2 mt-2">
                   <Field
                     type="checkbox"
                     name="acceptedPrivacy"
                     id="privacy"
-                    className="h-4 w-4 mt-1 text-rose-500 border-rose-300 rounded focus:ring-rose-400"
+                    className="h-4 w-4 mt-1 text-rose-500 border-rose-300 rounded focus:ring-rose-400 cursor-pointer"
                   />
-                  <label htmlFor="privacy" className="text-sm text-gray-600">
+                  <label htmlFor="privacy" className="text-sm text-gray-700">
                     He leído y acepto la{" "}
-                    <Link
-                      to="/Privacy"
-                      className="text-rose-500 hover:underline cursor-pointer"
+                    <a
+                      href="/privacy"
                       target="_blank"
                       rel="noopener noreferrer"
+                      className="text-rose-400 hover:text-rose-600 transition cursor-pointer"
                     >
                       Política de privacidad
-                    </Link>
+                    </a>
                   </label>
                 </div>
+                <ErrorMessage
+                  name="acceptedPrivacy"
+                  component="div"
+                  className="bg-red-100 text-red-700 p-2 rounded-lg text-sm font-medium"
+                />
 
                 <button
                   type="submit"
@@ -238,9 +361,9 @@ export default function Register() {
             )}
           </Formik>
 
-          <p className="text-center text-gray-600 mt-6 text-sm">
+          <p className="text-center text-gray-700 mt-6 text-sm">
             ¿Ya tienes cuenta?{" "}
-            <Link to="/login" className="text-rose-500 font-medium hover:underline">
+            <Link to="/login" className="text-rose-400 hover:text-rose-600 transition">
               Inicia sesión
             </Link>
           </p>
