@@ -14,18 +14,25 @@ const createInvoice = async (req, res) => {
         return res.status(404).json({ message: `Producto no encontrado: ${item.productId}` });
       }
 
-      if (product.stock < item.quantity) {
-        return res.status(400).json({ message: `Stock insuficiente para ${product.name}` });
+      const manageStock = product.manageStock !== false; // por defecto true si no existe
+      if (manageStock) {
+        if (product.stock < item.quantity) {
+          return res.status(400).json({ message: `Stock insuficiente para ${product.name}` });
+        }
       }
 
       total += item.quantity * product.price;
     }
 
-    // Descontar stock
+    // Descontar stock SOLO si corresponde
     for (const item of products) {
-      await Product.findByIdAndUpdate(item.productId, {
-        $inc: { stock: -item.quantity }
-      });
+      const product = await Product.findById(item.productId);
+      const manageStock = product?.manageStock !== false;
+      if (manageStock) {
+        await Product.findByIdAndUpdate(item.productId, {
+          $inc: { stock: -item.quantity }
+        });
+      }
     }
 
     const newInvoice = new Invoice({

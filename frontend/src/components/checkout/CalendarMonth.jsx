@@ -3,22 +3,10 @@ import api from "../../api/axios";
 import { SCHEDULING } from "../../config/scheduling";
 
 function daysInMonth(year, month) {
-  // month: 0-11
   return new Date(year, month + 1, 0).getDate();
 }
 function pad(n) { return String(n).padStart(2, "0"); }
 function toDateStr(y, m, d) { return `${y}-${pad(m+1)}-${pad(d)}`; }
-function addMinutes(date, mins) { return new Date(date.getTime() + mins * 60000); }
-function overlaps(aStart, aEnd, bStart, bEnd) { return aStart < bEnd && bStart < aEnd; }
-function generateSlots(dateStr, { openHour, closeHour, slotMinutes }) {
-  const slots = [];
-  const start = new Date(`${dateStr}T${pad(openHour)}:00:00`);
-  const end = new Date(`${dateStr}T${pad(closeHour)}:00:00`);
-  for (let d = new Date(start); d < end; d = new Date(d.getTime() + slotMinutes * 60000)) {
-    slots.push(d.toTimeString().slice(0,5));
-  }
-  return slots;
-}
 
 export default function CalendarMonth({ employeeId, serviceDuration = 30, selectedDate, onSelect }) {
   const baseDate = selectedDate ? new Date(selectedDate) : new Date();
@@ -40,7 +28,7 @@ export default function CalendarMonth({ employeeId, serviceDuration = 30, select
           params: {
             employeeId,
             year: viewYear,
-            month: viewMonth + 1, // 1-12
+            month: viewMonth + 1,
             durationMinutes: serviceDuration,
             slotMinutes: SCHEDULING.slotMinutes,
             openHour: SCHEDULING.openHour,
@@ -60,23 +48,19 @@ export default function CalendarMonth({ employeeId, serviceDuration = 30, select
 
   const weeks = useMemo(() => {
     const cells = [];
-    // shift to Monday-first visual (Mon=1..Sun=0)
-    const offset = (firstDay + 6) % 7;
+    const offset = (firstDay + 6) % 7; // make Monday first
     for (let i = 0; i < offset; i++) cells.push(null);
     for (let d = 1; d <= totalDays; d++) cells.push(d);
     while (cells.length % 7 !== 0) cells.push(null);
-
     const chunks = [];
-    for (let i = 0; i < cells.length; i += 7) {
-      chunks.push(cells.slice(i, i + 7));
-    }
+    for (let i = 0; i < cells.length; i += 7) chunks.push(cells.slice(i, i + 7));
     return chunks;
   }, [firstDay, totalDays]);
 
   const changeMonth = (delta) => {
-    const date = new Date(viewYear, viewMonth + delta, 1);
-    setViewYear(date.getFullYear());
-    setViewMonth(date.getMonth());
+    const newDate = new Date(viewYear, viewMonth + delta, 1);
+    setViewYear(newDate.getFullYear());
+    setViewMonth(newDate.getMonth());
   };
 
   const dateTodayStr = new Date().toISOString().slice(0,10);
@@ -85,11 +69,11 @@ export default function CalendarMonth({ employeeId, serviceDuration = 30, select
   return (
     <div className="border rounded-xl p-4 bg-white">
       <div className="flex items-center justify-between mb-3">
-        <button onClick={()=>setViewMonth(m => m-1 < 0 ? (setViewYear(y=>y-1), 11) : m-1)} className="text-sm px-2 py-1 border rounded hover:bg-rose-50">←</button>
+        <button onClick={()=>changeMonth(-1)} className="text-sm px-2 py-1 border rounded hover:bg-rose-50">←</button>
         <div className="font-semibold">
           {new Date(viewYear, viewMonth, 1).toLocaleString(undefined, { month: "long", year: "numeric" })}
         </div>
-        <button onClick={()=>setViewMonth(m => m+1 > 11 ? (setViewYear(y=>y+1), 0) : m+1)} className="text-sm px-2 py-1 border rounded hover:bg-rose-50">→</button>
+        <button onClick={()=>changeMonth(1)} className="text-sm px-2 py-1 border rounded hover:bg-rose-50">→</button>
       </div>
 
       <div className="grid grid-cols-7 text-xs text-slate-500 mb-1">

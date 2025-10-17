@@ -5,7 +5,7 @@ import { SCHEDULING } from "../../config/scheduling";
 function toISO(dateStr, timeStr) { return new Date(`${dateStr}T${timeStr}:00`).toISOString(); }
 function toDate(dateStr, timeStr) { return new Date(`${dateStr}T${timeStr}:00`); }
 function addMinutes(date, mins) { return new Date(date.getTime() + mins * 60000); }
-function fmtHM(date) { return date.toTimeString().slice(0,5); }
+
 function generateSlots(dateStr, { openHour, closeHour, slotMinutes }) {
   if (!dateStr) return [];
   const slots = [];
@@ -69,7 +69,6 @@ export default function TimeSlots({ employeeId, serviceId, date, value, onChange
       const res = await api.post("/appointments/validate", { employeeId, serviceId, dateTime: iso });
       if (!res.data?.available) {
         setNotice("Ese horario acaba de ocuparse. Elige otro.");
-        // refresh
         const r = await api.get("/appointments/availability", { params: { employeeId, date } });
         const intervals = (r.data?.busyIntervals || []).map(iv => ({ start: new Date(iv.start), end: new Date(iv.end) }));
         setBusyIntervals(intervals);

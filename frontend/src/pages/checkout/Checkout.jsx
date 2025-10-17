@@ -21,7 +21,6 @@ export default function Checkout() {
   const { cart, total, clearCart } = useCart();
   const { user } = useAuth();
 
-  // Estado
   const [step, setStep] = useState(1);
   const [customer, setCustomer] = useState({
     name: user?.name || "",
@@ -36,7 +35,6 @@ export default function Checkout() {
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState("");
 
-  // Catálogos
   const [employees, setEmployees] = useState([]);
   const [services, setServices] = useState([]);
   const [selectedEmployee, setSelectedEmployee] = useState(null);
@@ -46,7 +44,6 @@ export default function Checkout() {
   const canStep2 = useMemo(() => !!(employeeId && serviceId), [employeeId, serviceId]);
   const canStep3 = useMemo(() => !!(date && dateTimeISO), [date, dateTimeISO]);
 
-  // Cargar catálogos
   useEffect(() => {
     const load = async () => {
       try {
@@ -54,7 +51,7 @@ export default function Checkout() {
           api.get("/employees"),
           api.get("/services"),
         ]);
-        setEmployees(empRes.data?.employees || []);
+        setEmployees(empRes.data?.employees || empRes.data || []);
         setServices(srvRes.data?.services || srvRes.data || []);
       } catch (e) {
         console.error("Cargando catálogos:", e);
@@ -63,31 +60,28 @@ export default function Checkout() {
     load();
   }, []);
 
-  // Prefill desde carrito
+  // Prefill desde carrito: busca el primer servicio
   useEffect(() => {
-    // Busca el primer servicio en el carrito
     const srvItem = cart?.find(i => i.type === "servicio" || i.kind === "servicio" || i.kind === "service");
     if (srvItem && !serviceId) {
       setServiceId(srvItem._id || srvItem.id);
     }
-    // Empleado recomendado en el item, si existe
     if (srvItem?.employeeId && !employeeId) {
       setEmployeeId(srvItem.employeeId);
     }
-    // Fecha/hora sugerida
     if (srvItem?.dateTime && !dateTimeISO) {
       const iso = new Date(srvItem.dateTime).toISOString();
       setDate(iso.slice(0,10));
       setDateTimeISO(iso);
     }
-  // eslint-disable-next-line react-hooks/exhaustive-deps
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [cart]);
 
-  // Mapear seleccionados (sin mostrar IDs)
   useEffect(() => {
     const emp = employees.find(e => e._id === employeeId) || null;
     setSelectedEmployee(emp);
   }, [employeeId, employees]);
+
   useEffect(() => {
     const srv = services.find(s => (s._id || s.id) === serviceId) || null;
     setSelectedService(srv);
@@ -95,7 +89,6 @@ export default function Checkout() {
 
   const serviceDuration = useMemo(() => selectedService?.durationMinutes || selectedService?.duration || 30, [selectedService]);
 
-  // Autoadelantar pasos si ya hay todo
   useEffect(() => {
     if (customer.name && customer.email && employeeId && serviceId && date && dateTimeISO) {
       setStep(4);
@@ -106,7 +99,6 @@ export default function Checkout() {
     }
   }, [customer, employeeId, serviceId, date, dateTimeISO]);
 
-  // Confirmar (crea intent y redirige a pago local)
   const handleConfirm = async () => {
     setError("");
     setLoading(true);
@@ -126,12 +118,10 @@ export default function Checkout() {
     }
   };
 
-  // UI
   return (
     <div className="max-w-6xl mx-auto p-6">
       <h1 className="text-2xl font-bold mb-4">Finalizar reserva</h1>
 
-      {/* Stepper */}
       <div className="flex items-center justify-between bg-white p-4 rounded-xl border mb-6">
         <Step n={1} current={step} label="Tus datos" />
         <div className="flex-1 h-0.5 bg-slate-200 mx-2" />
@@ -143,9 +133,7 @@ export default function Checkout() {
       </div>
 
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
-        {/* Columna principal */}
         <div className="lg:col-span-2 space-y-6">
-          {/* Paso 1 */}
           {step === 1 && (
             <section className="bg-white rounded-xl border p-4 space-y-4">
               <h2 className="font-semibold">Tus datos</h2>
@@ -162,7 +150,6 @@ export default function Checkout() {
             </section>
           )}
 
-          {/* Paso 2 */}
           {step === 2 && (
             <section className="bg-white rounded-xl border p-4 space-y-6">
               <h2 className="font-semibold">Elige tu servicio</h2>
@@ -221,7 +208,6 @@ export default function Checkout() {
             </section>
           )}
 
-          {/* Paso 3 */}
           {step === 3 && (
             <section className="bg-white rounded-xl border p-4 space-y-4">
               <h2 className="font-semibold">Selecciona fecha y hora</h2>
@@ -269,14 +255,13 @@ export default function Checkout() {
             </section>
           )}
 
-          {/* Paso 4 */}
           {step === 4 && (
             <section className="bg-white rounded-xl border p-4 space-y-4">
               <h2 className="font-semibold">Resumen</h2>
               <div className="space-y-1 text-sm text-slate-700">
                 <div>Servicio: <b>{selectedService?.name}</b></div>
                 <div>Profesional: <b>{selectedEmployee?.name}</b></div>
-                <div>Fecha y hora: <b>{new Date(dateTimeISO).toLocaleString()}</b></div>
+                <div>Fecha y hora: <b>{dateTimeISO ? new Date(dateTimeISO).toLocaleString() : "-"}</b></div>
               </div>
               <ul className="divide-y">
                 {cart.map((i) => (
@@ -303,7 +288,6 @@ export default function Checkout() {
           )}
         </div>
 
-        {/* Sidebar resumen sticky */}
         <aside className="lg:col-span-1">
           <div className="bg-white border rounded-xl p-4 sticky top-6 space-y-2">
             <h3 className="font-semibold">Tu carrito</h3>

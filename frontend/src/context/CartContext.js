@@ -1,23 +1,28 @@
-import React, { createContext, useContext, useState, useEffect } from "react";
+import React, { createContext, useContext, useState, useEffect, useMemo } from "react";
 
 const CartContext = createContext();
 
 export const useCart = () => useContext(CartContext);
 
 export function CartProvider({ children }) {
-  // Inicializa el carrito directamente desde localStorage (más robusto)
+  const LOCAL_KEY = "cart";
+
   const [cart, setCart] = useState(() => {
     try {
-      const savedCart = localStorage.getItem("cart");
-      return savedCart ? JSON.parse(savedCart) : [];
+      const raw = localStorage.getItem(LOCAL_KEY);
+      return raw ? JSON.parse(raw) : [];
     } catch (e) {
+      console.warn("Error parsing cart from localStorage", e);
       return [];
     }
   });
 
-  // Persiste el carrito cada vez que cambia
   useEffect(() => {
-    localStorage.setItem("cart", JSON.stringify(cart));
+    try {
+      localStorage.setItem(LOCAL_KEY, JSON.stringify(cart));
+    } catch (e) {
+      console.warn("Error saving cart to localStorage", e);
+    }
   }, [cart]);
 
   function addToCart(item) {
@@ -26,7 +31,7 @@ export function CartProvider({ children }) {
       if (found) {
         return prev.map((i) =>
           i.id === item.id && i.type === item.type
-            ? { ...i, cantidad: i.cantidad + (item.cantidad || 1) }
+            ? { ...i, cantidad: (i.cantidad || 1) + (item.cantidad || 1) }
             : i
         );
       }
@@ -46,7 +51,7 @@ export function CartProvider({ children }) {
     setCart((prev) =>
       prev.map((item) =>
         item.id === id && item.type === type
-          ? { ...item, cantidad: item.cantidad + 1 }
+          ? { ...item, cantidad: (item.cantidad || 1) + 1 }
           : item
       )
     );
@@ -57,14 +62,20 @@ export function CartProvider({ children }) {
       prev
         .map((item) =>
           item.id === id && item.type === type
-            ? { ...item, cantidad: item.cantidad - 1 }
+            ? { ...item, cantidad: (item.cantidad || 1) - 1 }
             : item
         )
-        .filter((item) => item.cantidad > 0)
+        .filter((item) => (item.cantidad || 0) > 0)
     );
   }
 
-  const total = cart.reduce((acc, item) => acc + item.price * item.cantidad, 0);
+  const total = useMemo(() => {
+    return cart.reduce((acc, item) => acc + (item.price || 0) * (item.cantidad || 1), 0);
+  }, [cart]);
+
+  const totalCantidad = useMemo(() => {
+    return cart.reduce((acc, item) => acc + (item.cantidad || 1), 0);
+  }, [cart]);
 
   const value = {
     cart,
@@ -74,6 +85,7 @@ export function CartProvider({ children }) {
     increaseQuantity,
     decreaseQuantity,
     total,
+    totalCantidad,
   };
 
   return <CartContext.Provider value={value}>{children}</CartContext.Provider>;
