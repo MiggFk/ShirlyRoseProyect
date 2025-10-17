@@ -30,9 +30,10 @@ const sendVerificationEmail = async (toEmail, userName, token) => {
       throw new Error('Email destinatario no válido: ' + toEmail);
     }
 
-    // ✅ CORREGIDO: Quitar la "d" extra de "verify-email"
-    const verificationUrl = `${process.env.FRONTEND_URL}/verify-email/${token}`;
+    // Reemplaza la construcción de la URL (cerca de la línea 34)
+    const verificationUrl = `http://localhost:3000/verify-email/${token}`;
 
+    // En el HTML del email, reemplaza el div del botón por este (más compatible):
     const mailOptions = {
       from: {
         name: 'Shirly Rose',
@@ -66,7 +67,7 @@ const sendVerificationEmail = async (toEmail, userName, token) => {
               box-shadow: 0 20px 60px rgba(236, 72, 153, 0.15);
             }
             .header {
-              background: linear-gradient(135deg, #ec4899 0%, #be185d 100%);
+              background-color: #f472b6;
               padding: 50px 30px;
               text-align: center;
             }
@@ -198,7 +199,17 @@ const sendVerificationEmail = async (toEmail, userName, token) => {
               </div>
               
               <div class="button-container">
-                <a href="${verificationUrl}" class="button">✓ Verificar mi email</a>
+                <table role="presentation" border="0" cellpadding="0" cellspacing="0" style="margin:0 auto;">
+                    <tr>
+                        <td align="center" style="border-radius:12px;background-color:#f472b6;">
+                            <a href="${verificationUrl}" 
+                               target="_blank"
+                               style="display:inline-block;padding:20px 60px;font-size:18px;color:#ffffff;text-decoration:none;font-weight:700;border-radius:12px;">
+                                ✓ Verificar mi email
+                            </a>
+                        </td>
+                    </tr>
+                </table>
               </div>
               
               <div class="warning">
