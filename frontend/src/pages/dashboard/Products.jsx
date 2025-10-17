@@ -482,7 +482,8 @@ function ProductModal({ product, isOpen, onClose, onSave }) {
               required
             >
               {categories.map((cat) => (
-                <option key={cat.value} value={cat.value}>
+                <option key={cat.value} value={cat.value}
+                className="bg-white text-gray-800 py-2">
                   {cat.label}
                 </option>
               ))}

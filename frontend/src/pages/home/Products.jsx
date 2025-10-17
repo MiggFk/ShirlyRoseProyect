@@ -100,9 +100,6 @@ export default function Products() {
                       {product.description}
                     </p>
                   )}
-                  <p className="text-sm text-gray-500">
-                    Contenido: {product.duracion}
-                  </p>
                   <p className="text-sm text-gray-500 mb-4">
                     Precio: ${product.price?.toLocaleString()}
                   </p>
